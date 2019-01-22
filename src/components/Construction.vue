@@ -29,6 +29,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/styles/mixins.scss";
+@import "@/styles/fonts.scss";
 
 $primary: rgb(66, 66, 66);
 $secondary: white;
@@ -90,7 +91,6 @@ div.links {
 h1 {
   padding: 5px;
   margin-bottom: 20px;
-  font-family: "Ubuntu Mono", monospace;
 
   background-color: $primary;
   color: $secondary;

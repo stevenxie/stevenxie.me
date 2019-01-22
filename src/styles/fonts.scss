@@ -1,8 +1,3 @@
-@mixin sans() {
-  font-family: "Barlow", Roboto, -apple-system, BlinkMacSystemFont,
-    "Helvetica Neue", Arial, sans-serif;
-}
-
-@mixin mono() {
-  font-family: "Ubuntu Mono", monospace;
-}
+$sans: "Barlow", Roboto, -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+  Arial, sans-serif;
+$mono: "Ubuntu Mono", Consolas, monospace;

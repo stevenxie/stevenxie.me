@@ -32,7 +32,7 @@ LABEL org.label-schema.vcs-url="https://github.com/stevenxie/stevenxie.me"
 LABEL org.label-schema.version="$BUILD_VERSION"
 
 ## Setup environment.
-ENV PORT=80
+ENV PORT=80 NODE_ENV=production
 
 ## Copy built application and package metadata.
 WORKDIR /app

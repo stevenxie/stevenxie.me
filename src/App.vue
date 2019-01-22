@@ -17,6 +17,21 @@ export default {
     return {
       title: "Steven Xie",
       link: [
+        // Stylesheets:
+        {
+          rel: "preload",
+          href:
+            "https://fonts.googleapis.com/css?family=Barlow:300,400,400i,500,600",
+          as: "style",
+          onload: "this.rel='stylesheet'",
+        },
+        {
+          rel: "preload",
+          href: "https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700",
+          as: "style",
+          onload: "this.rel='stylesheet'",
+        },
+
         // Web App Manifest:
         { rel: "manifest", href: `${BASE_URL}manifest.webmanifest` },
 
@@ -30,10 +45,6 @@ export default {
 </script>
 
 <style lang="scss">
-// Fonts:
-@import url("https://fonts.googleapis.com/css?family=Barlow:300,400,400i,500,600");
-@import url("https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700");
-
 // Priority CSS:
 @import "../node_modules/@fortawesome/fontawesome-svg-core/styles.css";
 @import "@/styles/fonts.scss";
@@ -45,7 +56,7 @@ body {
   align-items: stretch;
 
   // Configure default font.
-  @include sans();
+  font-family: $sans;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
@@ -60,7 +71,7 @@ p {
 // prettier-ignore
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
-  @include mono();
+  font-family: $mono;
 }
 
 // prettier-ignore

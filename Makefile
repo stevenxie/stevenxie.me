@@ -64,6 +64,14 @@ js-clean:
 	@echo "Cleaning 'node_modules'..." && rm -rf node_modules && echo done
 
 
+## Ream:
+.PHONY: ream-start
+ream-start: ## Start ream in production mode.
+	@echo "Starting production server using 'ream'..." && \
+	 yarn ream start && \
+	 echo done
+
+
 ## Docker:
 .PHONY: dk-pull dk-push dk-build dk-build-push dk-clean dk-tags dk-up \
         dk-build-up dk-down dk-logs dk-test

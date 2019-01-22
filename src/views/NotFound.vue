@@ -17,6 +17,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/fonts.scss";
+
 $primary: rgb(66, 66, 66);
 $secondary: white;
 
@@ -36,7 +38,6 @@ $secondary: white;
 h1 {
   padding: 5px;
   margin-bottom: 20px;
-  font-family: "Ubuntu Mono", monospace;
 
   background-color: $primary;
   color: $secondary;
