@@ -35,6 +35,9 @@ help:
 
 
 ## CI:
+.PHONY: ci-install ci-test ci-deploy
+__KB = kubectl
+
 ci-install: dk-pull
 ci-test:
 	@$(__DKCMP_VER) up --no-start && $(MAKE) dk-tags

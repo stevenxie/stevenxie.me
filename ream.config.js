@@ -10,16 +10,9 @@ const webpackPlugin = {
     }),
 };
 
-// Configure server.
-// const serverPlugin = {
-//   name: "server-plugin",
-//   apply: api =>
-//     api.
-// }
-
 module.exports = {
   entry: "./src/main.js",
-  plugins: [webpackPlugin /* contextPlugin */],
+  plugins: [webpackPlugin],
   pwa: false,
   css: {
     extract: true,
