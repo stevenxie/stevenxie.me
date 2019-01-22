@@ -2,11 +2,11 @@ version: "3.7"
 
 services:
   web:
-    image: stevenxie/web:${VERSION}
+    image: stevenxie/stevenxie.me:${VERSION}
     build:
       context: .
       cache_from:
-        - stevenxie/web:latest
+        - stevenxie/stevenxie.me:latest
         - node:10-alpine
     container_name: web
     ports:

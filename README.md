@@ -19,5 +19,5 @@ _This project uses [`ream`](https://ream.js.org) for SSR._
 
 [travis]: https://travis-ci.com/stevenxie/stevenxie.me
 [travis-img]: https://travis-ci.com/stevenxie/stevenxie.me.svg?branch=master
-[microbadger]: https://microbadger.com/images/stevenxie/web
-[microbadger-img]: https://images.microbadger.com/badges/image/stevenxie/web.svg
+[microbadger]: https://microbadger.com/images/stevenxie/stevenxie.me
+[microbadger-img]: https://images.microbadger.com/badges/image/stevenxie/stevenxie.me.svg

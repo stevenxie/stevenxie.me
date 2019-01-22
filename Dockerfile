@@ -25,7 +25,7 @@ ARG BUILD_VERSION="unset"
 ## Labels:
 LABEL maintainer="Steven Xie <hello@stevenxie.me>"
 LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.name = "stevenxie/web"
+LABEL org.label-schema.name = "stevenxie/stevenxie.me"
 LABEL org.label-schema.url="https://stevenxie.me/"
 LABEL org.label-schema.description="Web Frontend Server"
 LABEL org.label-schema.vcs-url="https://github.com/stevenxie/stevenxie.me"

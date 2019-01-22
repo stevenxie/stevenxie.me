@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: "stevenxie/web"
+          image: "stevenxie/stevenxie.me"
           imagePullPolicy: Always
           ports:
             - name: http
