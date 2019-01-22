@@ -4,9 +4,6 @@ os:
   - linux
 services: docker
 
-git:
-  depth: 3
-
 env:
   ## Required external variables:
   ##   - DOCKER_USER, DOCKER_PASS
@@ -21,7 +18,7 @@ before_install:
   - export BINPATH=/opt/bin
   - export PATH=$BINPATH:$PATH
   - ./scripts/tools.sh
-  # - git fetch --tags
+  - git fetch --tags
 
 ## Install dependencies.
 install: make ci-install
@@ -44,4 +41,4 @@ deploy:
 cache:
   directories:
     ## Preserve external tools.
-    - $BIN_PATH
+    - $BINPATH

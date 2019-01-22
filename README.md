@@ -1,37 +1,23 @@
-# stevenxie.me
+# [stevenxie.me](https://stevenxie.me)
 
 _My personal website._
 
-## Project setup
+[![Travis: Build][travis-img]][travis]
+[![MicroBadger][microbadger-img]][microbadger]
 
-```
-yarn install
-```
+## Build Setup
 
-### Compiles and hot-reloads for development
-
-```
-yarn run serve
-```
-
-### Compiles and minifies for production
-
-```
-yarn run build
+```bash
+yarn install # install application dependencies
+yarn dev     # serves with hot-reloading for development
+yarn build   # build and minify for production
+yarn start   # start production server
+yarn lint    # lints source code
 ```
 
-### Run your tests
+_This project uses [`ream`](https://ream.js.org) for SSR._
 
-```
-yarn run test
-```
-
-### Lints and fixes files
-
-```
-yarn run lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
+[travis]: https://travis-ci.com/stevenxie/stevenxie.me
+[travis-img]: https://travis-ci.com/stevenxie/stevenxie.me.svg?branch=master
+[microbadger]: https://microbadger.com/images/stevenxie/web
+[microbadger-img]: https://images.microbadger.com/badges/image/stevenxie/web.svg

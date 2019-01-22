@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   web:
-    image: stevenxie/web:latest
+    image: stevenxie/web:${VERSION}
     build:
       context: .
       cache_from:
