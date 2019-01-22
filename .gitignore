@@ -1,21 +1,40 @@
-.DS_Store
-node_modules
-/dist
+## [Project]
+.ream/
 
-# local env files
+## [Node + Vue]
+node_modules/
+/dist/
+
+## System files:
+.DS_Store
+
+## Local env files:
 .env.local
 .env.*.local
 
-# Log files
+## Log files:
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw*
+
+## [IDEs]
+## VSCode (keeping workspace configurations):
+.vscode/*
+!.vscode/tasks.json
+!.vscode/extensions.json
+# !.vscode/settings.json
+# !.vscode/launch.json
+
+## IntelliJ:
+.idea/
+
+
+## [System Files]
+## macOS:
+.DS_Store
+.DS_Store?
+*.swp
+
+## Windows:
+Thumbs.db

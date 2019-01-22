@@ -1,0 +1,47 @@
+language: bash
+
+os:
+  - linux
+services: docker
+
+git:
+  depth: 3
+
+env:
+  ## Required external variables:
+  ##   - DOCKER_USER, DOCKER_PASS
+  ##   - GH_TOKEN, GH_KUBECONFIG_PATH
+  global:
+    - DEPLOYMENTS="web"
+    - RELEASE_BRANCH=master
+    - DOCKER_COMPOSE_VERSION="1.23.2"
+
+# Install external tools.
+before_install:
+  - export BINPATH=/opt/bin
+  - export PATH=$BINPATH:$PATH
+  - ./scripts/tools.sh
+  # - git fetch --tags
+
+## Install dependencies.
+install: make ci-install
+
+## Run tests.
+script: make ci-test
+
+## Deploy to Docker Hub and Kubernetes.
+deploy:
+  provider: script
+  script: ./scripts/deploy.sh
+  skip-cleanup: true
+  on:
+    all_branches: true
+
+# ## Upload code coverage results.
+# after_success:
+#   - bash <(curl -s https://codecov.io/bash)
+
+cache:
+  directories:
+    ## Preserve external tools.
+    - $BIN_PATH

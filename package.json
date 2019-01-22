@@ -1,40 +1,42 @@
 {
   "name": "stevenxie.me",
-  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "ream dev",
+    "start": "ream start",
+    "build": "NODE_ENV=production ream build",
+    "lint": "NODE_ENV=production eslint --fix './src/**/*.{vue,js}' && prettier --write -l './src/**/*.{sass,css}' './*.{js,json}'"
   },
   "dependencies": {
-    "vue": "^2.5.21",
-    "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "@fortawesome/fontawesome-svg-core": "^1.2.12",
+    "@fortawesome/free-solid-svg-icons": "^5.6.3",
+    "@fortawesome/vue-fontawesome": "^0.1.5",
+    "ream": "^4.0.0",
+    "vue": "^2.5.22",
+    "vue-router": "^3.0.2",
+    "vuex": "^3.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.3.0",
-    "@vue/cli-plugin-eslint": "^3.3.0",
-    "@vue/cli-service": "^3.3.0",
     "@vue/eslint-config-prettier": "^4.0.1",
+    "autoprefixer": "^9.4.6",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0",
+    "eslint-plugin-vue": "^5.1.0",
     "lint-staged": "^8.1.0",
-    "node-sass": "^4.9.0",
-    "sass-loader": "^7.0.1",
-    "vue-template-compiler": "^2.5.21"
+    "node-sass": "^4.11.0",
+    "prettier": "^1.16.0",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.5.22",
+    "webpack": "^4.0.0",
+    "yorkie": "^2.0.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": [
-      "vue-cli-service lint",
-      "git add"
-    ],
-    "*.vue": [
-      "vue-cli-service lint",
+    "*.{js,json,vue,scss,css}": [
+      "yarn lint",
       "git add"
     ]
   }

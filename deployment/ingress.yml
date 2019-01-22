@@ -1,0 +1,19 @@
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+
+metadata:
+  annotations:
+    ingress.kubernetes.io/custom-response-headers: X-Service:web
+  name: web
+  namespace: default
+
+spec:
+  rules:
+    - host: stevenxie.me
+      http:
+        paths:
+          - backend:
+              serviceName: web
+              servicePort: http

@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  web:
+    image: stevenxie/web:latest
+    build:
+      context: .
+      cache_from:
+        - stevenxie/web:latest
+        - node:10-alpine
+    container_name: web
+    ports:
+      - "8080:80"

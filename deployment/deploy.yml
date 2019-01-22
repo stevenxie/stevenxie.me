@@ -1,0 +1,44 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: web
+  namespace: default
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+      tier: frontend
+      track: stable
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: web
+        tier: frontend
+        track: stable
+    spec:
+      containers:
+        - name: web
+          image: "stevenxie/web"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 4000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
