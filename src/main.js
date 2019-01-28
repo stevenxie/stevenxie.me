@@ -9,10 +9,6 @@ import { extend } from "./plugins";
 Vue.config.productionTip = false;
 extend(Vue);
 
-// Configure environment.
-const { BASE_URL } = process.env;
-process.env.BASE_URL = BASE_URL || "/";
-
 export default () => ({
   router,
   store,

@@ -29,7 +29,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/styles/mixins.scss";
-@import "@/styles/fonts.scss";
 
 $primary: rgb(66, 66, 66);
 $secondary: white;
