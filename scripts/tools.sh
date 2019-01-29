@@ -2,12 +2,16 @@
 
 set -e  # exit on failure
 
+## Options:
+DOCKER_COMPOSE_VERSION=1.23.2
+
+
 ## Configure $BINPATH for third-party binaries.
 mkdir -p $BINPATH
 echo "Contents of $BINPATH:" && ls -l $BINPATH
 
 ## Install docker-compose.
-if [ ! -x $BIN_PATH/docker-compose ]; then
+if [ ! -x ${BINPATH}/docker-compose ]; then
   echo "Installing docker-compose..."
   VERSION="docker-compose-$(uname -s)-$(uname -m)"
   curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/${VERSION}" > docker-compose

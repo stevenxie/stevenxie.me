@@ -25,6 +25,7 @@ test: ## Run tests.
 lint: js-lint ## Lint and check code.
 review: js-review ## Lint code and run tests.
 clean: js-clean ## Clean build artifacts.
+	@echo "Cleaning .ream/..." && rm -rf .ream/ && echo done
 release: ## Release / deploy this project.
 	@echo "No release procedure defined."
 

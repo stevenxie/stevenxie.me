@@ -10,8 +10,6 @@ env:
   ##   - GH_TOKEN, GH_KUBECONFIG_PATH
   global:
     - DEPLOYMENTS="web"
-    - RELEASE_BRANCH=master
-    - DOCKER_COMPOSE_VERSION="1.23.2"
 
 # Install external tools.
 before_install:
