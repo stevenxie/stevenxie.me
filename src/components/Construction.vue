@@ -18,7 +18,7 @@ export default {
   data: function() {
     return {
       links: [
-        { name: "status", url: "https://status.stevenxie.me" },
+        // { name: "status", url: "https://status.stevenxie.me" },
         { name: "resume", url: "/resume/", class: "desktop-only" },
         { name: "github", url: "https://github.com/stevenxie" },
       ],

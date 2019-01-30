@@ -9,7 +9,7 @@ metadata:
     traefik.ingress.kubernetes.io/redirect-regex: ^https?://www.stevenxie.me/(.*)
     traefik.ingress.kubernetes.io/redirect-replacement: https://stevenxie.me/$1
     traefik.ingress.kubernetes.io/redirect-permanent: "true"
-  name: web
+  name: web-varnish
   namespace: default
 
 spec:
@@ -18,8 +18,8 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: web
-              servicePort: http
+              serviceName: web-varnish
+              servicePort: varnish
     - host: www.stevenxie.me
       http:
         paths:

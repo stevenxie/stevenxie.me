@@ -1,0 +1,67 @@
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+
+metadata:
+  name: web-varnish
+  labels:
+    app: web-varnish
+    tier: frontend
+    track: stable
+  namespace: default
+
+spec:
+  selector:
+    matchLabels:
+      app: web-varnish
+      tier: frontend
+      track: stable
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: web-varnish
+        tier: frontend
+        track: stable
+    spec:
+      containers:
+        - args:
+            - varnishd
+            - -Ff
+            - /usr/local/etc/varnish/default.vcl
+            - -s
+            - file,/var/lib/varnish/varnish_storage.bin,100M
+          image: cooptilleuls/varnish:6.0.0-alpine
+          imagePullPolicy: IfNotPresent
+          name: varnish
+          ports:
+            - containerPort: 80
+              name: varnish
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/local/etc/varnish/
+              name: config
+            - mountPath: /var/lib/varnish/varnish_storage.bin
+              name: storage
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        node-role.kubernetes.io/storage: storage
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: config
+          configMap:
+            defaultMode: 420
+            name: web-varnish
+        - name: storage
+          hostPath:
+            path: /tmp/web-varnish_storage.bin
+            type: FileOrCreate

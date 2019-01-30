@@ -39,11 +39,13 @@ help:
 .PHONY: ci-install ci-test ci-deploy
 __KB = kubectl
 
-ci-install: dk-pull
-ci-test:
-	@$(__DKCMP_VER) up --no-start && $(MAKE) dk-tags
+ci-install:
+	@$(MAKE) dk-pull DKENV=test
+ci-test: dk-test
+	@$(MAKE) dk-up DKENV=ci DKARGS="--no-start" && \
+	 $(MAKE) dk-tags DKENV=ci
 ci-deploy:
-	@$(MAKE) dk-push && \
+	@$(MAKE) dk-push DKENV=ci && \
 	 for deploy in $(DEPLOYS); do \
 	   $(__KB) patch deployment "$$deploy" \
 	     -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"$$(date +'%s')\"}}}}}"; \
@@ -85,9 +87,9 @@ __DKFILE = docker-compose.yml
 ifeq ($(DKENV),test)
 	__DKFILE = docker-compose.test.yml
 endif
-# ifeq ($(DKENV),ci)
-# 	__DKFILE = docker-compose.build.yml
-# endif
+ifeq ($(DKENV),ci)
+	__DKFILE = docker-compose.build.yml
+endif
 __DKCMP  = docker-compose -f "$(__DKFILE)"
 __DKCMP_VER = VERSION="$(VERSION)" $(__DKCMP)
 __DKCMP_LST = VERSION=latest $(__DKCMP)

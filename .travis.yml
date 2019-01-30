@@ -9,7 +9,7 @@ env:
   ##   - DOCKER_USER, DOCKER_PASS
   ##   - GH_TOKEN, GH_KUBECONFIG_PATH
   global:
-    - DEPLOYMENTS="web"
+    - DEPLOYMENTS="web web-varnish"
 
 # Install external tools.
 before_install:

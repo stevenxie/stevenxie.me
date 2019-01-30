@@ -1,0 +1,14 @@
+## This docker-compose config file is used to define test variations of the
+## images in this repository.
+
+version: "3.7"
+
+services:
+  varnish_test:
+    image: "cooptilleuls/varnish:6.0.0-alpine"
+    command: ["varnishd", "-Cf", "/usr/local/etc/varnish/default.vcl"]
+    volumes:
+      - type: bind
+        source: ./varnish.vcl
+        target: /usr/local/etc/varnish/default.vcl
+        read_only: true

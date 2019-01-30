@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  web:
+    image: stevenxie/stevenxie.me:${VERSION}
+    build:
+      context: .
+      cache_from:
+        - stevenxie/stevenxie.me:latest
+        - node:10-alpine
