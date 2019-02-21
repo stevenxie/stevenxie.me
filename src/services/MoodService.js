@@ -10,7 +10,7 @@ export default class MoodService {
    * @param {config} AxiosRequestConfig
    */
   getMoods = async (limit = 10, config) => {
-    const { data } = await APIClient.get("/moods/", {
+    const { data } = await APIClient.get("/moods", {
       params: { ...config, limit },
     });
     this.lastMoodId = last(data).id;
