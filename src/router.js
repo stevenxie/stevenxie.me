@@ -21,6 +21,11 @@ export default new Router({
         import(/* webpackChunkName: "mood" */ "@/views/Mood.vue"),
     },
     {
+      path: "/cz",
+      name: "cz",
+      component: () => import(/* webpackChunkName: "cz" */ "@/views/CZ.vue"),
+    },
+    {
       path: "*",
       name: "404",
       component: () =>
