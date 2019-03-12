@@ -1,31 +1,11 @@
 <template>
   <div class="construction flex col">
-    <div class="links flex">
-      <p v-for="link in links" :key="link.url" :class="link.class">
-        <a :href="link.url">{{ link.name }}</a>
-      </p>
-    </div>
-
     <font-awesome-icon class="icon" icon="wrench" size="5x" />
     <h1>hello, world!</h1>
-    <p class="emph">this website is under heavy construction.</p>
-    <p><i>wanna try again in like a week or so?</i></p>
+    <p class="emph">this rest of this website is under construction.</p>
+    <p><i>wanna check back in like a week or so?</i></p>
   </div>
 </template>
-
-<script>
-export default {
-  data: function() {
-    return {
-      links: [
-        // { name: "status", url: "https://status.stevenxie.me" },
-        { name: "resume", url: "/resume/", class: "desktop-only" },
-        { name: "github", url: "https://github.com/stevenxie" },
-      ],
-    };
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 @import "@/styles/mixins.scss";
@@ -44,47 +24,6 @@ $secondary: white;
   bottom: 0;
 
   color: $primary;
-}
-
-div.links {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-
-  @include breakpoint(phablet) {
-    top: 25px;
-    right: 25px;
-  }
-
-  p {
-    margin: 0 5px;
-    padding: 4px 6px;
-    border-radius: 6px;
-
-    font-weight: 600;
-    background-color: rgb(187, 187, 187);
-    cursor: pointer;
-
-    transition: background 200ms ease-in-out;
-
-    &:hover {
-      background-color: rgb(155, 155, 155);
-    }
-
-    a {
-      text-decoration: none;
-      outline: none;
-      color: $secondary;
-    }
-  }
-
-  .desktop-only {
-    display: none;
-
-    @include breakpoint(tablet) {
-      display: block;
-    }
-  }
 }
 
 h1 {

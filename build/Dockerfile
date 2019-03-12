@@ -4,7 +4,7 @@
 FROM node:10-alpine AS builder
 
 ## Install build dependencies.
-RUN apk add make
+RUN apk --update add make
 
 ## Copy source, install dependencies.
 WORKDIR /build/

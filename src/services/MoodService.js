@@ -1,27 +1,28 @@
-import { last } from "lodash";
 import { APIClient } from "../utils/api";
 
-export default class MoodService {
-  /** @type {string} */
-  lastMoodId;
+const MAX_MOODS_LIMIT = 50;
 
+export default class MoodService {
   /**
    * @param {number} limit
    * @param {config} AxiosRequestConfig
    */
-  getMoods = async (limit = 10, config) => {
-    const { data } = await APIClient.get("/moods", {
-      params: { ...config, limit },
-    });
-    this.lastMoodId = last(data).id;
+  getMoods = async (limit = 10, offset = 0, config = {}) => {
+    const params = {
+      limit: limit > MAX_MOODS_LIMIT ? MAX_MOODS_LIMIT : limit,
+      offset,
+    };
+    const { data } = await APIClient.get("/moods", { ...config, params });
+
+    // Check if more pages of moods are required.
+    if (data.length < limit && data.length == MAX_MOODS_LIMIT) {
+      const nextLimit = limit - MAX_MOODS_LIMIT;
+      const nextOffset = offset + data.length;
+      const nextData = await this.getMoods(nextLimit, nextOffset, config);
+      return data.concat(nextData);
+    }
     return data;
   };
-
-  /**
-   * @param {number} limit
-   * @param {config} AxiosRequestConfig
-   * @returns {Promise}
-   */
-  getNextMoods = (limit = 10, config) =>
-    this.getMoods(limit, { ...config, startId: this.lastMoodId });
 }
+
+export const sharedMoodService = new MoodService();

@@ -1,5 +1,5 @@
 <template>
-  <div class="moods flex col">
+  <div class="latest-moods flex col">
     <h2>How's this heckin' boy doin' today?</h2>
     <div class="block">
       <h4 class="title">Last mood record:</h4>
@@ -18,14 +18,14 @@
 
 <script>
 import moment from "moment";
-import MoodService from "@/services/MoodService";
+import { sharedMoodService as moodService } from "@/services/MoodService";
 
 export default {
-  data: () => ({ service: new MoodService(), moods: [] }),
+  data: () => ({ moods: [] }),
   async created() {
     if (!process.browser) return;
     try {
-      this.moods = await this.service.getMoods(1);
+      this.moods = await moodService.getMoods(1);
     } catch (err) {
       alert(`Something went wrong: ${JSON.stringify(err)}`);
     }
@@ -53,7 +53,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/fonts.scss";
 
-.moods {
+.latest-moods {
   align-items: center;
 }
 

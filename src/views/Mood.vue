@@ -1,15 +1,17 @@
 <template>
   <div class="mood flex col">
-    <moods />
+    <latest-mood />
   </div>
 </template>
 
 <script>
-import Moods from "@/components/Moods.vue";
+import LatestMood from "@/components/LatestMood.vue";
 
 export default {
   head: { title: "Mood • Steven Xie" },
-  components: { Moods },
+  components: {
+    "latest-mood": LatestMood,
+  },
 };
 </script>
 

@@ -4,7 +4,8 @@ services:
   web:
     image: stevenxie/stevenxie.me:${VERSION}
     build:
-      context: .
+      context: ../
+      dockerfile: ./build/Dockerfile
       cache_from:
         - stevenxie/stevenxie.me:latest
         - node:10-alpine
@@ -22,7 +23,7 @@ services:
       - file,/var/lib/varnish/varnish_storage.bin,100M
     volumes:
       - type: bind
-        source: ./varnish.vcl
+        source: ../varnish.vcl
         target: /usr/local/etc/varnish/default.vcl
         read_only: true
       - type: tmpfs

@@ -5,6 +5,8 @@ ifneq ($(shell git describe --tags 2> /dev/null),)
 	VERSION = $(shell git describe --tags | cut -c 2-)
 endif
 
+## Project variables:
+DKDIR = ./build
 
 
 ## ----- TARGETS ------
@@ -82,13 +84,15 @@ ream-start: ## Start ream in production mode.
 .PHONY: dk-pull dk-push dk-build dk-build-push dk-clean dk-tags dk-up \
         dk-build-up dk-down dk-logs dk-test
 
+DKDIR ?= .
+
 __DK     = docker $(DKARGS)
-__DKFILE = docker-compose.yml
+__DKFILE = $(DKDIR)/docker-compose.yml
 ifeq ($(DKENV),test)
-	__DKFILE = docker-compose.test.yml
+	__DKFILE = $(DKDIR)/docker-compose.test.yml
 endif
 ifeq ($(DKENV),ci)
-	__DKFILE = docker-compose.build.yml
+	__DKFILE = $(DKDIR)/docker-compose.build.yml
 endif
 __DKCMP  = docker-compose -f "$(__DKFILE)"
 __DKCMP_VER = VERSION="$(VERSION)" $(__DKCMP)

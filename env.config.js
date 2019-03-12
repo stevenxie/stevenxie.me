@@ -1,4 +1,13 @@
-const setenv = (key, val) => (process.env[key] = val);
+/**
+ * Set an environment variable, if it was not already set.
+ *
+ * @param {String} key
+ * @param {String} val
+ */
+function setenv(key, val) {
+  const current = process.env[key];
+  if (!current) process.env[key] = val;
+}
 
 setenv("BASE_URL", "/");
 switch (process.env.NODE_ENV) {

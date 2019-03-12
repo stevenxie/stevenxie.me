@@ -4,7 +4,8 @@ services:
   web:
     image: stevenxie/stevenxie.me:${VERSION}
     build:
-      context: .
+      context: ..
+      dockerfile: ./build/Dockerfile
       cache_from:
         - stevenxie/stevenxie.me:latest
         - node:10-alpine
