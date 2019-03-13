@@ -8,21 +8,12 @@
 </template>
 
 <style lang="scss" scoped>
-@import "@/styles/mixins.scss";
-
 $primary: rgb(66, 66, 66);
 $secondary: white;
 
 .construction {
-  position: absolute;
   align-items: center;
   justify-content: center;
-
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
   color: $primary;
 }
 

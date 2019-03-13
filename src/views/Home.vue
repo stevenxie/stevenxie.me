@@ -24,9 +24,14 @@ export default {
 $primary: rgb(66, 66, 66);
 $secondary: white;
 
-.navbar {
-  align-self: flex-end;
+// prettier-ignore
+.home {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
 }
+
+// prettier-ignore
+.navbar { align-self: flex-end; }
 
 .intro {
   align-items: center;
@@ -38,5 +43,10 @@ $secondary: white;
     background-color: $primary;
     color: $secondary;
   }
+}
+
+.construction {
+  flex: 1;
+  margin-bottom: 65px;
 }
 </style>
