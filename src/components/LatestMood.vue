@@ -23,7 +23,7 @@ import { sharedMoodService as moodService } from "@/services/MoodService";
 export default {
   data: () => ({ moods: [] }),
   async created() {
-    if (!process.browser) return;
+    if (!process.browser) return; // only run in browser
     try {
       this.moods = await moodService.getMoods(1);
     } catch (err) {

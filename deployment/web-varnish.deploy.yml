@@ -20,7 +20,7 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 1
-      maxUnavailable: 1
+      maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
@@ -43,7 +43,6 @@ spec:
             - containerPort: 80
               name: varnish
               protocol: TCP
-          resources: {}
           volumeMounts:
             - mountPath: /usr/local/etc/varnish/
               name: config

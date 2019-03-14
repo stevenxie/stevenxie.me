@@ -24,8 +24,8 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: traefik
-              servicePort: 80
+              serviceName: web-varnish
+              servicePort: varnish
 
 
 ---
@@ -48,8 +48,8 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: traefik
-              servicePort: 80
+              serviceName: web-varnish
+              servicePort: varnish
 
 
 ---
@@ -72,5 +72,5 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: traefik
-              servicePort: 80
+              serviceName: web-varnish
+              servicePort: varnish
