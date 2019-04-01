@@ -7,7 +7,7 @@ ifneq ($(shell $(__GIT_DESC) 2> /dev/null),)
 endif
 
 ## Project variables:
-DKDIR        =  ./build
+DKDIR = ./build
 
 
 ## ----- TARGETS ------
@@ -51,13 +51,13 @@ help:
 __KB = kubectl
 
 ci-install:
-	@$(MAKE) DKENV=test dk-pull
+	@echo "No CI install process defined."
+	# @$(MAKE) DKENV=test dk-pull $(__ARGS)
 ci-test:
-	@$(MAKE) dk-test -- $(__ARGS) && \
-	 $(MAKE) DKENV=ci dk-up -- --no-start && \
-	 $(MAKE) DKENV=ci dk-tags
+	@$(MAKE) dk-pull && $(MAKE) dk-build
 ci-deploy:
 	@$(MAKE) dk-push DKENV=ci && \
+	 if [ -z "$(__ARGS)" ]; then exit 0; fi && \
 	 for deploy in $(__ARGS); do \
 	   $(__KB) patch deployment "$$deploy" \
 	     -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"$$(date +'%s')\"}}}}}"; \
@@ -103,9 +103,6 @@ DKDIR ?= .
 __DKFILE = $(DKDIR)/docker-compose.yml
 ifeq ($(DKENV),test)
 	__DKFILE = $(DKDIR)/docker-compose.test.yml
-endif
-ifeq ($(DKENV),ci)
-	__DKFILE = $(DKDIR)/docker-compose.build.yml
 endif
 
 __DK        = docker

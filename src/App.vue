@@ -21,13 +21,7 @@ export default {
         {
           rel: "preload",
           href:
-            "https://fonts.googleapis.com/css?family=Barlow:300,400,400i,500,600",
-          as: "style",
-          onload: "this.rel='stylesheet'",
-        },
-        {
-          rel: "preload",
-          href: "https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700",
+            "https://fonts.googleapis.com/css?family=Barlow:300,400,400i,500,600|Ubuntu+Mono:400,700",
           as: "style",
           onload: "this.rel='stylesheet'",
         },

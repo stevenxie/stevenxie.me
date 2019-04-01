@@ -1,0 +1,15 @@
+apiVersion: v1
+version: 0.1.0
+
+name: web
+appVersion: "0.1.0"
+description: A personal website.
+
+home: https://github.com/stevenxie/stevenxie.me
+sources:
+  - https://github.com/stevenxie/stevenxie.me
+
+maintainers:
+  - name: Steven Xie
+    email: dev@stevenxie.me
+

@@ -9,31 +9,8 @@ services:
       cache_from:
         - stevenxie/stevenxie.me:latest
         - node:10-alpine
+      args:
+        BUILD_VERSION: $VERSION
     container_name: web
     ports:
       - "8080:80"
-
-  varnish:
-    image: "cooptilleuls/varnish:6.0.0-alpine"
-    command:
-      - varnishd
-      - -Ff
-      - /usr/local/etc/varnish/default.vcl
-      - -s
-      - file,/var/lib/varnish/varnish_storage.bin,100M
-    volumes:
-      - type: bind
-        source: ../varnish.vcl
-        target: /usr/local/etc/varnish/default.vcl
-        read_only: true
-      - type: tmpfs
-        target: /var/lib/varnish/varnish_storage.bin
-        tmpfs:
-          size: 105000000
-    networks:
-      - public
-    ports:
-      - "8080:80"
-
-networks:
-  public:
