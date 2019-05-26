@@ -1,12 +1,15 @@
 const PrerenderSPAPlugin = require("prerender-spa-plugin");
+const cheerio = require("cheerio");
+const path = require("path");
+
 const { PuppeteerRenderer } = PrerenderSPAPlugin;
-const { join } = require("path");
 
 // Select routes to prerender.
 const prerenderRoutes = ["/", "/about"];
 
 // Configure constants and envvars.
-const distDir = join(__dirname, "dist");
+const distDir = path.join(__dirname, "dist");
+const { SHOW_PRERENDERING } = process.env;
 
 // Configure webpack.
 const configureWebpack = config => {
@@ -19,13 +22,32 @@ const configureWebpack = config => {
       routes: prerenderRoutes,
       renderer: new PuppeteerRenderer({
         renderAfterDocumentEvent: "render-event",
+        headless: !SHOW_PRERENDERING,
+
+        // Inject window properties during prerendering.
+        injectProperty: "__PRERENDER_INJECTED",
+        inject: { prerender: true },
       }),
-      // If a route doesn't end with '/', write it to [route].html
-      postProcess(renderedRoute) {
-        const { route } = renderedRoute;
+      minify: {
+        collapseBooleanAttributes: true,
+        collapseWhitespace: true,
+        decodeEntities: true,
+        keepClosingSlash: true,
+      },
+      postProcess(context) {
+        // If a route doesn't end with '/', write it to '[route].html'.
+        const { route, html } = context;
         if (/^[^\\.]+[^\\/]$/.test(route))
-          renderedRoute.outputPath = join(distDir, `${route}.html`);
-        return renderedRoute;
+          context.outputPath = path.join(distDir, `${route}.html`);
+
+        // Modify HTML to inject '__PRERENDERED' global variable.
+        const $ = cheerio.load(html);
+        $("head").prepend(
+          '<script type="text/javascript">var __PRERENDERED=true;</script>'
+        );
+        context.html = $.html();
+
+        return context;
       },
     })
   );
