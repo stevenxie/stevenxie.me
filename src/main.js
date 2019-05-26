@@ -8,5 +8,9 @@ Vue.config.productionTip = false;
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  mounted() {
+    // Notify prerenderer that Vue has finished rendering.
+    document.dispatchEvent(new Event("render-event"));
+  },
 }).$mount("#app");

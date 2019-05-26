@@ -1,0 +1,11 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: install
+    image: node:12-alpine
+    commands: ["yarn install"]
+
+  - name: lint
+    image: node:12-alpine
+    commands: ["yarn lint --no-fix --max-warnings 0"]
