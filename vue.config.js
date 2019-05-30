@@ -41,6 +41,9 @@ const configureWebpack = config => {
           context.outputPath = path.join(distDir, `${route}.html`);
 
         // Modify HTML to inject '__PRERENDERED' global variable.
+        //
+        // This will be used to detect whether or not the page has been
+        // prerendered, in order to trigger Vue app hydration, etc.
         const $ = cheerio.load(html);
         $("head").prepend(
           '<script type="text/javascript">var __PRERENDERED=true;</script>'
