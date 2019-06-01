@@ -9,3 +9,5 @@ steps:
   - name: lint
     image: node:12-alpine
     commands: ["yarn lint --no-fix --max-warnings 0"]
+    environment:
+      NODE_ENV: production

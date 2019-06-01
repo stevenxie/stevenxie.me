@@ -5,8 +5,10 @@
 </template>
 
 <style lang="scss">
+@import "@/styles/tooltip.scss"; // tooltip styling
+
 @import url("https://rsms.me/inter/inter.css");
-@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:500,700&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700&display=swap");
 
 body {
   margin: 0;
@@ -23,4 +25,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   display: flex;
   flex-direction: column;
 }
+
+// prettier-ignore
+.mono { font-family: "Roboto Mono", "Courier New", Courier, monospace; }
 </style>
