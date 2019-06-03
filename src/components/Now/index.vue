@@ -5,7 +5,6 @@
       :per-page="1"
       :pagination-padding="4"
       :pagination-size="15"
-      pagination-color="#ced9e0"
       pagination-active-color="white"
     >
       <slide>
@@ -99,8 +98,17 @@ export default {
   box-shadow: inset 0 1px 3px 0 rgba(black, 0.5);
 
   button {
+    $color: #ced9e0;
+
     margin: 0 !important;
     outline: none;
+    transition: background 200ms ease-in-out;
+
+    // prettier-ignore
+    &:not(.VueCarousel-dot--active) {
+      background-color: $color !important;
+      &:hover { background-color: lighten($color, 5%) !important; }
+    }
   }
 }
 </style>
