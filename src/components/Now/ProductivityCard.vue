@@ -84,7 +84,7 @@ export default {
 
       // Calculation derived from:
       // https://help.rescuetime.com/article/73-how-is-my-productivity-pulse-calculated
-      const { d, n, p, vp } = segs;
+      const { d = 0, n = 0, p = 0, vp = 0 } = segs;
       const total = this.segments.reduce(
         (sum, { duration }) => sum + duration,
         0
