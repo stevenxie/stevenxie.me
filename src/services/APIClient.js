@@ -18,4 +18,22 @@ export default class APIClient {
   getAbout() {
     return this.client.get("/about");
   }
+
+  /** @returns {Promise<AxiosResponse<any>>} */
+  getNowPlaying() {
+    return this.client.get("/nowplaying");
+  }
+
+  /** @returns {Promise<AxiosResponse<any>>} */
+  getProductivity() {
+    return this.client.get("/productivity");
+  }
+
+  /**
+   * @param {number} limit
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getCommits(limit) {
+    return this.client.get("/commits", { params: { limit } });
+  }
 }

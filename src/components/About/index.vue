@@ -1,7 +1,7 @@
 <template>
   <div class="about mono">
     <pre>{{ about || "Loading..." }}</pre>
-    <api-status :active="!!about" />
+    <api-status :active="alive" />
   </div>
 </template>
 
@@ -9,11 +9,15 @@
 import APIStatus from "./APIStatus";
 
 export default {
-  data: () => ({ about: null }),
+  data: () => ({
+    about: null,
+    alive: false,
+  }),
   async created() {
     try {
       const { data } = await this.$apic.getAbout();
       this.about = JSON.stringify(data, undefined, 2);
+      this.alive = true;
     } catch (err) {
       console.error(err);
       this.about = err;
