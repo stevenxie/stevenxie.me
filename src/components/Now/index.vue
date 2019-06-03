@@ -7,6 +7,7 @@
       :pagination-size="15"
       pagination-color="#ced9e0"
       pagination-active-color="white"
+      ref="carousel"
     >
       <slide>
         <div class="container"><music-card v-bind="nowplaying" /></div>
@@ -22,6 +23,7 @@
 </template>
 
 <script>
+import Hammer from "hammerjs";
 import { Carousel, Slide } from "vue-carousel";
 import { clearInterval } from "timers";
 
@@ -51,6 +53,21 @@ export default {
       console.log(err);
     }
   },
+  mounted() {
+    let hswiping = false;
+    this.hammer = new Hammer(document);
+    this.hammer.on("swipeleft swiperight panleft panright", () => {
+      hswiping = true;
+    });
+    this.hammer.on("swipeup swipedown panup pandown", () => {
+      hswiping = false;
+    });
+
+    this.carouselSwipeListener = this.$refs.carousel.$el.addEventListener(
+      "touchmove",
+      e => hswiping && e.cancellable && e.preventDefault()
+    );
+  },
   methods: {
     async updateNowPlaying() {
       try {
@@ -63,6 +80,7 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.fetchloop);
+    this.$refs.carousel.$el.removeEventListener(this.carouselSwipeListener);
   },
   components: {
     "music-card": MusicCard,
