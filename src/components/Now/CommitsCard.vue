@@ -67,8 +67,10 @@ export default {
      * @returns {string}
      */
     parseAndFormat(datestr) {
-      const words = distanceInWordsToNow(parse(datestr), { addSuffix: true });
-      return words.replace("about", "~");
+      const words = distanceInWordsToNow(parse(datestr), {
+        addSuffix: true,
+      });
+      return words.replace("about", "~").replace("less than", "<");
     },
   },
   components: { card: Card, "content-loader": ContentLoader },
@@ -77,9 +79,9 @@ export default {
 
 <style lang="scss" scoped>
 .commit-card {
-  margin: 2px 2px 9px 2px;
+  margin: 2px 2px 8px 2px;
   border-radius: 4px;
-  padding: 10px 12px 14px 12px;
+  padding: 8px 12px 16px 12px;
   position: relative;
 
   color: white;
@@ -111,7 +113,6 @@ export default {
   }
 
   .label {
-    margin-top: 1px;
     font-size: 11pt;
     color: rgba(white, 0.85);
 

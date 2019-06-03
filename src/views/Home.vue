@@ -28,10 +28,6 @@ export default {
   box-shadow: 0 2px 4px 0 rgba(black, 0.5);
 }
 
-.about {
-  /* z-index: -1; */
-}
-
 .now {
   position: relative;
   box-shadow: 0 0 4px 4px rgba(black, 0.5);
