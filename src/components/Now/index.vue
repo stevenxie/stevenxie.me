@@ -21,12 +21,21 @@
 </template>
 
 <script>
-import { Carousel, Slide } from "vue-carousel";
 import { isPrerendering } from "@/utils";
 
 import MusicCard from "./MusicCard";
 import CommitsCard from "./CommitsCard";
 import ProductivityCard from "./ProductivityCard";
+
+// Async imports.
+const Carousel = () =>
+  import(/* webpackChunkName: "vue-carousel" */ "vue-carousel").then(
+    ({ Carousel }) => Carousel
+  );
+const Slide = () =>
+  import(/* webpackChunkName: "vue-carousel" */ "vue-carousel").then(
+    ({ Slide }) => Slide
+  );
 
 export default {
   data: () => ({

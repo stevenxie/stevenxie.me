@@ -1,4 +1,6 @@
 const PrerenderSPAPlugin = require("prerender-spa-plugin");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+
 const cheerio = require("cheerio");
 const path = require("path");
 
@@ -54,6 +56,9 @@ const configureWebpack = config => {
       },
     })
   );
+
+  // Configure bundle analysis.
+  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: "static" }));
 };
 
 module.exports = { configureWebpack };
