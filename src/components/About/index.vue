@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import pick from "lodash/pick";
+
 import APIStatus from "./APIStatus";
 import { isPrerendering } from "@/utils";
 
@@ -18,7 +20,15 @@ export default {
     if (isPrerendering()) return;
     try {
       const { data } = await this.$apic.getAbout();
-      this.about = JSON.stringify(data, undefined, 2);
+      const about = pick(data, [
+        "name",
+        "type",
+        "age",
+        "iq",
+        "skills",
+        "whereabouts",
+      ]);
+      this.about = JSON.stringify(about, undefined, 2);
       this.alive = true;
     } catch (err) {
       console.error(err);

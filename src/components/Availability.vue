@@ -172,14 +172,20 @@ $bradius: 8px;
 }
 
 .timeline {
+  $min-width: 750px;
+
   margin: 45px 50px 110px 50px;
-  min-width: 750px;
+  min-width: $min-width;
   height: 60px;
   border-radius: $bradius;
   position: relative;
 
   background-image: linear-gradient(135deg, #4e8cf1 0%, #29d39b 100%);
   box-shadow: 0 5px 20px 0 rgba(black, 0.5);
+
+  @media (min-width: $min-width) {
+    left: 0 !important;
+  }
 }
 
 .segments {
