@@ -51,10 +51,10 @@ export default {
     if (isPrerendering()) return;
     this.fetchloop = window.setInterval(this.updateNowPlaying, 1000);
     try {
-      const { data: segments } = await this.$apic.getProductivity();
+      const { data: segments } = await this.$api.getProductivity();
       this.segments = segments;
 
-      const { data: commits } = await this.$apic.getCommits(3);
+      const { data: commits } = await this.$api.getCommits(3);
       this.commits = commits;
     } catch (err) {
       console.error(err);
@@ -63,7 +63,7 @@ export default {
   methods: {
     async updateNowPlaying() {
       try {
-        const { data } = await this.$apic.getNowPlaying();
+        const { data } = await this.$api.getNowPlaying();
         this.nowplaying = data;
       } catch (err) {
         console.error(err);

@@ -19,7 +19,7 @@ export default {
   async created() {
     if (isPrerendering()) return;
     try {
-      const { data } = await this.$apic.getAbout();
+      const { data } = await this.$api.getAbout();
       const about = pick(data, [
         "name",
         "type",

@@ -59,7 +59,7 @@ export default {
   async created() {
     if (isPrerendering()) return;
     try {
-      const { data } = await this.$apic.getAvailability();
+      const { data } = await this.$api.getAvailability();
       const { busy } = data;
       yup
         .array()

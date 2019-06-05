@@ -3,9 +3,11 @@
     <img class="avatar" src="@/assets/ori.svg" />
     <h2 class="chat">Wanna chat?</h2>
     <p class="message">Shoot me a message at</p>
-    <div class="email mono flex">
-      <a class="mailtoui" :href="mailtoURL">{{ email }}</a>
-    </div>
+    <a class="mailtoui" :href="mailtoURL">
+      <div class="email mono flex">
+        {{ email }}
+      </div>
+    </a>
   </div>
 </template>
 
@@ -15,7 +17,7 @@ export default {
   data: () => ({ email: "hello@stevenxie.me" }),
   computed: {
     mailtoURL() {
-      return "mailto:" + this.email;
+      return `mailto:${this.email}?subject=Hello!`;
     },
   },
 };

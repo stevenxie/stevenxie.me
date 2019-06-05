@@ -4,12 +4,12 @@ import * as yup from "yup";
 import { create, AxiosInstance, AxiosResponse } from "axios";
 import { format } from "date-fns";
 
-export default class APIClient {
+export default class APIService {
   /** @type AxiosInstance */
   client;
 
   /**
-   * Constructs an APIClient.
+   * Constructs an APIService.
    *
    * @param {string} baseURL
    */
@@ -50,7 +50,7 @@ export default class APIClient {
       if (yup.date().isValidSync(date))
         params = { date: format(date, "YYYY-MM-DD") };
       else if (yup.string().isValidSync(date)) params = { date };
-      else throw new Error("APIClient: invalid Date argument type");
+      else throw new Error("APIService: invalid Date argument type");
     }
     return this.client.get("/availability", { params });
   }
