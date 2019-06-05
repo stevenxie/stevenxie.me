@@ -3,20 +3,26 @@
     <hero />
     <about />
     <now />
+    <availability />
+    <contact email="hello@stevenxie.me" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import Now from "@/components/Now";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import Now from "@/components/Now";
+import Contact from "@/components/Contact";
+import Availability from "@/components/Availability";
 
 export default {
   components: {
+    now: Now,
     hero: Hero,
     about: About,
-    now: Now,
+    contact: Contact,
+    availability: Availability,
   },
 };
 </script>

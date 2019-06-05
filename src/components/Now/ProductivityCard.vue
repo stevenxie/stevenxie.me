@@ -92,9 +92,9 @@ export default {
       return Math.round(((d + n * 2 + p * 3 + vp * 4) / (total * 4)) * 100);
     },
     chartData() {
-      if (isEmpty(this.segments)) return {};
-      const mapColors = ({ id }) => this.colormap[id.toString()];
+      if (isEmpty(this.segments)) return { datasets: [] };
       const labels = this.segments.map(({ name }) => name);
+      const mapColors = ({ id }) => this.colormap[id.toString()];
       const dataset = {
         data: this.segments.map(({ duration }) => duration),
         backgroundColor: this.segments.map(mapColors),

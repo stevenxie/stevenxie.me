@@ -1,0 +1,9 @@
+<svg width="2000px" height="2000px" viewBox="0 0 2000 2000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g id="Cobalt" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="icon" transform="translate(349.735421, 250.016500)">
+      <rect id="back" fill="#28499B" transform="translate(650.264579, 749.983500) scale(-1, 1) rotate(30.000000) translate(-650.264579, -749.983500) " x="275.264579" y="100.4835" width="750" height="1299"></rect>
+      <path d="M650.272752,0.0254404735 L650.272752,0.010218897 L650.255053,0.0408731601 L650.255052,-4.54747351e-13 L650.272752,0.0254404735 Z M650.291804,1499.93635 L650.291805,1499.97722 L650.274105,1499.95178 L650.274105,1499.967 L650.291804,1499.93635 Z" id="shadow" fill-opacity="0.3" fill="#000000" transform="translate(650.273429, 749.988609) scale(-1, 1) translate(-650.273429, -749.988609) "></path>
+      <rect id="front" fill="#4F82FF" transform="translate(650.264579, 749.983500) rotate(30.000000) translate(-650.264579, -749.983500) " x="275.264579" y="100.4835" width="750" height="1299"></rect>
+    </g>
+  </g>
+</svg>

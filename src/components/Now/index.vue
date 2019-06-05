@@ -22,7 +22,6 @@
 
 <script>
 import { Carousel, Slide } from "vue-carousel";
-import { clearInterval } from "timers";
 
 import MusicCard from "./MusicCard";
 import CommitsCard from "./CommitsCard";
@@ -39,7 +38,7 @@ export default {
     },
   }),
   async created() {
-    this.fetchloop = setInterval(this.updateNowPlaying, 1000);
+    this.fetchloop = window.setInterval(this.updateNowPlaying, 1000);
     try {
       const { data: segments } = await this.$apic.getProductivity();
       this.segments = segments;
@@ -47,7 +46,7 @@ export default {
       const { data: commits } = await this.$apic.getCommits(3);
       this.commits = commits;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   },
   methods: {
@@ -61,7 +60,7 @@ export default {
     },
   },
   beforeDestroy() {
-    clearInterval(this.fetchloop);
+    window.clearInterval(this.fetchloop);
   },
   components: {
     "music-card": MusicCard,

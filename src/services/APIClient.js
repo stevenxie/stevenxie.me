@@ -1,5 +1,8 @@
+import * as yup from "yup";
+
 // eslint-disable-next-line no-unused-vars
 import { create, AxiosInstance, AxiosResponse } from "axios";
+import { format } from "date-fns";
 
 export default class APIClient {
   /** @type AxiosInstance */
@@ -35,5 +38,20 @@ export default class APIClient {
    */
   getCommits(limit) {
     return this.client.get("/commits", { params: { limit } });
+  }
+
+  /**
+   * @param {string | Date} date
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getAvailability(date) {
+    let params = {};
+    if (date) {
+      if (yup.date().isValidSync(date))
+        params = { date: format(date, "YYYY-MM-DD") };
+      else if (yup.string().isValidSync(date)) params = { date };
+      else throw new Error("APIClient: invalid Date argument type");
+    }
+    return this.client.get("/availability", { params });
   }
 }
