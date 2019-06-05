@@ -1,10 +1,7 @@
 const PrerenderSPAPlugin = require("prerender-spa-plugin");
-const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-
-const cheerio = require("cheerio");
-const path = require("path");
-
 const { PuppeteerRenderer } = PrerenderSPAPlugin;
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const path = require("path");
 
 // Select routes to prerender.
 const prerenderRoutes = ["/"];
@@ -39,20 +36,9 @@ const configureWebpack = config => {
       },
       postProcess(context) {
         // If a route doesn't end with '/', write it to '[route].html'.
-        const { route, html } = context;
+        const { route } = context;
         if (/^[^\\.]+[^\\/]$/.test(route))
           context.outputPath = path.join(distDir, `${route}.html`);
-
-        // Modify HTML to inject '__PRERENDERED' global variable.
-        //
-        // This will be used to detect whether or not the page has been
-        // prerendered, in order to trigger Vue app hydration, etc.
-        const $ = cheerio.load(html);
-        $("head").prepend(
-          '<script type="text/javascript">var __PRERENDERED=true;</script>'
-        );
-        context.html = $.html();
-
         return context;
       },
     })

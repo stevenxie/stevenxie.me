@@ -6,6 +6,8 @@ import APIClient from "./services/APIClient";
 import router from "./router";
 import store from "./store";
 
+import { isPrerendering, injectPrerenderedTag } from "./utils";
+
 // Install addons.
 Vue.use(VTooltip);
 
@@ -15,8 +17,9 @@ Vue.config.productionTip = false;
 const { VUE_APP_API_BASE_URL: apiBaseURL } = process.env;
 Vue.prototype.$apic = new APIClient(apiBaseURL);
 
-// Default prerender injection to empty object.
-if (!window.__PRERENDER_INJECTED) window.__PRERENDER_INJECTED = {};
+// If prerendering, inject prerendered tag so that future loads will know that
+// the page has been prerendered.
+if (isPrerendering()) injectPrerenderedTag();
 
 new Vue({
   router,
