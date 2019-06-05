@@ -7,10 +7,10 @@
 
 <style lang="scss" scoped>
 .hero {
-  height: 260px;
-  justify-content: center;
+  height: 290px;
+  justify-content: flex-end;
 
-  padding: 34px;
+  padding: 34px 34px 46px 34px;
   box-sizing: border-box;
 
   color: white;

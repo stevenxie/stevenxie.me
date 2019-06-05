@@ -173,8 +173,9 @@ $bradius: 8px;
 
 .timeline {
   $min-width: 750px;
+  $x-margin: 50px;
 
-  margin: 45px 50px 110px 50px;
+  margin: 45px $x-margin 110px $x-margin;
   min-width: $min-width;
   height: 60px;
   border-radius: $bradius;
@@ -183,7 +184,7 @@ $bradius: 8px;
   background-image: linear-gradient(135deg, #4e8cf1 0%, #29d39b 100%);
   box-shadow: 0 5px 20px 0 rgba(black, 0.5);
 
-  @media (min-width: $min-width) {
+  @media (min-width: $min-width + (2 * $x-margin)) {
     left: 0 !important;
   }
 }
