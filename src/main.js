@@ -26,4 +26,4 @@ new Vue({
     // Notify prerenderer that Vue has finished rendering.
     document.dispatchEvent(new Event("render-event"));
   },
-}).$mount("#app", window.__PRERENDERED);
+}).$mount("#app");
