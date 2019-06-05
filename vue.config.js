@@ -1,4 +1,6 @@
 const PrerenderSPAPlugin = require("prerender-spa-plugin");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+
 const cheerio = require("cheerio");
 const path = require("path");
 
@@ -33,6 +35,7 @@ const configureWebpack = config => {
         collapseWhitespace: true,
         decodeEntities: true,
         keepClosingSlash: true,
+        minifyCSS: true,
       },
       postProcess(context) {
         // If a route doesn't end with '/', write it to '[route].html'.
@@ -52,6 +55,14 @@ const configureWebpack = config => {
 
         return context;
       },
+    })
+  );
+
+  // Configure bundle analysis.
+  config.plugins.push(
+    new BundleAnalyzerPlugin({
+      analyzerMode: "static",
+      reportFilename: "webpack-bundle-analyzer-report.html",
     })
   );
 };

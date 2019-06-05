@@ -36,9 +36,11 @@
 
 <script>
 import * as yup from "yup";
+import isEmpty from "lodash/isEmpty";
+import take from "lodash/take";
+
 import { ContentLoader } from "vue-content-loader";
 import { distanceInWordsToNow, parse } from "date-fns";
-import { isEmpty, take } from "lodash";
 
 import Card from "./Card";
 import { commit } from "@/schemas/git";

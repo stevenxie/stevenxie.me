@@ -4,13 +4,13 @@
       <div class="segments">
         <div
           class="busy"
-          v-for="(busy, i) in busyPeriods"
-          :key="ohash(busy)"
+          v-for="({ start, end }, i) in busyPeriods"
+          :key="start + end"
           :style="busyRelativeStyles[i]"
         >
           <div class="container mono">
-            <p class="start">{{ formatTime(busy.start) }}</p>
-            <p class="end">{{ formatTime(busy.end) }}</p>
+            <p class="start">{{ formatTime(start) }}</p>
+            <p class="end">{{ formatTime(end) }}</p>
           </div>
         </div>
       </div>
@@ -37,7 +37,6 @@
 
 <script>
 import * as yup from "yup";
-import ohash from "object-hash";
 import { format, getHours, getMinutes } from "date-fns";
 
 import { period } from "@/schemas/availability";
@@ -115,8 +114,6 @@ export default {
     },
   },
   methods: {
-    ohash,
-
     /**
      * @param {string} military The time, in military (24h) format.
      * @returns {string} The time, in 12h format.
