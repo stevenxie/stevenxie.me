@@ -22,6 +22,7 @@
 
 <script>
 import { Carousel, Slide } from "vue-carousel";
+import { isPrerendering } from "@/utils";
 
 import MusicCard from "./MusicCard";
 import CommitsCard from "./CommitsCard";
@@ -38,6 +39,7 @@ export default {
     },
   }),
   async created() {
+    if (isPrerendering()) return;
     this.fetchloop = window.setInterval(this.updateNowPlaying, 1000);
     try {
       const { data: segments } = await this.$apic.getProductivity();

@@ -5,7 +5,7 @@ const path = require("path");
 const { PuppeteerRenderer } = PrerenderSPAPlugin;
 
 // Select routes to prerender.
-const prerenderRoutes = ["/", "/about"];
+const prerenderRoutes = ["/"];
 
 // Configure constants and envvars.
 const distDir = path.join(__dirname, "dist");
@@ -26,7 +26,7 @@ const configureWebpack = config => {
 
         // Inject window properties during prerendering.
         injectProperty: "__PRERENDER_INJECTED",
-        inject: { prerender: true },
+        inject: {},
       }),
       minify: {
         collapseBooleanAttributes: true,

@@ -11,7 +11,8 @@
 
 <script>
 export default {
-  props: { email: String },
+  // TODO: Receive programatically using API + Vuex.
+  data: () => ({ email: "hello@stevenxie.me" }),
   computed: {
     mailtoURL() {
       return "mailto:" + this.email;

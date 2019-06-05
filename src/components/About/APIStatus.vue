@@ -39,9 +39,9 @@ export default {
   height: 12px;
   margin-left: 0.5em;
   border-radius: 50%;
-  background-color: #cd4663;
+  background: #cd4663;
 
   // prettier-ignore
-  &.active { background-color: #24c96c; }
+  &.active { background: #24c96c; }
 }
 </style>

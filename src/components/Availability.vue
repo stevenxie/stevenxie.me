@@ -39,7 +39,9 @@
 import * as yup from "yup";
 import ohash from "object-hash";
 import { format, getHours, getMinutes } from "date-fns";
+
 import { period } from "@/schemas/availability";
+import { isPrerendering } from "@/utils";
 
 /**
  * @param {number} hours
@@ -56,6 +58,7 @@ export default {
     offset: 0,
   }),
   async created() {
+    if (isPrerendering()) return;
     try {
       const { data } = await this.$apic.getAvailability();
       const { busy } = data;

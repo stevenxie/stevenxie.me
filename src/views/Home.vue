@@ -4,7 +4,7 @@
     <about />
     <now />
     <availability />
-    <contact email="hello@stevenxie.me" />
+    <contact />
   </div>
 </template>
 

@@ -7,6 +7,7 @@
 
 <script>
 import APIStatus from "./APIStatus";
+import { isPrerendering } from "@/utils";
 
 export default {
   data: () => ({
@@ -14,6 +15,7 @@ export default {
     alive: false,
   }),
   async created() {
+    if (isPrerendering()) return;
     try {
       const { data } = await this.$apic.getAbout();
       this.about = JSON.stringify(data, undefined, 2);
