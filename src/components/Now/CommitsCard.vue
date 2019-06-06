@@ -47,7 +47,7 @@ import { FETCH_COMMITS } from "@/store/actions";
 import Card from "./Card";
 
 export default {
-  created() {
+  mounted() {
     if (isPrerendering()) return; // do not fetch during prerender
     this.$store.dispatch(FETCH_COMMITS);
   },

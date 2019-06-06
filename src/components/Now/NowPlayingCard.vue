@@ -41,7 +41,7 @@ import {
 import Card from "./Card";
 
 export default {
-  created() {
+  mounted() {
     if (isPrerendering()) return; // do not fetch during prerender
     this.fetchInterval = window.setInterval(
       () => this.$store.dispatch(FETCH_NOW_PLAYING),
@@ -69,7 +69,6 @@ export default {
         titleURL: url,
         label: artist.name,
         labelURL: artist.url,
-        error: this.error && "Failed to load currently playing track.",
       };
     },
 
