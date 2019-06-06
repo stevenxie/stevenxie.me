@@ -64,11 +64,11 @@ export default {
     time: new Date(),
     offset: 0,
   }),
-  created() {
-    if (isPrerendering()) return; // do not fetch during prerender
-    this.$store.dispatch(FETCH_AVAILABILITY);
-  },
   mounted() {
+    // Fetch availability from API.
+    if (!isPrerendering()) this.$store.dispatch(FETCH_AVAILABILITY);
+
+    // Init timeline offset interval.
     this.updateTimelineOffset();
     const updateTime = () => (this.time = new Date());
     this.timeUpdateInterval = window.setInterval(updateTime, 1000);

@@ -18,7 +18,7 @@ import APIStatus from "./APIStatus";
 import LoadingIcon from "@/components/icons/LoadingIcon";
 
 export default {
-  created() {
+  mounted() {
     if (isPrerendering()) return; // do not fetch during prerender
     this.$store.dispatch(FETCH_ABOUT);
   },

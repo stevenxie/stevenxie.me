@@ -42,7 +42,7 @@ export default {
       "-2": "#e84366",
     },
   }),
-  created() {
+  mounted() {
     if (isPrerendering()) return;
     this.$store.dispatch(FETCH_PRODUCTIVITY);
   },
