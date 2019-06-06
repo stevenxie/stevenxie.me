@@ -1,7 +1,12 @@
 <template>
   <div class="card flex">
     <div class="viewport">
-      <div class="content flex"><slot /></div>
+      <div class="content overlay flex">
+        <slot />
+      </div>
+      <div class="error overlay flex" v-if="error">
+        <alert-icon :width="30" :height="30" v-tooltip="error" />
+      </div>
     </div>
     <div class="headers flex">
       <h4 class="title">
@@ -21,13 +26,17 @@
 </template>
 
 <script>
+import AlertIcon from "@/components/icons/AlertIcon";
+
 export default {
   props: {
     title: String,
     titleURL: String,
     label: String,
     labelURL: String,
+    error: String,
   },
+  components: { "alert-icon": AlertIcon },
 };
 </script>
 
@@ -52,9 +61,15 @@ export default {
 }
 
 // prettier-ignore
-.content {
+.overlay {
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
+}
+
+.error {
+  align-items: center;
+  justify-content: center;
+  background: rgba(white, 0.9);
 }
 
 .headers {

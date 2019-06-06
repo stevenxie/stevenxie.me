@@ -8,22 +8,20 @@
       pagination-active-color="white"
     >
       <slide>
-        <div class="container"><music-card v-bind="nowplaying" /></div>
+        <div class="container"><now-playing-card /></div>
       </slide>
       <slide>
-        <div class="container"><productivity-card :segments="segments" /></div>
+        <div class="container"><productivity-card /></div>
       </slide>
       <slide>
-        <div class="container"><commits-card :commits="commits" /></div>
+        <div class="container"><commits-card /></div>
       </slide>
     </carousel>
   </div>
 </template>
 
 <script>
-import { isPrerendering } from "@/utils";
-
-import MusicCard from "./MusicCard";
+import NowPlayingCard from "./NowPlayingCard";
 import CommitsCard from "./CommitsCard";
 import ProductivityCard from "./ProductivityCard";
 
@@ -39,7 +37,6 @@ const Slide = () =>
 
 export default {
   data: () => ({
-    nowplaying: {},
     segments: null,
     commits: null,
     slickOptions: {
@@ -47,35 +44,9 @@ export default {
       adaptiveHeight: true,
     },
   }),
-  async created() {
-    if (isPrerendering()) return;
-    this.fetchloop = window.setInterval(this.updateNowPlaying, 1000);
-    try {
-      const { data: segments } = await this.$api.getProductivity();
-      this.segments = segments;
-
-      const { data: commits } = await this.$api.getCommits(3);
-      this.commits = commits;
-    } catch (err) {
-      console.error(err);
-    }
-  },
-  methods: {
-    async updateNowPlaying() {
-      try {
-        const { data } = await this.$api.getNowPlaying();
-        this.nowplaying = data;
-      } catch (err) {
-        console.error(err);
-      }
-    },
-  },
-  beforeDestroy() {
-    window.clearInterval(this.fetchloop);
-  },
   components: {
-    "music-card": MusicCard,
     "commits-card": CommitsCard,
+    "now-playing-card": NowPlayingCard,
     "productivity-card": ProductivityCard,
     carousel: Carousel,
     slide: Slide,

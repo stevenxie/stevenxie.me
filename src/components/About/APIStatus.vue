@@ -7,9 +7,7 @@
 
 <script>
 export default {
-  props: {
-    active: { type: Boolean, default: false },
-  },
+  props: { active: { type: Boolean, default: false } },
   computed: {
     tooltip() {
       return `API is currently ${this.active ? "online" : "offline"}.`;

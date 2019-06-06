@@ -1,5 +1,5 @@
 <template>
-  <card class="music flex" v-bind="headers">
+  <card class="now-playing flex" v-bind="headers">
     <div
       class="artwork fullsize"
       :style="{ backgroundImage: `url(${artURL})` }"
@@ -27,25 +27,38 @@
 </template>
 
 <script>
-import Card from "./Card";
-import { track, progress } from "@/schemas/music";
 import blankrecord from "@/assets/blankrecord.png";
+import { isPrerendering } from "@/utils";
+
+import { mapState, mapGetters } from "vuex";
+import { FETCH_NOW_PLAYING } from "@/store/actions";
+import {
+  NOW_PLAYING,
+  NOW_PLAYING_TRACK,
+  NOW_PLAYING_PROGRESS,
+} from "@/store/getters";
+
+import Card from "./Card";
 
 export default {
-  props: {
-    track: {
-      type: Object,
-      default: null,
-      validator: val => track.nullable().isValidSync(val, { strict: true }),
-    },
-    playing: { type: Boolean, default: false },
-    progress: {
-      type: Number,
-      default: 0,
-      validator: val => progress.isValidSync(val, { strict: true }),
-    },
+  created() {
+    if (isPrerendering()) return; // do not fetch during prerender
+    this.fetchInterval = window.setInterval(
+      () => this.$store.dispatch(FETCH_NOW_PLAYING),
+      1000
+    );
+  },
+  beforeDestroy() {
+    window.clearInterval(this.fetchInterval);
   },
   computed: {
+    ...mapState({ error: "nowPlayingError" }),
+    ...mapGetters({
+      track: NOW_PLAYING_TRACK,
+      playing: NOW_PLAYING,
+      progress: NOW_PLAYING_PROGRESS,
+    }),
+
     /** @returns {{ title: string, label: string }} */
     headers() {
       if (!this.track) return { title: "Silence", label: "Now Playing" };
@@ -56,6 +69,7 @@ export default {
         titleURL: url,
         label: artist.name,
         labelURL: artist.url,
+        error: this.error && "Failed to load currently playing track.",
       };
     },
 

@@ -5,6 +5,7 @@
     titleURL="https://github.com/stevenxie"
     label="GitHub"
     labelURL="https://github.com"
+    :error="errorMessage"
   >
     <div class="container">
       <div
@@ -20,7 +21,7 @@
         </p>
         <h5 class="timestamp">{{ parseAndFormat(timestamp) }}</h5>
       </div>
-      <span class="skeletons" v-if="isEmpty(commits)">
+      <span class="skeletons" v-if="loading">
         <content-loader
           class="skeleton"
           primary-color="#edeaea"
@@ -35,35 +36,35 @@
 </template>
 
 <script>
-import * as yup from "yup";
-import isEmpty from "lodash/isEmpty";
 import take from "lodash/take";
-
 import { ContentLoader } from "vue-content-loader";
 import { distanceInWordsToNow, parse } from "date-fns";
 
+import { isPrerendering } from "@/utils";
+import { mapState } from "vuex";
+import { FETCH_COMMITS } from "@/store/actions";
+
 import Card from "./Card";
-import { commit } from "@/schemas/git";
 
 export default {
-  props: {
-    commits: {
-      type: Array,
-      default: () => [],
-      validator: val =>
-        yup
-          .array()
-          .of(commit)
-          .isValidSync(val, { strict: true }),
-    },
+  created() {
+    if (isPrerendering()) return; // do not fetch during prerender
+    this.$store.dispatch(FETCH_COMMITS);
   },
   computed: {
+    ...mapState({
+      commits: "commits",
+      loading: "commitsLoading",
+      error: "commitsError",
+    }),
     firstThreeCommits() {
       return take(this.commits, 3);
     },
+    errorMessage() {
+      return this.error && "Failed to load recent commits.";
+    },
   },
   methods: {
-    isEmpty,
     /**
      * @param {string} datestr
      * @returns {string}

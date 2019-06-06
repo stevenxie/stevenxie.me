@@ -47,10 +47,9 @@ export default class APIService {
   getAvailability(date) {
     let params = {};
     if (date) {
-      if (yup.date().isValidSync(date))
-        params = { date: format(date, "YYYY-MM-DD") };
+      if (date instanceof Date) params = { date: format(date, "YYYY-MM-DD") };
       else if (yup.string().isValidSync(date)) params = { date };
-      else throw new Error("APIService: invalid Date argument type");
+      else throw new Error(`APIService: invalid date '${date}'`);
     }
     return this.client.get("/availability", { params });
   }

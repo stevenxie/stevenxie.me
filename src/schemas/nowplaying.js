@@ -56,3 +56,5 @@ export const progress = yup
   .number()
   .integer()
   .min(0);
+
+export const playing = yup.boolean();

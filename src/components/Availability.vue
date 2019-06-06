@@ -1,6 +1,10 @@
 <template>
   <div class="availability flex" ref="frame">
-    <div class="timeline flex" :style="{ right: `${offset}px` }">
+    <div
+      class="timeline flex"
+      :class="{ error }"
+      :style="{ right: `${offset}px` }"
+    >
       <div class="segments">
         <div
           class="busy"
@@ -19,7 +23,11 @@
       </div>
     </div>
     <div class="status flex">
-      <div>
+      <div class="error" v-if="error">
+        <alert-icon :width="40" :height="40" />
+        <p>Failed to load timeline data.</p>
+      </div>
+      <div v-else>
         <h2 class="text">
           I'm probably
           <b v-if="currentlyBusy" class="not-free">not free to do stuff</b>
@@ -36,11 +44,12 @@
 </template>
 
 <script>
-import * as yup from "yup";
 import { format, getHours, getMinutes } from "date-fns";
+import AlertIcon from "@/components/icons/AlertIcon";
 
-import { period } from "@/schemas/availability";
 import { isPrerendering } from "@/utils";
+import { mapState } from "vuex";
+import { FETCH_AVAILABILITY } from "@/store/actions";
 
 /**
  * @param {number} hours
@@ -52,23 +61,12 @@ const percentOfDay = (hours, mins) =>
 
 export default {
   data: () => ({
-    busyPeriods: [],
     time: new Date(),
     offset: 0,
   }),
-  async created() {
-    if (isPrerendering()) return;
-    try {
-      const { data } = await this.$api.getAvailability();
-      const { busy } = data;
-      yup
-        .array()
-        .of(period)
-        .validateSync(busy);
-      this.busyPeriods = this.correctLastPeriod(busy);
-    } catch (err) {
-      console.error(err);
-    }
+  created() {
+    if (isPrerendering()) return; // do not fetch during prerender
+    this.$store.dispatch(FETCH_AVAILABILITY);
   },
   mounted() {
     this.updateTimelineOffset();
@@ -81,6 +79,8 @@ export default {
     window.removeEventListener("resize", this.updateTimelineOffset);
   },
   computed: {
+    ...mapState({ busyPeriods: "availability", error: "availabilityError" }),
+
     busyRelative() {
       return this.busyPeriods.map(({ start, end }) => {
         [start, end] = [start, end].map(str => {
@@ -90,20 +90,24 @@ export default {
         return { start, end, diff: end - start };
       });
     },
+
     busyRelativeStyles() {
       return this.busyRelative.map(({ start, diff }) => ({
         left: `${start}%`,
         width: `${diff}%`,
       }));
     },
+
     currentTime() {
       return format(this.time, "h:mm A");
     },
+
     currentTimeRelative() {
       const hours = getHours(this.time);
       const mins = getMinutes(this.time);
       return percentOfDay(hours, mins);
     },
+
     currentlyBusy() {
       const current = this.currentTimeRelative;
       for (let i = 0; i < this.busyRelative.length; i++) {
@@ -157,6 +161,7 @@ export default {
       this.updateTimelineOffset();
     },
   },
+  components: { "alert-icon": AlertIcon },
 };
 </script>
 
@@ -186,6 +191,23 @@ $bradius: 8px;
 
   @media (min-width: $min-width + (2 * $x-margin)) {
     left: 0 !important;
+  }
+
+  &.error {
+    margin-bottom: 45px;
+
+    $primary: #4e4e4e;
+    $secondary: #646464;
+    background: repeating-linear-gradient(
+      45deg,
+      $primary,
+      $primary 10px,
+      $secondary 10px,
+      $secondary 20px
+    );
+
+    // prettier-ignore
+    .timebar { display: none; }
   }
 }
 
@@ -262,6 +284,9 @@ $bradius: 8px;
   background: white;
   box-shadow: 0 2px 5px 0 rgba(black, 0.5);
 
+  // prettier-ignore
+  &.error { display: none !important; }
+
   .time {
     $twidth: 90px;
 
@@ -289,6 +314,24 @@ $bradius: 8px;
       margin-top: 14px;
       font-size: 13pt;
       font-weight: 600;
+    }
+  }
+
+  .error::v-deep {
+    $color: rgb(160, 160, 160);
+
+    display: flex;
+    align-items: center;
+
+    font-size: 13pt;
+    font-weight: 500;
+    color: $color;
+
+    .alert-icon {
+      margin-right: 5px !important;
+      path {
+        stroke: $color;
+      }
     }
   }
 

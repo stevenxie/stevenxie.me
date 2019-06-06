@@ -8,10 +8,9 @@
 <style lang="scss" scoped>
 .hero {
   height: 290px;
-  justify-content: flex-end;
-
   padding: 34px 34px 46px 34px;
   box-sizing: border-box;
+  justify-content: flex-end;
 
   color: white;
   background-image: linear-gradient(

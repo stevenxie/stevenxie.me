@@ -2,7 +2,6 @@ import Vue from "vue";
 import VTooltip from "v-tooltip";
 
 import App from "./App.vue";
-import APIService from "./services/APIService";
 import router from "./router";
 import store from "./store";
 
@@ -13,9 +12,6 @@ Vue.use(VTooltip);
 
 // Configure Vue instance.
 Vue.config.productionTip = false;
-
-const { VUE_APP_API_BASE_URL: apiBaseURL } = process.env;
-Vue.prototype.$api = new APIService(apiBaseURL);
 
 // If prerendering, inject prerendered tag so that future loads will know that
 // the page has been prerendered.

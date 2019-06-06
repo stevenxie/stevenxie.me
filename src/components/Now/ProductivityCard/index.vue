@@ -5,13 +5,14 @@
     titleURL="https://help.rescuetime.com/article/73-how-is-my-productivity-pulse-calculated"
     label="RescueTime"
     labelURL="https://www.rescuetime.com/"
+    :error="errorMessage"
   >
     <div class="container fullsize">
       <div class="ring outer fullsize">
         <div class="ring inner bg" />
         <chart class="chart" :chartData="chartData" />
         <div class="ring shadow" />
-        <div class="ring inner fg flex center-children">
+        <div class="ring inner fg flex">
           <h1 class="score mono">{{ score }}</h1>
         </div>
       </div>
@@ -20,28 +21,18 @@
 </template>
 
 <script>
-import * as yup from "yup";
-import isEmpty from "lodash/isEmpty";
 import kebabCase from "lodash/kebabCase";
-
+import isEmpty from "lodash/isEmpty";
 import Card from "../Card";
-import { segment } from "@/schemas/productivity";
+
+import { isPrerendering } from "@/utils";
+import { mapState } from "vuex";
+import { FETCH_PRODUCTIVITY } from "@/store/actions";
 
 const Chart = () =>
   import(/* webpackChunkName: "productivity-chart" */ "./Chart");
 
 export default {
-  props: {
-    segments: {
-      type: Array,
-      default: () => [],
-      validator: val =>
-        yup
-          .array()
-          .of(segment)
-          .isValidSync(val, { strict: true }),
-    },
-  },
   data: () => ({
     colormap: {
       "2": "#4a66c3",
@@ -51,7 +42,17 @@ export default {
       "-2": "#e84366",
     },
   }),
+  created() {
+    if (isPrerendering()) return;
+    this.$store.dispatch(FETCH_PRODUCTIVITY);
+  },
   computed: {
+    ...mapState({
+      segments: "productivity",
+      loading: "productivityLoading",
+      error: "productivityError",
+    }),
+
     score() {
       if (isEmpty(this.segments)) return null;
 
@@ -74,6 +75,7 @@ export default {
       );
       return Math.round(((d + n * 2 + p * 3 + vp * 4) / (total * 4)) * 100);
     },
+
     chartData() {
       if (isEmpty(this.segments)) return { datasets: [] };
       const labels = this.segments.map(({ name }) => name);
@@ -85,14 +87,13 @@ export default {
       };
       return { labels, datasets: [dataset] };
     },
+
+    errorMessage() {
+      return this.error && "Failed to load productivity data.";
+    },
   },
-  methods: {
-    kebabCase,
-  },
-  components: {
-    card: Card,
-    chart: Chart,
-  },
+  methods: { kebabCase },
+  components: { card: Card, chart: Chart },
 };
 </script>
 
