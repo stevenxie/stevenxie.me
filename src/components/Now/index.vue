@@ -7,9 +7,10 @@
       :per-page-custom="paging"
       :space-padding="padding"
       pagination-active-color="white"
+      v-if="renderCarousel"
     >
       <slide v-for="slide in slides" :key="slide">
-        <div class="container"><component :is="slide" :ref="slide" /></div>
+        <div class="container"><component :is="slide" ref="slides" /></div>
       </slide>
     </carousel>
   </div>
@@ -17,22 +18,19 @@
 
 <script>
 import take from "lodash/take";
-import size from "lodash/size";
 import reduceRight from "lodash/reduceRight";
+import { prerendering } from "@/utils";
 
 import NowPlayingCard from "./NowPlayingCard";
 import CommitsCard from "./CommitsCard";
 import ProductivityCard from "./ProductivityCard";
 
 // Async imports.
-const Carousel = () =>
-  import(/* webpackChunkName: "vue-carousel" */ "vue-carousel").then(
-    ({ Carousel }) => Carousel
-  );
-const Slide = () =>
-  import(/* webpackChunkName: "vue-carousel" */ "vue-carousel").then(
-    ({ Slide }) => Slide
-  );
+const carouselPromise = import(
+  /* webpackChunkName: "vue-carousel" */ "vue-carousel"
+);
+const Carousel = () => carouselPromise.then(({ Carousel }) => Carousel);
+const Slide = () => carouselPromise.then(({ Slide }) => Slide);
 
 export default {
   data: () => ({
@@ -47,8 +45,11 @@ export default {
       [0, 40],
     ],
     padding: 0,
+    renderCarousel: false,
   }),
-  async mounted() {
+  mounted() {
+    if (prerendering) return; // ignore during prerender
+    this.renderCarousel = true;
     window.addEventListener("resize", this.updatePadding);
     this.updatePadding();
   },
@@ -56,29 +57,29 @@ export default {
     window.removeEventListener("resize", this.updatePadding);
   },
   methods: {
-    async updatePadding() {
+    updatePadding() {
+      const rescheduleForNextTick = () =>
+        this.$nextTick(() => setTimeout(this.updatePadding, 0));
+
       // Only run after cards mount.
-      if (size(this.$refs) === 1) {
-        await this.$nextTick();
-        setTimeout(this.updatePadding, 0);
-        return;
-      }
+      const { slides } = this.$refs;
+      if (!slides) return rescheduleForNextTick();
 
       const { width: cwidth } = this.$refs.container.getBoundingClientRect();
       const [pages, spacing] = [this.paging, this.spacing].map(x =>
         reduceRight(x, (pages, [width, n]) => (cwidth >= width ? n : pages), 0)
       );
 
-      const slideWidths = take(this.slides, pages).map(name => {
-        const [ref] = this.$refs[name];
-        return ref.$el.getBoundingClientRect().width;
-      });
+      const slideWidths = take(slides, pages).map(
+        ({ $el: el }) => el.offsetWidth
+      );
 
       const contentWidth = slideWidths.reduce((width, sum, index) => {
         sum += width;
         if (index) sum += spacing;
         return sum;
       }, spacing);
+      if (!contentWidth) return rescheduleForNextTick(); // cards not ready
 
       this.padding = (cwidth - contentWidth) / 2;
     },

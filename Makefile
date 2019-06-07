@@ -29,7 +29,7 @@ install: # Install project dependencies.
 run: # Run project (development).
 	@$(MAKE) js-run -- $(__ARGS)
 build: # Build project.
-	@$(MAKE) js-build -- $(__ARGS)
+	@$(MAKE) vue-build -- $(__ARGS)
 clean: # Clean build artifacts.
 	@$(MAKE) js-clean && \
 	 $(MAKE) vue-clean
@@ -68,7 +68,10 @@ js-clean:
 
 
 # Vue:
-.PHONY: vue-clean
+.PHONY: vue-build vue-clean
+vue-build: ## Compile Vue app for production.
+	@echo "Build Vue app for production..." && yarn build:prod && echo done
+
 vue-clean: ## Clean up dist folder.
 	@echo "Cleaning .dist/..." && rm -rf .dist/ && echo done
 

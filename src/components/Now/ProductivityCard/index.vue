@@ -25,7 +25,7 @@ import kebabCase from "lodash/kebabCase";
 import isEmpty from "lodash/isEmpty";
 import Card from "../Card";
 
-import { isPrerendering } from "@/utils";
+import { prerendering } from "@/utils";
 import { mapState } from "vuex";
 import { FETCH_PRODUCTIVITY } from "@/store/actions";
 
@@ -43,7 +43,7 @@ export default {
     },
   }),
   mounted() {
-    if (isPrerendering()) return;
+    if (prerendering) return;
     this.$store.dispatch(FETCH_PRODUCTIVITY);
   },
   computed: {
