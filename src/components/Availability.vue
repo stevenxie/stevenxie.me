@@ -48,7 +48,7 @@ import isEmpty from "lodash/isEmpty";
 import { format, getHours, getMinutes } from "date-fns";
 import AlertIcon from "@/components/icons/AlertIcon";
 
-import { isPrerendering } from "@/utils";
+import { prerendering } from "@/utils";
 import { mapState } from "vuex";
 import { FETCH_AVAILABILITY } from "@/store/actions";
 
@@ -66,8 +66,10 @@ export default {
     offset: 0,
   }),
   mounted() {
+    if (prerendering) return;
+
     // Fetch availability from API.
-    if (!isPrerendering()) this.$store.dispatch(FETCH_AVAILABILITY);
+    this.$store.dispatch(FETCH_AVAILABILITY);
 
     // Init timeline offset interval.
     this.updateTimelineOffset();

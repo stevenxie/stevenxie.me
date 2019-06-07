@@ -6,6 +6,7 @@
     "dev": "npm run serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build:prerender": "cross-env ENABLE_PRERENDER=true npm run build",
     "build:prod": "cross-env NODE_ENV=production npm run build",
     "lint": "vue-cli-service lint"
   },

@@ -40,7 +40,7 @@ import take from "lodash/take";
 import { ContentLoader } from "vue-content-loader";
 import { distanceInWordsToNow, parse } from "date-fns";
 
-import { isPrerendering } from "@/utils";
+import { prerendering } from "@/utils";
 import { mapState } from "vuex";
 import { FETCH_COMMITS } from "@/store/actions";
 
@@ -48,7 +48,7 @@ import Card from "./Card";
 
 export default {
   mounted() {
-    if (isPrerendering()) return; // do not fetch during prerender
+    if (prerendering) return; // do not fetch during prerender
     this.$store.dispatch(FETCH_COMMITS);
   },
   computed: {

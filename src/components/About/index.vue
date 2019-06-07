@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { isPrerendering } from "@/utils";
+import { prerendering } from "@/utils";
 import { mapGetters, mapState } from "vuex";
 import { FETCH_ABOUT } from "@/store/actions";
 import { ABOUT_EXCLUDING_CONTACT } from "@/store/getters";
@@ -19,7 +19,7 @@ import LoadingIcon from "@/components/icons/LoadingIcon";
 
 export default {
   mounted() {
-    if (isPrerendering()) return; // do not fetch during prerender
+    if (prerendering) return; // do not fetch during prerender
     this.$store.dispatch(FETCH_ABOUT);
   },
   computed: {

@@ -1,6 +1,5 @@
-export function isPrerendering() {
-  return !!window.__PRERENDER_INJECTED;
-}
+export const prerendering = !!window.__PRERENDER_INJECTED;
+export const prerendered = window.__PRERENDERED;
 
 export function injectPrerenderedTag() {
   const script = document.createElement(`script`);

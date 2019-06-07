@@ -1,5 +1,5 @@
 <template>
-  <card class="now-playing flex" v-bind="headers">
+  <card class="now-playing" v-bind="headers">
     <div
       class="artwork fullsize"
       :style="{ backgroundImage: `url(${artURL})` }"
@@ -28,7 +28,7 @@
 
 <script>
 import blankrecord from "@/assets/blankrecord.png";
-import { isPrerendering } from "@/utils";
+import { prerendering } from "@/utils";
 
 import { mapState, mapGetters } from "vuex";
 import { FETCH_NOW_PLAYING } from "@/store/actions";
@@ -42,7 +42,7 @@ import Card from "./Card";
 
 export default {
   mounted() {
-    if (isPrerendering()) return; // do not fetch during prerender
+    if (prerendering) return; // do not fetch during prerender
     this.fetchInterval = window.setInterval(
       () => this.$store.dispatch(FETCH_NOW_PLAYING),
       1000

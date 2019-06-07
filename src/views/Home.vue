@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { prerendering } from "@/utils";
+
 // @ is an alias to /src
 import Now from "@/components/Now";
 import Hero from "@/components/Hero";
@@ -25,6 +27,7 @@ export default {
     floatAbout: false,
   }),
   mounted() {
+    if (prerendering) return; // ignore during prerender
     window.addEventListener("resize", this.updateAboutPosition);
     this.updateAboutPosition();
   },
