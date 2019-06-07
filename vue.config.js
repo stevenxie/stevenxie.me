@@ -12,6 +12,7 @@ const { SHOW_PRERENDERING } = process.env;
 
 // Configure webpack.
 const configureWebpack = config => {
+  config.devtool = "source-map";
   if (config.mode !== "production") return;
 
   // Configure prerendering.
