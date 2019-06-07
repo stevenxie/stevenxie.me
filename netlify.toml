@@ -1,3 +1,31 @@
 [build]
 publish = "dist"
 command = "yarn build:prod"
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+x-frame-options = "deny"
+x-xss-protection = "1; mode=block"
+
+# Cache control headers.
+[[headers]]
+for = "/js/*"
+cache-control = '''
+max-age=31557600,
+public'''
+
+# Cache control headers.
+[[headers]]
+for = "/css/*"
+cache-control = '''
+max-age=31557600,
+public'''
+
+# Cache control headers.
+[[headers]]
+for = "/img/*"
+cache-control = '''
+max-age=31557600,
+public'''
