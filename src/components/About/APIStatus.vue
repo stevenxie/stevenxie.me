@@ -1,13 +1,18 @@
 <template>
-  <div class="api-status mono" v-tooltip="tooltip">
-    api
-    <div class="circle" :class="{ active }" />
-  </div>
+  <a class="api-status" :href="apiURL" target="_blank">
+    <div class="container mono" v-tooltip="tooltip">
+      api
+      <div class="circle" :class="{ active }" />
+    </div>
+  </a>
 </template>
 
 <script>
+import { baseURL } from "@/services/APIClient";
+
 export default {
   props: { active: { type: Boolean, default: false } },
+  data: () => ({ apiURL: baseURL }),
   computed: {
     tooltip() {
       return `API is currently ${this.active ? "online" : "offline"}.`;
@@ -17,19 +22,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.api-status {
+.container {
+  $color: #b2b2b2;
+
   padding: 4px 8px;
   border-radius: 8px;
 
   display: flex;
   align-items: center;
 
-  color: #b2b2b2;
+  color: $color;
   background-color: #121212;
   transition: background 200ms ease-in-out;
 
   font-size: 11pt;
   cursor: pointer;
+
+  // prettier-ignore
+  &:hover { color: lighten($color, 10%); }
 }
 
 .circle {
@@ -42,4 +52,7 @@ export default {
   // prettier-ignore
   &.active { background: #24c96c; }
 }
+
+// prettier-ignore
+a { text-decoration: none; }
 </style>

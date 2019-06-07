@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import { create, AxiosInstance } from "axios";
-const { VUE_APP_API_BASE_URL } = process.env;
+export const baseURL = process.env.VUE_APP_API_BASE_URL;
 
 /** @type {AxiosInstance} */
 const APIClient = create({
-  baseURL: VUE_APP_API_BASE_URL || "https://api.stevenxie.me",
+  baseURL: baseURL || "https://api.stevenxie.me",
 });
 
 export default APIClient;
