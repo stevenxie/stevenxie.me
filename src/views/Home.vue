@@ -1,9 +1,9 @@
 <template>
   <div class="home">
     <hero>
-      <about v-if="floatAbout" />
+      <about v-if="renderAbout && embedAbout" />
     </hero>
-    <about v-if="!floatAbout" />
+    <about v-if="renderAbout && !embedAbout" />
     <now />
     <availability />
     <contact />
@@ -24,20 +24,22 @@ import { TABLET_SCREEN_WIDTH } from "@/styles/breakpoints";
 
 export default {
   data: () => ({
-    floatAbout: false,
+    embedAbout: false,
+    renderAbout: false,
   }),
   mounted() {
     if (prerendering) return; // ignore during prerender
     window.addEventListener("resize", this.updateAboutPosition);
     this.updateAboutPosition();
+    this.renderAbout = true;
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.updateAboutPosition);
   },
   methods: {
     updateAboutPosition() {
-      if (window.innerWidth >= TABLET_SCREEN_WIDTH) this.floatAbout = true;
-      else this.floatAbout = false;
+      if (window.innerWidth >= TABLET_SCREEN_WIDTH) this.embedAbout = true;
+      else this.embedAbout = false;
     },
   },
   components: {

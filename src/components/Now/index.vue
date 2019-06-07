@@ -51,19 +51,16 @@ export default {
     if (prerendering) return; // ignore during prerender
     this.renderCarousel = true;
     window.addEventListener("resize", this.updatePadding);
-    this.updatePadding();
+    this.updatePaddingNextTick();
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.updatePadding);
   },
   methods: {
     updatePadding() {
-      const rescheduleForNextTick = () =>
-        this.$nextTick(() => setTimeout(this.updatePadding, 0));
-
       // Only run after cards mount.
       const { slides } = this.$refs;
-      if (!slides) return rescheduleForNextTick();
+      if (!slides) return this.updatePaddingNextTick();
 
       const { width: cwidth } = this.$refs.container.getBoundingClientRect();
       const [pages, spacing] = [this.paging, this.spacing].map(x =>
@@ -79,9 +76,11 @@ export default {
         if (index) sum += spacing;
         return sum;
       }, spacing);
-      if (!contentWidth) return rescheduleForNextTick(); // cards not ready
-
       this.padding = (cwidth - contentWidth) / 2;
+    },
+
+    updatePaddingNextTick() {
+      this.$nextTick(() => window.setTimeout(this.updatePadding, 0));
     },
   },
   components: {
