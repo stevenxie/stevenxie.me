@@ -1,7 +1,9 @@
 <template>
   <div class="home">
-    <hero />
-    <about />
+    <hero>
+      <about v-if="floatAbout" />
+    </hero>
+    <about v-if="!floatAbout" />
     <now />
     <availability />
     <contact />
@@ -16,7 +18,25 @@ import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Availability from "@/components/Availability";
 
+import { TABLET_SCREEN_WIDTH } from "@/styles/breakpoints";
+
 export default {
+  data: () => ({
+    floatAbout: false,
+  }),
+  mounted() {
+    window.addEventListener("resize", this.updateAboutPosition);
+    this.updateAboutPosition();
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.updateAboutPosition);
+  },
+  methods: {
+    updateAboutPosition() {
+      if (window.innerWidth >= TABLET_SCREEN_WIDTH) this.floatAbout = true;
+      else this.floatAbout = false;
+    },
+  },
   components: {
     now: Now,
     hero: Hero,

@@ -1,0 +1,5 @@
+export const DESKTOP_SCREEN_WIDTH = 1500;
+export const LAPTOP_SCREEN_WIDTH = 1200;
+export const TABLET_SCREEN_WIDTH = 900;
+export const PHABLET_SCREEN_WIDTH = 700;
+export const PHONE_SCREEN_WIDTH = 480;

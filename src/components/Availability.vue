@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import isEmpty from "lodash/isEmpty";
 import { format, getHours, getMinutes } from "date-fns";
 import AlertIcon from "@/components/icons/AlertIcon";
 
@@ -79,7 +80,16 @@ export default {
     window.removeEventListener("resize", this.updateTimelineOffset);
   },
   computed: {
-    ...mapState({ busyPeriods: "availability", error: "availabilityError" }),
+    ...mapState({ availability: "availability", error: "availabilityError" }),
+
+    busyPeriods() {
+      const periods = this.availability;
+      if (isEmpty(periods)) return periods;
+
+      const { start, end } = periods.pop();
+      if (end === "00:00") periods.push({ start, end: "24:00" });
+      return periods;
+    },
 
     busyRelative() {
       return this.busyPeriods.map(({ start, end }) => {
@@ -129,16 +139,6 @@ export default {
       return `${hour}:${minute} ${nhour > 12 ? "PM" : "AM"}`;
     },
 
-    /**
-     * @param {Array} periods An array of time periods.
-     * @returns {Array} An array of time periods, with the last one corrected.
-     */
-    correctLastPeriod(periods) {
-      const { start, end } = periods.pop();
-      if (end === "00:00") periods.push({ start, end: "24:00" });
-      return periods;
-    },
-
     // Updates the x-offset of the timeline in order to centre the current-time
     // bar in the viewport.
     updateTimelineOffset() {
@@ -166,6 +166,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/mixins.scss";
 $bradius: 8px;
 
 .availability {
@@ -174,23 +175,32 @@ $bradius: 8px;
   align-items: stretch;
   overflow: hidden;
   background: #1f292e;
+
+  @include breakpoint(850px) {
+    padding: 60px 0;
+  }
 }
 
 .timeline {
   $min-width: 750px;
   $x-margin: 50px;
 
-  margin: 45px $x-margin 110px $x-margin;
-  min-width: $min-width;
   height: 60px;
+  min-width: $min-width;
+  margin: 45px $x-margin 110px $x-margin;
   border-radius: $bradius;
   position: relative;
 
   background-image: linear-gradient(135deg, #4e8cf1 0%, #29d39b 100%);
   box-shadow: 0 5px 20px 0 rgba(black, 0.5);
 
-  @media (min-width: $min-width + (2 * $x-margin)) {
+  @include breakpoint($min-width + (2 * $x-margin)) {
     left: 0 !important;
+  }
+
+  @include breakpoint(laptop) {
+    align-self: center;
+    width: 1200px;
   }
 
   &.error {

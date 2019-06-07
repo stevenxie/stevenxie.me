@@ -34,6 +34,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/mixins.scss";
+
 .about {
   min-height: 200px;
 
@@ -44,6 +46,12 @@ export default {
   color: #dedede;
   background: #2b2b2b;
   font-weight: 500;
+
+  @include breakpoint(tablet) {
+    border-radius: 10px;
+    padding: 16px 16px 22px 16px;
+    box-shadow: 0 6px 18px 0 rgba(black, 0.5);
+  }
 }
 
 pre {

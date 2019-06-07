@@ -39,7 +39,6 @@ export default {
     slides: ["now-playing-card", "productivity-card", "commits-card"],
     paging: [[900, 3], [550, 2], [0, 1]],
     spacing: [
-      [1300, 100],
       [1200, 90],
       [1100, 75],
       [1000, 60],
@@ -95,6 +94,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/mixins.scss";
+
 .now {
   height: 400px;
   background: #e1e9ee;
@@ -124,11 +125,10 @@ export default {
   }
 }
 
+// prettier-ignore
 .carousel {
   width: 100%;
-  @media (min-width: 900px) {
-    align-self: center;
-  }
+  @include breakpoint(900px) { align-self: center; }
 }
 
 .container {

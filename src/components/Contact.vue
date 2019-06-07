@@ -44,10 +44,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/mixins.scss";
+
 .contact {
   padding: 28px 0 34px 0;
   align-items: center;
   background-image: linear-gradient(180deg, #cadae6 37%, #b9c8d0 100%);
+
+  @include breakpoint(tablet) {
+    padding: 10px 0 12px 0;
+    flex-direction: row;
+    justify-content: center;
+
+    // prettier-ignore
+    > * { margin: 0 4px; }
+  }
 }
 
 .avatar {
@@ -66,6 +77,16 @@ export default {
   color: #454545;
 }
 
+.email-wrapper {
+  // prettier-ignore
+  &.error { pointer-events: none; }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
 .email {
   $background: #ebf5fa;
 
@@ -80,10 +101,12 @@ export default {
   background: $background;
   color: #225cec;
 
+  // prettier-ignore
+  &:hover { background: lighten($background, 4%); }
   transition: background 200ms ease-in-out;
-  &:hover {
-    background: lighten($background, 4%);
-  }
+
+  // prettier-ignore
+  @include breakpoint(tablet) { margin-top: 0; }
 
   .loading::v-deep path {
     stroke: rgb(89, 98, 110) !important;
@@ -97,16 +120,6 @@ export default {
       margin-left: 5px;
       color: #415863;
     }
-  }
-}
-
-.email-wrapper {
-  // prettier-ignore
-  &.error { pointer-events: none; }
-
-  a {
-    text-decoration: none;
-    color: inherit;
   }
 }
 </style>
