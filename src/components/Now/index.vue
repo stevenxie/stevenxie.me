@@ -1,5 +1,5 @@
 <template>
-  <div class="now" ref="container">
+  <div class="now">
     <carousel
       class="carousel"
       :pagination-padding="4"
@@ -26,6 +26,7 @@ import CommitsCard from "./CommitsCard";
 import ProductivityCard from "./ProductivityCard";
 
 // Async imports.
+// prettier-ignore
 const carouselPromise = import(
   /* webpackChunkName: "vue-carousel" */ "vue-carousel"
 );
@@ -62,9 +63,9 @@ export default {
       const { slides } = this.$refs;
       if (!slides) return this.updatePaddingNextTick();
 
-      const { width: cwidth } = this.$refs.container.getBoundingClientRect();
+      const { innerWidth: wwidth } = window;
       const [pages, spacing] = [this.paging, this.spacing].map(x =>
-        reduceRight(x, (pages, [width, n]) => (cwidth >= width ? n : pages), 0)
+        reduceRight(x, (pages, [width, n]) => (wwidth >= width ? n : pages), 0)
       );
 
       const slideWidths = take(slides, pages).map(
@@ -76,7 +77,7 @@ export default {
         if (index) sum += spacing;
         return sum;
       }, spacing);
-      this.padding = (cwidth - contentWidth) / 2;
+      this.padding = (wwidth - contentWidth) / 2;
     },
 
     updatePaddingNextTick() {
@@ -128,7 +129,7 @@ export default {
 // prettier-ignore
 .carousel {
   width: 100%;
-  @include breakpoint(900px) { align-self: center; }
+  @include breakpoint(laptop) { align-self: center; }
 }
 
 .container {

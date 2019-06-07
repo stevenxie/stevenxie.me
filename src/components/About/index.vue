@@ -38,7 +38,6 @@ export default {
 
 .about {
   min-height: 200px;
-
   padding: 12px 12px 22px 12px;
   box-sizing: border-box;
   position: relative;
@@ -47,10 +46,20 @@ export default {
   background: #2b2b2b;
   font-weight: 500;
 
+  overflow: hidden;
+
   @include breakpoint(tablet) {
+    min-height: 240px;
+    min-width: 340px;
+    max-width: 400px;
     border-radius: 10px;
-    padding: 16px 16px 22px 16px;
+    padding: 26px 22px 32px 22px;
     box-shadow: 0 6px 18px 0 rgba(black, 0.5);
+  }
+
+  @include breakpoint(laptop) {
+    min-height: 275px;
+    padding: 32px;
   }
 }
 
@@ -59,6 +68,10 @@ pre {
   font-family: inherit;
   font-weight: inherit;
   font-size: 11pt;
+
+  @include breakpoint(laptop) {
+    font-size: 12pt;
+  }
 }
 
 .api-status {

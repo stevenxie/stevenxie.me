@@ -145,7 +145,10 @@ export default {
 }
 
 .progress {
-  height: 3px;
+  $progress-height: 3px;
+  $knob-radius: 6px;
+
+  height: $progress-height;
   border-radius: 2px;
   align-items: stretch;
   background-image: linear-gradient(90deg, #e5706a 1%, #e3a2fd 100%);
@@ -156,21 +159,19 @@ export default {
     transition: width 250ms ease-in-out;
   }
 
-  .slider {
-    // prettier-ignore
-    .knob {
-      $radius: 6px;
+  // prettier-ignore
+  .slider .knob {
+      $offset: -$knob-radius - ($progress-height / 2);
 
       position: absolute;
-      bottom: -$radius; right: -$radius;
-      width: 2 * $radius;
-      height: 2 * $radius;
-      border-radius: $radius;
+      bottom: $offset; right: $offset;
+      width: 2 * $knob-radius;
+      height: 2 * $knob-radius;
+      border-radius: $knob-radius;
 
       background: white;
       box-shadow: 0 0 4px 0 rgba(black, 0.6)
     }
-  }
 
   .time-slider {
     font-weight: 500;
