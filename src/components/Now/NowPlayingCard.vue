@@ -13,9 +13,7 @@
             <div class="time">{{ progressTime }}</div>
           </div>
         </div>
-        <p class="no-music" v-else>
-          Nothing is playing right now.
-        </p>
+        <p class="no-music" v-else>Nothing is playing right now.</p>
         <div class="status">
           <i class="icofont-stop" v-if="!track" />
           <i class="icofont-ui-play" v-else-if="playing" />
@@ -89,7 +87,7 @@ export default {
     progressTime() {
       if (!this.progress) return "0:00";
       const progressSeconds = this.progress / 1000;
-      const left = Math.round(progressSeconds / 60);
+      const left = Math.floor(progressSeconds / 60);
       const right = Math.round(progressSeconds % 60);
       return `${left}:${right.toString().padStart(2, "0")}`;
     },

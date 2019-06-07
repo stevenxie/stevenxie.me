@@ -149,7 +149,7 @@ export default {
       const frameCenterX = frameWidth / 2;
 
       // Calculate timebar center position.
-      const timebar = this.$refs.timebar;
+      const { timebar } = this.$refs;
       const { offsetWidth: width } = timebar;
       const posX = timebar.getBoundingClientRect().left;
       const centerX = posX + width / 2;
@@ -219,7 +219,7 @@ $bradius: 8px;
     );
 
     // prettier-ignore
-    .timebar { display: none; }
+    .timebar { visibility: hidden; }
   }
 }
 
