@@ -2,6 +2,17 @@ kind: pipeline
 name: default
 
 steps:
+  - name: restore_cache
+    image: plugins/s3-cache
+    environment: &cache_env
+      AWS_ACCESS_KEY_ID:
+        from_secret: aws_access_key
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: aws_secret_key
+    settings:
+      root: &cache_root columbia-drone-cache
+      restore: true
+
   - name: install
     image: node:12-alpine
     commands: ["yarn install"]
@@ -11,3 +22,13 @@ steps:
     commands: ["yarn lint --no-fix --max-warnings 0"]
     environment:
       NODE_ENV: production
+
+  - name: rebuild_cache
+    image: plugins/s3-cache
+    environment: *cache_env
+    settings:
+      root: *cache_root
+      rebuild: true
+      mount: node_modules
+    when:
+      event: push
