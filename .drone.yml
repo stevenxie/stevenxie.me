@@ -2,6 +2,21 @@ kind: pipeline
 name: default
 
 steps:
+  - name: restore_cache
+    image: meltwater/drone-cache
+    environment: &cache_env
+      AWS_ACCESS_KEY_ID:
+        from_secret: aws_access_key
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: aws_secret_key
+      S3_BUCKET: columbia-drone-cache
+      S3_REGION: us-east-2
+    settings:
+      restore: true
+      debug: true
+      cache_key: &cache_key '{{ .Repo.Namespace }}/{{ .Repo.Name }}/{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}'
+      mounted: node_modules
+
   - name: install
     image: node:12-alpine
     commands: ["yarn install"]
@@ -11,3 +26,14 @@ steps:
     commands: ["yarn lint --no-fix --max-warnings 0"]
     environment:
       NODE_ENV: production
+
+  - name: rebuild_cache
+    image: meltwater/drone-cache
+    environment: *cache_env
+    settings:
+      rebuild: true
+      debug: true
+      cache_key: *cache_key
+      mount: node_modules
+    when:
+      event: push
