@@ -1,12 +1,13 @@
 <template>
   <div class="home">
+    <custom-nav @on-move-to="handleMoveFocus" />
     <hero>
       <about v-if="renderAbout && embedAbout" />
     </hero>
     <about v-if="renderAbout && !embedAbout" />
     <now />
     <availability />
-    <contact />
+    <contact :focus="focusContact" />
   </div>
 </template>
 
@@ -14,6 +15,7 @@
 import { prerendering } from "@/utils";
 
 // @ is an alias to /src
+import Nav from "@/components/Nav";
 import Now from "@/components/Now";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -26,6 +28,7 @@ export default {
   data: () => ({
     embedAbout: false,
     renderAbout: false,
+    focusContact: false,
   }),
   mounted() {
     if (prerendering) return; // ignore during prerender
@@ -41,8 +44,13 @@ export default {
       if (window.innerWidth >= TABLET_SCREEN_WIDTH) this.embedAbout = true;
       else this.embedAbout = false;
     },
+    handleMoveFocus(id) {
+      if (id !== "contact") return;
+      this.focusContact = true;
+    },
   },
   components: {
+    "custom-nav": Nav,
     now: Now,
     hero: Hero,
     about: About,
@@ -53,6 +61,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.home {
+  position: relative;
+}
+
+// prettier-ignore
+.nav {
+  position: absolute;
+  top: 0; right: 0;
+  z-index: 2;
+}
+
 .hero {
   position: relative;
   z-index: 1;

@@ -30,7 +30,11 @@
 
   @include breakpoint(tablet) {
     height: 500px;
-    padding: 12px 64px 0 64px;
+    padding: 24px 64px 0 64px;
+  }
+
+  @include breakpoint(laptop) {
+    padding: 32px 72px 0 72px;
   }
 }
 

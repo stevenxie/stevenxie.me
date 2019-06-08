@@ -27,7 +27,7 @@
     <div class="status flex">
       <div class="error" v-if="error">
         <alert-icon :width="40" :height="40" />
-        <p>Failed to load timeline data.</p>
+        <p>Failed to load availability data.</p>
       </div>
       <div :class="{ busy: currentlyBusy }" v-else>
         <h2 class="text">

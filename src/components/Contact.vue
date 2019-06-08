@@ -1,11 +1,11 @@
 <template>
-  <div class="contact flex">
+  <div class="contact flex" id="contact">
     <img class="avatar" src="@/assets/ori.svg" />
     <h2 class="chat">Wanna chat?</h2>
     <p class="message">Shoot me a message at</p>
     <span class="email-wrapper" :class="{ error }">
       <a class="mailtoui" :href="mailtoURL">
-        <div class="email mono flex" :class="{ error }">
+        <div class="email mono flex" :class="{ error, focus }">
           <loading-icon :width="20" v-if="loading" />
           <span v-else-if="email">{{ email }}</span>
           <div class="error" v-else>
@@ -28,6 +28,7 @@ import AlertIcon from "@/components/icons/AlertIcon";
 import LoadingIcon from "@/components/icons/LoadingIcon";
 
 export default {
+  props: { focus: Boolean },
   mounted() {
     if (prerendering) return; // do not fetch during prerender
     this.$store.dispatch(FETCH_ABOUT);
@@ -106,6 +107,7 @@ export default {
   transition: background 200ms ease-in-out;
 
   @include breakpoint(tablet) { margin-top: 0; }
+
   &.error { padding: 6px 12px; }
   .loading::v-deep path { stroke: rgb(89, 98, 110) !important; }
 
@@ -117,6 +119,15 @@ export default {
       margin-left: 5px;
       color: #415863;
     }
+  }
+
+  &.focus {
+    // prettier-ignore
+    @keyframes flash {
+      from { background: $background }
+      to { background: yellow }
+    }
+    animation: flash 325ms cubic-bezier(0.455, 0.03, 0.515, 0.955) 1s 4 alternate;
   }
 }
 </style>
