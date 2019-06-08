@@ -5,7 +5,7 @@
     <p class="message">Shoot me a message at</p>
     <span class="email-wrapper" :class="{ error }">
       <a class="mailtoui" :href="mailtoURL">
-        <div class="email mono flex">
+        <div class="email mono flex" :class="{ error }">
           <loading-icon :width="20" v-if="loading" />
           <span v-else-if="email">{{ email }}</span>
           <div class="error" v-else>
@@ -87,6 +87,7 @@ export default {
   }
 }
 
+// prettier-ignore
 .email {
   $background: #ebf5fa;
 
@@ -101,16 +102,12 @@ export default {
   background: $background;
   color: #225cec;
 
-  // prettier-ignore
   &:hover { background: lighten($background, 4%); }
   transition: background 200ms ease-in-out;
 
-  // prettier-ignore
   @include breakpoint(tablet) { margin-top: 0; }
-
-  .loading::v-deep path {
-    stroke: rgb(89, 98, 110) !important;
-  }
+  &.error { padding: 6px 12px; }
+  .loading::v-deep path { stroke: rgb(89, 98, 110) !important; }
 
   .error {
     display: flex;

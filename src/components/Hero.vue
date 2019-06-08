@@ -45,24 +45,29 @@
   }
 }
 
+// prettier-ignore
 .text {
-  .hi {
-    margin-top: 22px;
-    font-size: 56pt;
-  }
-  .intro {
-    margin-top: 4px;
-    font-size: 17pt;
-  }
+  .hi { font-size: 56pt; }
+  .intro { font-size: 17pt; }
 
-  // prettier-ignore
   @include breakpoint(tablet) {
     flex: 2;
     padding-left: calc(20vw - 200px);
 
-    .hi { font-size: 110pt; }
-    .intro { font-size: 24pt; }
     > * { width: 375px; }
+    .hi { font-size: 110pt; }
+    .intro {
+      margin-top: -12px;
+      font-size: 24pt;
+    }
+  }
+
+  @include breakpoint(laptop) {
+    .hi { font-size: 136pt; }
+    .intro {
+      font-size: 28pt;
+      margin-bottom: 14px;
+    }
   }
 }
 
@@ -70,5 +75,9 @@
   flex: 1;
   align-items: flex-end;
   padding-right: calc(20vw - 200px);
+
+  @include breakpoint(laptop) {
+    margin-top: 18px;
+  }
 }
 </style>

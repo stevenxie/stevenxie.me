@@ -3,7 +3,7 @@
     <div class="loading" v-if="loading">
       <loading-icon :height="50" :width="50" />
     </div>
-    <pre v-else>{{ aboutText }}</pre>
+    <pre class="data" v-else>{{ aboutText }}</pre>
     <api-status :active="!!about" />
   </div>
 </template>
@@ -37,7 +37,7 @@ export default {
 @import "@/styles/mixins.scss";
 
 .about {
-  min-height: 200px;
+  min-height: 204px;
   padding: 12px 12px 22px 12px;
   box-sizing: border-box;
   position: relative;
@@ -59,18 +59,23 @@ export default {
 
   @include breakpoint(laptop) {
     min-height: 275px;
-    padding: 32px;
+    padding: 28px;
   }
 }
 
-pre {
-  margin: 5px 0;
+.data {
+  margin: 0;
   font-family: inherit;
   font-weight: inherit;
   font-size: 11pt;
+  line-height: 15pt;
 
+  @include breakpoint(tablet) {
+    line-height: 16pt;
+  }
   @include breakpoint(laptop) {
     font-size: 12pt;
+    line-height: 18pt;
   }
 }
 

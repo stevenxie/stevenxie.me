@@ -41,10 +41,8 @@ import Card from "./Card";
 export default {
   mounted() {
     if (prerendering) return; // do not fetch during prerender
-    this.fetchInterval = window.setInterval(
-      () => this.$store.dispatch(FETCH_NOW_PLAYING),
-      1000
-    );
+    this.fetchInterval = window.setInterval(this.fetchNowPlaying, 1000);
+    this.fetchNowPlaying();
   },
   beforeDestroy() {
     window.clearInterval(this.fetchInterval);
@@ -59,15 +57,21 @@ export default {
 
     /** @returns {{ title: string, label: string }} */
     headers() {
-      if (!this.track) return { title: "Silence", label: "Now Playing" };
-      const { name, url, artists } = this.track;
-      const [artist] = artists;
-      return {
-        title: name,
-        titleURL: url,
-        label: artist.name,
-        labelURL: artist.url,
+      const headers = {
+        error: this.error && "Failed to load currently playing track.",
       };
+      if (this.track) {
+        const { name, url, artists } = this.track;
+        const [artist] = artists;
+        headers.title = name;
+        headers.titleURL = url;
+        headers.label = artist.name;
+        headers.labelURL = artist.url;
+      } else {
+        headers.title = "Silence";
+        headers.label = "Now Playing";
+      }
+      return headers;
     },
 
     /** @returns {string} */
@@ -98,6 +102,11 @@ export default {
       if (pp > 90) return 90;
       if (pp < 10) return 10;
       return pp;
+    },
+  },
+  methods: {
+    fetchNowPlaying() {
+      this.$store.dispatch(FETCH_NOW_PLAYING);
     },
   },
   components: { card: Card },

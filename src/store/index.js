@@ -24,8 +24,7 @@ Vue.use(Vuex);
 
 // Declare plugins.
 const plugins = [];
-if (process.env.VUE_APP_ENABLE_VUE_LOGGER === "true")
-  plugins.push(createLogger());
+if (process.env.VUE_APP_ENABLE_VUEX_LOGGER) plugins.push(createLogger());
 
 export default new Vuex.Store({
   state: {

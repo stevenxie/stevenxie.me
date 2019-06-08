@@ -5,21 +5,23 @@
       :class="{ error }"
       :style="{ right: `${offset}px` }"
     >
-      <div class="segments">
+      <div class="segments" :class="segmentClasses">
         <div
           class="busy"
-          v-for="({ start, end }, i) in busyPeriods"
-          :key="start + end"
+          v-for="({ start, end }, i) in busy"
+          :key="`${start.toString()}--${end.toString()}`"
           :style="busyRelativeStyles[i]"
         >
           <div class="container mono">
-            <p class="start">{{ formatTime(start) }}</p>
-            <p class="end">{{ formatTime(end) }}</p>
+            <p class="start">{{ formatPretty(start) }}</p>
+            <p class="end">{{ formatPretty(end) }}</p>
           </div>
         </div>
       </div>
       <div class="timebar flex" :style="{ left: `${currentTimeRelative}%` }">
-        <div class="time mono" ref="timebar">{{ currentTime }}</div>
+        <div class="time mono" ref="timebar">
+          {{ formatPretty(time) }}
+        </div>
       </div>
     </div>
     <div class="status flex">
@@ -27,15 +29,15 @@
         <alert-icon :width="40" :height="40" />
         <p>Failed to load timeline data.</p>
       </div>
-      <div v-else>
+      <div :class="{ busy: currentlyBusy }" v-else>
         <h2 class="text">
           I'm probably
-          <b v-if="currentlyBusy" class="not-free">not free to do stuff</b>
-          <b v-else>free to hang</b>
+          <b class="highlight" v-if="currentlyBusy">not free to do stuff</b>
+          <b class="highlight" v-else>free to hang</b>
           right now.
-          <b v-if="!currentlyBusy">hmu!</b>
+          <b class="highlight" v-if="!currentlyBusy">hmu!</b>
         </h2>
-        <h3 class="text small not-free" v-if="currentlyBusy">
+        <h3 class="text small highlight" v-if="currentlyBusy">
           Check back later!
         </h3>
       </div>
@@ -45,20 +47,22 @@
 
 <script>
 import isEmpty from "lodash/isEmpty";
+import first from "lodash/first";
+import last from "lodash/last";
 import { format, getHours, getMinutes } from "date-fns";
-import AlertIcon from "@/components/icons/AlertIcon";
 
 import { prerendering } from "@/utils";
 import { mapState } from "vuex";
 import { FETCH_AVAILABILITY } from "@/store/actions";
 
+import AlertIcon from "@/components/icons/AlertIcon";
+
 /**
- * @param {number} hours
- * @param {number} mins
+ * @param {Date} time
  * @returns {number} The percentage of day that this time represents.
  */
-const percentOfDay = (hours, mins) =>
-  Math.round(((hours * 60 + mins) * 100) / (24 * 60));
+const percentOfDay = time =>
+  Math.round(((getHours(time) * 60 + getMinutes(time)) * 100) / (24 * 60));
 
 export default {
   data: () => ({
@@ -82,23 +86,12 @@ export default {
     window.removeEventListener("resize", this.updateTimelineOffset);
   },
   computed: {
-    ...mapState({ availability: "availability", error: "availabilityError" }),
-
-    busyPeriods() {
-      const periods = this.availability;
-      if (isEmpty(periods)) return periods;
-
-      const { start, end } = periods.pop();
-      if (end === "00:00") periods.push({ start, end: "24:00" });
-      return periods;
-    },
+    ...mapState({ busy: "availability", error: "availabilityError" }),
 
     busyRelative() {
-      return this.busyPeriods.map(({ start, end }) => {
-        [start, end] = [start, end].map(str => {
-          const [hours, mins] = str.split(":").map(bit => parseInt(bit));
-          return percentOfDay(hours, mins);
-        });
+      return this.busy.map(({ start, end }) => {
+        [start, end] = [start, end].map(percentOfDay);
+        if (start > 0 && end === 0) end = 100;
         return { start, end, diff: end - start };
       });
     },
@@ -110,14 +103,16 @@ export default {
       }));
     },
 
-    currentTime() {
-      return format(this.time, "h:mm A");
+    segmentClasses() {
+      const classes = [];
+      if (isEmpty(this.busyRelative)) return classes;
+      if (first(this.busyRelative).start === 0) classes.push("cap-start");
+      if (last(this.busyRelative).end === 100) classes.push("cap-end");
+      return classes;
     },
 
     currentTimeRelative() {
-      const hours = getHours(this.time);
-      const mins = getMinutes(this.time);
-      return percentOfDay(hours, mins);
+      return percentOfDay(this.time);
     },
 
     currentlyBusy() {
@@ -131,15 +126,10 @@ export default {
   },
   methods: {
     /**
-     * @param {string} military The time, in military (24h) format.
-     * @returns {string} The time, in 12h format.
+     * @param {Date} date The time to pretty-format.
+     * @returns {string} The time string, in a 'pretty' 12h format.
      */
-    formatTime(military) {
-      let [hour, minute] = military.split(":");
-      const nhour = parseInt(hour);
-      hour = nhour % 12;
-      return `${hour}:${minute} ${nhour > 12 ? "PM" : "AM"}`;
-    },
+    formatPretty: date => format(date, "h:mm A"),
 
     // Updates the x-offset of the timeline in order to centre the current-time
     // bar in the viewport.
@@ -261,18 +251,18 @@ $bradius: 8px;
         top: -$y-offset;
       }
     }
+  }
 
-    // prettier-ignore
-    &:first-child {
-      border-radius: $bradius 0 0 $bradius;
-      .start { display: none; }
-    }
+  // prettier-ignore
+  &.cap-start .busy:first-child {
+    border-radius: $bradius 0 0 $bradius;
+    .start { display: none; }
+  }
 
-    // prettier-ignore
-    &:last-child {
-      border-radius: 0 $bradius $bradius 0;
-      .end { display: none; }
-    }
+  // prettier-ignore
+  &.cap-end .busy:last-child {
+    border-radius: 0 $bradius $bradius 0;
+    .end { display: none; }
   }
 }
 
@@ -320,13 +310,22 @@ $bradius: 8px;
   .text {
     font-size: 17pt;
     font-weight: 500;
-    color: white;
+    color: #c3dff0;
 
     &.small {
       margin-top: 14px;
       font-size: 13pt;
       font-weight: 600;
     }
+  }
+
+  // prettier-ignore
+  .highlight { color: white; }
+
+  // prettier-ignore
+  .busy {
+    .text { color: #92b2c4; }
+    .highlight { color: #c3dff0; }
   }
 
   .error::v-deep {
@@ -339,15 +338,11 @@ $bradius: 8px;
     font-weight: 500;
     color: $color;
 
+    // prettier-ignore
     .alert-icon {
       margin-right: 5px !important;
-      path {
-        stroke: $color;
-      }
+      path { stroke: $color; }
     }
   }
-
-  // prettier-ignore
-  .not-free { color: #92b2c4; }
 }
 </style>
