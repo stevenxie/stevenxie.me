@@ -32,10 +32,6 @@
     height: 500px;
     padding: 24px 64px 0 64px;
   }
-
-  @include breakpoint(laptop) {
-    padding: 32px 72px 0 72px;
-  }
 }
 
 .bundle {
@@ -46,6 +42,11 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+  }
+
+  @include breakpoint(laptop) {
+    align-self: center;
+    width: 1000px;
   }
 }
 
@@ -67,6 +68,8 @@
   }
 
   @include breakpoint(laptop) {
+    padding-left: 0;
+
     .hi { font-size: 136pt; }
     .intro {
       font-size: 28pt;
@@ -81,6 +84,7 @@
   padding-right: calc(20vw - 200px);
 
   @include breakpoint(laptop) {
+    padding-right: 0;
     margin-top: 18px;
   }
 }
