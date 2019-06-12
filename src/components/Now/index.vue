@@ -129,7 +129,7 @@ export default {
 // prettier-ignore
 .carousel {
   width: 100%;
-  @include breakpoint(laptop) { align-self: center; }
+  @include breakpoint(tablet) { align-self: center; }
 }
 
 .container {

@@ -9,12 +9,12 @@
   >
     <div class="container fullsize">
       <div class="ring outer fullsize">
-        <div class="ring inner bg" />
-        <chart class="chart" :chartData="chartData" />
-        <div class="ring shadow" />
-        <div class="ring inner fg flex">
+        <div class="ring inner background flex">
           <h1 class="score mono">{{ score }}</h1>
         </div>
+        <chart class="chart" :chartData="chartData" />
+        <div class="ring inner shadow" />
+        <div class="ring shadow" />
       </div>
     </div>
   </card>
@@ -132,15 +132,12 @@ export default {
     top: $size; left: $size; right: $size; bottom: $size;
     border-radius: 50%;
 
-    &.bg {
-      background: white;
-      z-index: 0;
-    }
-    &.fg {
+    &.background {
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 5px 0 rgba(black, 0.5);
+      background: white;
     }
+    &.shadow { box-shadow: 0 0 5px 0 rgba(black, 0.5); }
   }
 }
 
