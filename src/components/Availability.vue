@@ -49,7 +49,9 @@
 import isEmpty from "lodash/isEmpty";
 import first from "lodash/first";
 import last from "lodash/last";
-import { format, getHours, getMinutes } from "date-fns";
+import format from "date-fns/format";
+import getHours from "date-fns/get_hours";
+import getMinutes from "date-fns/get_minutes";
 
 import { prerendering } from "@/utils";
 import { mapState } from "vuex";

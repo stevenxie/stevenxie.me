@@ -2,6 +2,7 @@
 
 _My personal website._
 
+[![Git Tag][tag-img]][tag]
 [![Drone][drone-img]][drone]
 [![Netlify][netlify-img]][netlify]
 
@@ -15,6 +16,8 @@ yarn build:prod # build and minify for production
 yarn lint       # lint source code
 ```
 
+[tag]: https://github.com/stevenxie/stevenxie.me/releases
+[tag-img]: https://img.shields.io/github/tag/stevenxie/stevenxie.me.svg
 [drone]: https://ci.stevenxie.me/stevenxie/stevenxie.me
 [drone-img]: https://ci.stevenxie.me/api/badges/stevenxie/stevenxie.me/status.svg
 [netlify]: https://app.netlify.com/sites/stevenxie/deploys

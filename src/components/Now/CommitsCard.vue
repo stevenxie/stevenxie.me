@@ -37,8 +37,9 @@
 
 <script>
 import take from "lodash/take";
+import parse from "date-fns/parse";
+import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 import { ContentLoader } from "vue-content-loader";
-import { distanceInWordsToNow, parse } from "date-fns";
 
 import { prerendering } from "@/utils";
 import { mapState } from "vuex";

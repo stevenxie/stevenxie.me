@@ -33,6 +33,7 @@
     "moveto": "^1.8.1",
     "v-tooltip": "^2.0.2",
     "vue": "^2.6.10",
+    "vue-analytics": "^5.17.0",
     "vue-carousel": "^0.18.0",
     "vue-chartjs": "^3.4.2",
     "vue-content-loader": "^0.2.1",
