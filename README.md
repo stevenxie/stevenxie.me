@@ -8,7 +8,7 @@ _My personal website._
 
 Essentially, in its current state this website is just a pretty interface for
 [my API](https://github.com/stevenxie/api) at
-[`api.stevenxie.me`](https://api.stevenxie.me).
+[`api.stevenxie.me`](https://api.stevenxie.me/v1/).
 
 ## Build Setup
 
