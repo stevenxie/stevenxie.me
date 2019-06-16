@@ -7,14 +7,15 @@
 <style lang="scss">
 @import "@/styles/tooltip.scss"; // tooltip styling
 
-@import url("https://rsms.me/inter/inter.css");
-@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700&display=swap");
-
 body {
-  margin: 0;
   font-family: "Inter", "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+// prettier-ignore
+@supports (font-variation-settings: normal) {
+  body { font-family: "Inter var", "Avenir", Helvetica, Arial, sans-serif; }
 }
 
 // prettier-ignore
