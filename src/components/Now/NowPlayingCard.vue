@@ -26,7 +26,6 @@
 
 <script>
 import blankrecord from "@/assets/blankrecord.png";
-import { prerendering } from "@/utils";
 
 import { mapState, mapGetters } from "vuex";
 import { FETCH_NOW_PLAYING } from "@/store/actions";
@@ -39,14 +38,6 @@ import {
 import Card from "./Card";
 
 export default {
-  mounted() {
-    if (prerendering) return; // do not fetch during prerender
-    this.fetchInterval = window.setInterval(this.fetchNowPlaying, 1000);
-    this.fetchNowPlaying();
-  },
-  beforeDestroy() {
-    window.clearInterval(this.fetchInterval);
-  },
   computed: {
     ...mapState({ error: "nowPlayingError" }),
     ...mapGetters({

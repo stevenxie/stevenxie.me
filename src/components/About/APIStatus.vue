@@ -12,7 +12,7 @@ import { baseURL } from "@/services/APIClient";
 
 export default {
   props: { active: { type: Boolean, default: false } },
-  data: () => ({ apiURL: baseURL }),
+  data: () => ({ apiURL: `${baseURL}/` }),
   computed: {
     tooltip() {
       return `API is currently ${this.active ? "online" : "offline"}.`;

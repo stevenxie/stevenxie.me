@@ -13,6 +13,7 @@ import ProductivityService from "@/services/ProductivityService";
 import * as getters from "./getters";
 import * as actions from "./actions";
 import * as mutations from "./mutations";
+import { nowPlayingStreamPlugin } from "./plugins";
 
 import * as yup from "yup";
 import { track, progress, playing } from "@/schemas/nowplaying";
@@ -23,7 +24,7 @@ import { commit } from "@/schemas/git";
 Vue.use(Vuex);
 
 // Declare plugins.
-const plugins = [];
+const plugins = [nowPlayingStreamPlugin];
 if (process.env.VUE_APP_ENABLE_VUEX_LOGGER) plugins.push(createLogger());
 
 export default new Vuex.Store({
@@ -84,6 +85,11 @@ export default new Vuex.Store({
     },
     [mutations.NOW_PLAYING_FAILURE]: (state, error) => {
       state.nowPlayingError = error;
+      state.nowPlayingLoading = false;
+    },
+    [mutations.NOW_PLAYING_PROGRESS]: (state, progress) => {
+      state.nowPlaying.progress = progress;
+      state.nowPlayingError = null;
       state.nowPlayingLoading = false;
     },
 

@@ -1,10 +1,17 @@
-import APIClient from "./APIClient";
+import APIClient, { baseURL } from "./APIClient";
+
+const wsBaseURL = baseURL.startsWith("https")
+  ? `wss${baseURL.slice(5)}`
+  : `ws${baseURL.slice(4)}`;
+
+export const wsURL = `${wsBaseURL}/nowplaying/ws`;
 
 const NowPlayingService = {
   async getNowPlaying() {
     const { data } = await APIClient.get("/nowplaying");
     return data;
   },
+  socket: new WebSocket(wsURL),
 };
 
 export default NowPlayingService;
