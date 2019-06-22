@@ -1,13 +1,17 @@
-import NowPlayingService from "@/services/NowPlayingService";
+import NPS from "@/services/NowPlayingService";
 import {
+  NOW_PLAYING_LOADING,
   NOW_PLAYING_SUCCESS,
   NOW_PLAYING_FAILURE,
   NOW_PLAYING_PROGRESS,
 } from "./mutations";
 
-const { socket } = NowPlayingService;
+const RETRY_TIMEOUT = 3000;
+
 export const nowPlayingStreamPlugin = store => {
-  socket.addEventListener("message", ({ data }) => {
+  NPS.socket.addEventListener("open", () => store.commit(NOW_PLAYING_LOADING));
+
+  NPS.socket.addEventListener("message", ({ data }) => {
     const { event, payload } = JSON.parse(data);
     switch (event) {
       case "error":
@@ -27,5 +31,12 @@ export const nowPlayingStreamPlugin = store => {
           `plugins: unknown event '${event}' from NowPlaying stream`
         );
     }
+  });
+
+  NPS.socket.addEventListener("close", ({ reason }) => {
+    store.commit(NOW_PLAYING_FAILURE, new Error(reason));
+
+    console.error(`NowPlaying socket closed, retrying in ${RETRY_TIMEOUT} ms.`);
+    setTimeout(() => (NPS.resetSocket(), nowPlayingStreamPlugin(store)), 1000);
   });
 };

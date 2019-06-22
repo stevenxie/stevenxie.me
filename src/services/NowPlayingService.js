@@ -11,7 +11,11 @@ const NowPlayingService = {
     const { data } = await APIClient.get("/nowplaying");
     return data;
   },
+
   socket: new WebSocket(wsURL),
+  resetSocket() {
+    this.socket = new WebSocket(wsURL);
+  },
 };
 
 export default NowPlayingService;
