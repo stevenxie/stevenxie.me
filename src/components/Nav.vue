@@ -21,7 +21,7 @@ export default {
     links: [
       { name: "contact", url: "#contact", id: "contact" },
       { name: "github", url: "https://github.com/stevenxie", ext: true },
-      { name: "resume", url: "/resume", ext: true },
+      { name: "status", url: "https://status.stevenxie.me", ext: true },
     ],
     moveTo: new MoveTo({ duration: 1500 }),
   }),

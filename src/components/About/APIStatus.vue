@@ -8,11 +8,9 @@
 </template>
 
 <script>
-import { baseURL } from "@/services/APIClient";
-
 export default {
   props: { active: { type: Boolean, default: false } },
-  data: () => ({ apiURL: `${baseURL}/` }),
+  data: () => ({ apiURL: "https://github.com/stevenxie/api" }),
   computed: {
     tooltip() {
       return `API is currently ${this.active ? "online" : "offline"}.`;
