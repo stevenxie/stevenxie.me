@@ -68,8 +68,9 @@ export default {
     /** @returns {string} */
     artURL() {
       if (!this.track) return blankrecord;
-      const [image] = this.track.album.images;
-      return image.url;
+      const [large, med] = this.track.album.images;
+      if (med) return med.url;
+      return large.url;
     },
 
     /** @returns {number} */
