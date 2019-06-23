@@ -10,7 +10,8 @@
     <div class="container fullsize">
       <div class="ring outer fullsize">
         <div class="ring inner background flex">
-          <h1 class="score mono">{{ score }}</h1>
+          <h1 class="score mono" v-if="score !== null">{{ score }}</h1>
+          <p class="no-data mono" v-else>(no data)</p>
         </div>
         <chart class="chart" :chartData="chartData" />
         <div class="ring inner shadow" />
@@ -135,8 +136,22 @@ export default {
     &.background {
       align-items: center;
       justify-content: center;
+      padding: 20px;
       background: white;
+
+      .score {
+        font-size: 52pt;
+        font-weight: 700;
+        color: #4d4d4d;
+      }
+
+      .no-data {
+        text-align: center;
+        font-weight: 500;
+        color: #464646;
+      }
     }
+
     &.shadow { box-shadow: 0 0 5px 0 rgba(black, 0.5); }
   }
 }
@@ -145,11 +160,5 @@ export default {
 .chart {
   position: absolute;
   top: 0; right: 0; left: 0; bottom: 0;
-}
-
-.score {
-  font-size: 52pt;
-  font-weight: 700;
-  color: #4d4d4d;
 }
 </style>

@@ -4,7 +4,7 @@ export const baseURL = process.env.VUE_APP_API_BASE_URL;
 
 /** @type {AxiosInstance} */
 const APIClient = create({
-  baseURL: baseURL || "https://api.stevenxie.me",
+  baseURL: baseURL || "https://api.stevenxie.me/v1",
 });
 
 export default APIClient;
