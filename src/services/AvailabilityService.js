@@ -4,7 +4,10 @@ import APIClient from "./APIClient";
 
 const AvailabilityService = {
   async getAvailability() {
-    const { data } = await APIClient.get("/availability");
+    const { timeZone: tz } = Intl.DateTimeFormat().resolvedOptions();
+    const { data } = await APIClient.get("/availability", {
+      params: { timezone: tz },
+    });
     const { busy, timezone } = data;
     return { busy: busy.map(pair => mapValues(pair, parse)), timezone };
   },
