@@ -1,7 +1,9 @@
 const PrerenderSPAPlugin = require("prerender-spa-plugin");
-const { PuppeteerRenderer } = PrerenderSPAPlugin;
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const { IgnorePlugin } = require("webpack");
 const path = require("path");
+
+const { PuppeteerRenderer } = PrerenderSPAPlugin;
 
 // Select routes to prerender.
 const prerenderRoutes = ["/"];
@@ -41,6 +43,9 @@ const buildPrerenderSPAPlugin = () =>
 // Configure webpack.
 const configureWebpack = config => {
   config.devtool = "source-map";
+
+  // Plugins for all modes:
+  config.plugins.push(new IgnorePlugin(/^\.\/locale$/, /moment$/));
 
   switch (config.mode) {
     case "development":
