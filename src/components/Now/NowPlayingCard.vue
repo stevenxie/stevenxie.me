@@ -1,10 +1,13 @@
 <template>
   <card class="now-playing" v-bind="headers">
-    <div
-      class="artwork fullsize"
-      :style="{ backgroundImage: `url(${artURL})` }"
-    >
-      <div class="overlay flex fullsize" :class="{ darker: !progress }">
+    <div class="content fullsize">
+      <progressive-img
+        class="artwork fullsize"
+        :src="artworkURL"
+        :placeholder="artworkPlaceholderURL"
+        :key="artworkURL"
+      />
+      <div class="overlay flex fullsize">
         <div class="progress flex" v-if="track">
           <div class="slider" :style="{ width: `${progressPercent}%` }">
             <div class="knob" />
@@ -66,9 +69,18 @@ export default {
     },
 
     /** @returns {string} */
-    artURL() {
+    artworkURL() {
       if (!this.track) return blankrecord;
       const [large, med] = this.track.album.images;
+      if (med) return med.url;
+      return large.url;
+    },
+
+    /** @returns {string} */
+    artworkPlaceholderURL() {
+      if (!this.track) return "";
+      const [large, med, small] = this.track.album.images;
+      if (small) return small.url;
       if (med) return med.url;
       return large.url;
     },
@@ -96,11 +108,12 @@ export default {
       return pp;
     },
   },
+
+  // prettier-ignore
   methods: {
-    fetchNowPlaying() {
-      this.$store.dispatch(FETCH_NOW_PLAYING);
-    },
+    fetchNowPlaying() { this.$store.dispatch(FETCH_NOW_PLAYING); }
   },
+
   components: { card: Card },
 };
 </script>
@@ -112,6 +125,8 @@ export default {
 }
 
 .artwork {
+  position: absolute;
+  z-index: 0;
   background-color: rgb(170, 170, 170);
   background-size: cover;
 }

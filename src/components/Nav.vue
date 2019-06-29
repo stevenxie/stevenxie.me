@@ -25,6 +25,7 @@ export default {
     ],
     moveTo: new MoveTo({ duration: 1500 }),
   }),
+
   methods: {
     /** @param {string} id The ID of the element to scroll to. */
     scrollToID(id) {
