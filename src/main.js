@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VTooltip from "v-tooltip";
 import VAnalytics from "vue-analytics";
+import VProgressiveImage from "vue-progressive-image";
 
 import App from "./App.vue";
 import router from "./router";
@@ -13,6 +14,7 @@ Vue.config.productionTip = false;
 
 // Install plugins.
 Vue.use(VTooltip);
+Vue.use(VProgressiveImage);
 
 const { VUE_APP_ANALYTICS_ID } = process.env;
 if (VUE_APP_ANALYTICS_ID)
