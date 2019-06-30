@@ -41,6 +41,12 @@ import {
 import Card from "./Card";
 
 export default {
+  data: () => ({ loadArtwork: false }),
+  mounted() {
+    if (prerendering) return;
+    this.loadArtwork = true; // only load progressive images after mount
+  },
+
   computed: {
     ...mapState({ error: "nowPlayingError" }),
     ...mapGetters({
@@ -70,7 +76,7 @@ export default {
 
     /** @returns {string} */
     artworkURL() {
-      if (prerendering) return "";
+      if (!this.loadArtwork) return "";
       if (!this.track) return blankrecord;
       const [large, med] = this.track.album.images;
       if (med) return med.url;
@@ -79,7 +85,7 @@ export default {
 
     /** @returns {string} */
     artworkPlaceholderURL() {
-      if (prerendering || !this.track) return "";
+      if (!this.loadArtwork || !this.track) return "";
       const [large, med, small] = this.track.album.images;
       if (small) return small.url;
       if (med) return med.url;
