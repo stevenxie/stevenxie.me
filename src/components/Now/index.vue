@@ -1,18 +1,19 @@
 <template>
   <div class="now">
-    <carousel
-      class="carousel"
-      :pagination-padding="4"
-      :pagination-size="15"
-      :per-page-custom="paging"
-      :space-padding="padding"
-      pagination-active-color="white"
-      v-if="renderCarousel"
-    >
-      <slide v-for="slide in slides" :key="slide">
-        <div class="container"><component :is="slide" ref="slides" /></div>
-      </slide>
-    </carousel>
+    <no-prerender>
+      <carousel
+        class="carousel"
+        :pagination-padding="4"
+        :pagination-size="15"
+        :per-page-custom="paging"
+        :space-padding="padding"
+        pagination-active-color="white"
+      >
+        <slide v-for="slide in slides" :key="slide">
+          <div class="container"><component :is="slide" ref="slides" /></div>
+        </slide>
+      </carousel>
+    </no-prerender>
   </div>
 </template>
 
@@ -21,6 +22,7 @@ import take from "lodash/take";
 import reduceRight from "lodash/reduceRight";
 import { prerendering } from "@/utils";
 
+import NoPrerender from "@/components/NoPrerender";
 import NowPlayingCard from "./NowPlayingCard";
 import CommitsCard from "./CommitsCard";
 import ProductivityCard from "./ProductivityCard";
@@ -46,11 +48,9 @@ export default {
       [0, 40],
     ],
     padding: 0,
-    renderCarousel: false,
   }),
   mounted() {
-    if (prerendering) return; // ignore during prerender
-    this.renderCarousel = true;
+    if (prerendering) return;
     window.addEventListener("resize", this.updatePadding);
     this.updatePaddingNextTick();
   },
@@ -87,6 +87,7 @@ export default {
   components: {
     slide: Slide,
     carousel: Carousel,
+    "no-prerender": NoPrerender,
     "commits-card": CommitsCard,
     "now-playing-card": NowPlayingCard,
     "productivity-card": ProductivityCard,

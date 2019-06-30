@@ -6,7 +6,7 @@
     "dev": "npm run serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:prerender": "cross-env ENABLE_PRERENDER=true npm run build",
+    "build:prerender": "cross-env PRERENDER=true npm run build",
     "build:prod": "cross-env NODE_ENV=production npm run build",
     "lint": "vue-cli-service lint"
   },
@@ -36,6 +36,7 @@
     "vue-analytics": "^5.17.0",
     "vue-carousel": "^0.18.0",
     "vue-chartjs": "^3.4.2",
+    "vue-client-only": "^2.0.0",
     "vue-content-loader": "^0.2.1",
     "vue-lottie": "^0.2.1",
     "vue-progressive-image": "^3.2.0",

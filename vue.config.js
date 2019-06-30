@@ -49,8 +49,7 @@ const configureWebpack = config => {
 
   switch (config.mode) {
     case "development":
-      if (process.env.ENABLE_PRERENDERING)
-        config.plugins.push(buildPrerenderSPAPlugin());
+      if (process.env.PRERENDER) config.plugins.push(buildPrerenderSPAPlugin());
       break;
 
     default:

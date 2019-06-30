@@ -27,9 +27,10 @@ import { TABLET_SCREEN_WIDTH } from "@/styles/breakpoints";
 export default {
   data: () => ({
     embedAbout: false,
-    renderAbout: false,
     focusContact: false,
+    renderAbout: false,
   }),
+
   mounted() {
     if (prerendering) return; // ignore during prerender
     window.addEventListener("resize", this.updateAboutPosition);
@@ -39,6 +40,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener("resize", this.updateAboutPosition);
   },
+
   methods: {
     updateAboutPosition() {
       if (window.innerWidth >= TABLET_SCREEN_WIDTH) this.embedAbout = true;
@@ -49,6 +51,7 @@ export default {
       this.focusContact = true;
     },
   },
+
   components: {
     "custom-nav": Nav,
     now: Now,
@@ -61,9 +64,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.home {
-  position: relative;
-}
+// prettier-ignore
+.home { position: relative; }
 
 // prettier-ignore
 .nav {
