@@ -1,23 +1,32 @@
 <template>
   <div class="nav">
-    <a
-      class="link"
-      v-for="{ name, url, ext, id } in links"
-      :href="url"
-      :target="ext && `_blank`"
-      :key="name"
-      @click="handleLinkClick(id, $event)"
-    >
-      <h5 class="name">{{ name }}</h5>
-    </a>
+    <menu-icon @toggle="handleToggle" />
+    <div class="links" :class="{ open, closing }">
+      <div
+        class="link flex"
+        v-for="{ name, url, ext, id } in links"
+        :key="name"
+      >
+        <a
+          :href="url"
+          :target="ext && `_blank`"
+          @click="handleLinkClick(id, $event)"
+        >
+          <h5 class="name">{{ name }}</h5>
+        </a>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import MoveTo from "moveto";
+import MenuIcon from "@/components/icons/MenuIcon";
 
 export default {
   data: () => ({
+    open: false,
+    closing: false,
     links: [
       { name: "contact", url: "#contact", id: "contact" },
       { name: "github", url: "https://github.com/stevenxie", ext: true },
@@ -40,30 +49,78 @@ export default {
       this.scrollToID(id);
       this.$emit("on-move-to", id);
     },
+
+    handleToggle(opened) {
+      this.open = opened;
+      if (!opened) {
+        this.closing = true;
+        setTimeout(() => (this.closing = false), 500);
+      }
+    },
   },
+
+  components: { "menu-icon": MenuIcon },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/styles/mixins.scss";
 
-.nav {
-  display: none;
-  padding: 14px 10px;
+// prettier-ignore
+.nav { position: relative; }
 
-  @include breakpoint(tablet) {
-    display: flex;
-  }
+// prettier-ignore
+.menu-icon::v-deep {
+  position: absolute;
+  z-index: 3;
+
+  $offset: 10px;
+  top: $offset; right: $offset;
+  path { stroke: white !important; }
+
+  @include breakpoint(tablet) { display: none; }
 }
 
 // prettier-ignore
+.links {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex;
+
+  padding: 10px 0 10px 15px;
+  background-color: rgba(white, 0.15);
+
+  transform: translateY(-100px);
+  &.open { transform: translateY(0); }
+  &.open, &.closing { transition: transform 500ms ease-in-out; }
+
+  @include breakpoint(tablet) {
+    transition: none;
+    transform: translateY(0);
+    background-color: unset;
+    left: unset;
+    right: 15px;
+  }
+}
+
 .link {
-  margin-right: 10px;
-  font-size: 16pt;
-  text-decoration: none;
-  color: white;
-  transition: color 200ms ease-in-out;
-  &:hover { color: rgba(white, 0.8); }
-  .name { font-weight: 600; }
+  padding: 5px;
+  justify-content: center;
+
+  // prettier-ignore
+  a { text-decoration: none; }
+
+  .name {
+    font-size: 15pt;
+    font-weight: 600;
+    color: white;
+    transition: color 200ms ease-in-out;
+
+    // prettier-ignore
+    &:hover { color: rgba(white, 0.8); }
+
+    // prettier-ignore
+    @include breakpoint(tablet) { font-size: 14pt; }
+  }
 }
 </style>
