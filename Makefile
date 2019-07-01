@@ -69,10 +69,10 @@ js-clean:
 
 # Vue:
 .PHONY: vue-build vue-clean
-vue-build: ## Compile Vue app for production.
+vue-build: # Compile Vue app for production.
 	@echo "Build Vue app for production..." && yarn build:prod && echo done
 
-vue-clean: ## Clean up dist folder.
+vue-clean: # Clean up dist folder.
 	@echo "Cleaning .dist/..." && rm -rf .dist/ && echo done
 
 
