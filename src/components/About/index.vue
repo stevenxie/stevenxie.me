@@ -37,8 +37,8 @@ export default {
 @import "@/styles/mixins.scss";
 
 .about {
-  min-height: 204px;
-  padding: 12px 12px 22px 12px;
+  min-height: 210px;
+  padding: 22px 12px 32px 12px;
   box-sizing: border-box;
   position: relative;
 
@@ -49,16 +49,16 @@ export default {
   overflow: hidden;
 
   @include breakpoint(tablet) {
-    min-height: 240px;
-    min-width: 340px;
-    max-width: 400px;
+    width: 360px;
+    height: 260px;
     border-radius: 10px;
     padding: 26px 22px 32px 22px;
     box-shadow: 0 6px 18px 0 rgba(black, 0.5);
   }
 
   @include breakpoint(laptop) {
-    min-height: 275px;
+    height: 300px;
+    width: 400px;
     padding: 28px;
   }
 }
@@ -69,6 +69,8 @@ export default {
   font-weight: inherit;
   font-size: 11pt;
   line-height: 15pt;
+  overflow-x: auto;
+  white-space: pre-wrap;
 
   @include breakpoint(tablet) {
     line-height: 16pt;
