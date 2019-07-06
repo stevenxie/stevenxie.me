@@ -48,6 +48,7 @@ export default {
       history.pushState(null, null, "#contact");
       this.scrollToID(id);
       this.$emit("on-move-to", id);
+      this.open = false;
     },
 
     handleToggle(opened) {

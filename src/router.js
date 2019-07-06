@@ -14,6 +14,12 @@ export default new Router({
       name: "home",
       component: Home,
     },
+    {
+      path: "/location",
+      name: "location",
+      component: () =>
+        import(/* webpackChunkName:"location" */ "./views/Location"),
+    },
     // {
     //   path: "/about",
     //   name: "about",

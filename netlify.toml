@@ -40,3 +40,8 @@ public'''
 from = "/resume"
 to = "https://resume.stevenxie.me"
 status = 200
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
