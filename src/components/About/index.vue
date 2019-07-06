@@ -18,15 +18,26 @@ import APIStatus from "./APIStatus";
 import LoadingIcon from "@/components/icons/LoadingIcon";
 
 export default {
+  data: () => ({ spook: false }),
   mounted() {
     if (prerendering) return; // do not fetch during prerender
     this.$store.dispatch(FETCH_ABOUT);
+
+    // Random 1-in-5 chance of 'whereabouts' being set to "Right behind
+    // you."
+    const rand = Math.floor(Math.random() * Math.floor(5));
+    if (!rand) this.spook = true;
+    setTimeout(() => (this.spook = false), 1500);
   },
   computed: {
     ...mapState({ loading: "aboutLoading", error: "aboutError" }),
     ...mapGetters({ about: ABOUT_EXCLUDING_CONTACT }),
     aboutText() {
-      return this.error || JSON.stringify(this.about, undefined, 2);
+      if (this.error) return this.error;
+
+      let { about, spook } = this;
+      if (spook) about = { ...about, whereabouts: "Right behind you." };
+      return JSON.stringify(about, undefined, 2);
     },
   },
   components: { "api-status": APIStatus, "loading-icon": LoadingIcon },

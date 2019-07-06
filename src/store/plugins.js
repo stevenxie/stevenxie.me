@@ -1,4 +1,4 @@
-import NPS from "@/services/NowPlayingService";
+import MS from "@/services/MusicService";
 import {
   NOW_PLAYING_LOADING,
   NOW_PLAYING_SUCCESS,
@@ -9,9 +9,9 @@ import {
 const RETRY_TIMEOUT = 3000;
 
 export const nowPlayingStreamPlugin = store => {
-  NPS.socket.addEventListener("open", () => store.commit(NOW_PLAYING_LOADING));
+  MS.socket.addEventListener("open", () => store.commit(NOW_PLAYING_LOADING));
 
-  NPS.socket.addEventListener("message", ({ data }) => {
+  MS.socket.addEventListener("message", ({ data }) => {
     const { event, payload } = JSON.parse(data);
     switch (event) {
       case "error":
@@ -33,10 +33,10 @@ export const nowPlayingStreamPlugin = store => {
     }
   });
 
-  NPS.socket.addEventListener("close", ({ reason }) => {
+  MS.socket.addEventListener("close", ({ reason }) => {
     store.commit(NOW_PLAYING_FAILURE, new Error(reason));
 
     console.error(`NowPlaying socket closed, retrying in ${RETRY_TIMEOUT} ms.`);
-    setTimeout(() => (NPS.resetSocket(), nowPlayingStreamPlugin(store)), 1000);
+    setTimeout(() => (MS.resetSocket(), nowPlayingStreamPlugin(store)), 1000);
   });
 };

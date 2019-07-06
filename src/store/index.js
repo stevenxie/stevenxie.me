@@ -6,9 +6,10 @@ import get from "lodash/get";
 
 import AboutService from "@/services/AboutService";
 import CommitsService from "@/services/CommitsService";
-import NowPlayingService from "@/services/NowPlayingService";
+import MusicService from "@/services/MusicService";
 import AvailabilityService from "@/services/AvailabilityService";
 import ProductivityService from "@/services/ProductivityService";
+import LocationService from "@/services/LocationService";
 
 import * as getters from "./getters";
 import * as actions from "./actions";
@@ -16,10 +17,11 @@ import * as mutations from "./mutations";
 import { nowPlayingStreamPlugin } from "./plugins";
 
 import * as yup from "yup";
-import { track, progress, playing } from "@/schemas/nowplaying";
+import { track, progress, playing } from "@/schemas/music";
 import { segment } from "@/schemas/productivity";
 import { period } from "@/schemas/availability";
 import { commit } from "@/schemas/git";
+import { location } from "@/schemas/location";
 
 Vue.use(Vuex);
 
@@ -48,6 +50,10 @@ export default new Vuex.Store({
     availability: [],
     availabilityError: null,
     availabilityLoading: false,
+
+    location: null,
+    locationError: null,
+    locationLoading: false,
   },
   getters: {
     // About:
@@ -76,7 +82,7 @@ export default new Vuex.Store({
       state.aboutLoading = false;
     },
 
-    // Now Playing:
+    // Music:
     [mutations.NOW_PLAYING_LOADING]: state => (state.nowPlayingLoading = true),
     [mutations.NOW_PLAYING_SUCCESS]: (state, nowPlaying) => {
       state.nowPlaying = nowPlaying;
@@ -130,6 +136,18 @@ export default new Vuex.Store({
       state.availabilityError = error;
       state.availabilityLoading = false;
     },
+
+    // Location:
+    [mutations.LOCATION_LOADING]: state => (state.locationLoading = true),
+    [mutations.LOCATION_SUCCESS]: (state, location) => {
+      state.location = location;
+      state.locationError = null;
+      state.locationLoading = false;
+    },
+    [mutations.LOCATION_FAILURE]: (state, error) => {
+      state.locationError = error;
+      state.locationLoading = false;
+    },
   },
   actions: {
     [actions.FETCH_ABOUT]: async ({ state, commit }) => {
@@ -146,7 +164,7 @@ export default new Vuex.Store({
       if (state.nowPlayingLoading) return;
       commit(mutations.NOW_PLAYING_LOADING);
       try {
-        const nowPlaying = await NowPlayingService.getNowPlaying();
+        const nowPlaying = await MusicService.getNowPlaying();
         if (nowPlaying)
           await yup
             .object()
@@ -200,6 +218,18 @@ export default new Vuex.Store({
         commit(mutations.AVAILABILITY_SUCCESS, busy);
       } catch (err) {
         commit(mutations.AVAILABILITY_FAILURE, err);
+      }
+    },
+
+    [actions.FETCH_LOCATION]: async ({ state, commit }) => {
+      if (state.locationLoading) return;
+      commit(mutations.LOCATION_LOADING);
+      try {
+        const loc = await LocationService.getLocation();
+        await location.validate(loc);
+        commit(mutations.LOCATION_SUCCESS, loc);
+      } catch (err) {
+        commit(mutations.LOCATION_FAILURE, err);
       }
     },
   },

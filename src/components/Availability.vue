@@ -1,5 +1,5 @@
 <template>
-  <div class="availability flex" ref="frame">
+  <div class="availability flex" :class="{ busy: currentlyBusy }" ref="frame">
     <div
       class="timeline flex"
       :class="{ error }"
@@ -113,9 +113,8 @@ export default {
       return classes;
     },
 
-    currentTimeRelative() {
-      return percentOfDay(this.time);
-    },
+    // prettier-ignore
+    currentTimeRelative() { return percentOfDay(this.time); },
 
     currentlyBusy() {
       const current = this.currentTimeRelative;
@@ -164,7 +163,8 @@ export default {
 $bradius: 8px;
 
 .availability {
-  padding: 40px 0;
+  position: relative;
+  padding: 50px 0;
   justify-content: center;
   align-items: stretch;
   overflow: hidden;

@@ -4,9 +4,10 @@ import Home from "./views/Home.vue";
 
 Vue.use(Router);
 
+const { BASE_URL } = process.env;
 export default new Router({
   mode: "history",
-  base: process.env.BASE_URL,
+  base: BASE_URL,
   routes: [
     {
       path: "/",

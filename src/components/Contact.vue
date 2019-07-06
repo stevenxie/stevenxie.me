@@ -1,6 +1,6 @@
 <template>
   <div class="contact flex" id="contact">
-    <img class="avatar" src="@/assets/ori.svg" />
+    <img class="avatar" src="@/assets/ori.svg" alt="Avatar" />
     <h2 class="chat">Wanna chat?</h2>
     <p class="message">Shoot me a message at</p>
     <span class="email-wrapper" :class="{ error }">

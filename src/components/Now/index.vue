@@ -22,10 +22,12 @@ import take from "lodash/take";
 import reduceRight from "lodash/reduceRight";
 import { prerendering } from "@/utils";
 
-import NoPrerender from "@/components/NoPrerender";
-import NowPlayingCard from "./NowPlayingCard";
 import CommitsCard from "./CommitsCard";
+import LocationCard from "./LocationCard";
+import NowPlayingCard from "./NowPlayingCard";
 import ProductivityCard from "./ProductivityCard";
+
+import NoPrerender from "@/components/NoPrerender";
 
 // Async imports.
 // prettier-ignore
@@ -37,11 +39,16 @@ const Slide = () => carouselPromise.then(({ Slide }) => Slide);
 
 export default {
   data: () => ({
-    slides: ["now-playing-card", "productivity-card", "commits-card"],
-    paging: [[900, 3], [550, 2], [0, 1]],
+    slides: [
+      "now-playing-card",
+      "location-card",
+      "productivity-card",
+      "commits-card",
+    ],
+    paging: [[1150, 4], [900, 3], [550, 2], [0, 1]],
     spacing: [
-      [1200, 90],
-      [1100, 75],
+      [1250, 60],
+      [1150, 45],
       [1000, 60],
       [900, 45],
       [750, 60],
@@ -88,6 +95,7 @@ export default {
     slide: Slide,
     carousel: Carousel,
     "no-prerender": NoPrerender,
+    "location-card": LocationCard,
     "commits-card": CommitsCard,
     "now-playing-card": NowPlayingCard,
     "productivity-card": ProductivityCard,

@@ -6,6 +6,7 @@
         :src="artworkURL"
         :placeholder="artworkPlaceholderURL"
         :key="artworkURL"
+        alt="Artwork"
       />
       <div class="overlay flex fullsize">
         <div class="progress flex" v-if="track">
@@ -31,7 +32,6 @@
 import blankrecord from "@/assets/blankrecord.png";
 
 import { mapState, mapGetters } from "vuex";
-import { FETCH_NOW_PLAYING } from "@/store/actions";
 import {
   NOW_PLAYING,
   NOW_PLAYING_TRACK,
@@ -107,11 +107,6 @@ export default {
       if (pp < 10) return 10;
       return pp;
     },
-  },
-
-  // prettier-ignore
-  methods: {
-    fetchNowPlaying() { this.$store.dispatch(FETCH_NOW_PLAYING); }
   },
 
   components: { card: Card },
