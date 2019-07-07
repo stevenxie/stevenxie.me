@@ -17,11 +17,14 @@
             @keyup.enter="unlock"
             :disabled="!location || !locked"
           />
-          <lock-icon
-            :height="22"
-            :locked="locked"
-            :class="{ shake: wrong, unlocked: !locked }"
-          />
+          <div class="icons">
+            <loading-icon :height="18" :width="18" v-if="verifying" />
+            <lock-icon
+              :class="{ shake: wrong, unlocked: !locked }"
+              :height="22"
+              :locked="locked"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -40,12 +43,14 @@ import { FETCH_LOCATION } from "@/store/actions";
 import { prerendering } from "@/utils";
 
 import LockIcon from "@/components/icons/LockIcon";
+import LoadingIcon from "@/components/icons/LoadingIcon";
 const Map = () => import(/* webpackChunkName: "map" */ "@/components/Map");
 
 export default {
   data: () => ({
     locked: true,
     wrong: false,
+    verifying: false,
     code: "",
   }),
 
@@ -65,6 +70,7 @@ export default {
   methods: {
     async unlock({ target }) {
       if (!this.locked) return; // no-op
+      this.verifying = true;
 
       try {
         const segments = await LocationService.getRecentLocationHistory(
@@ -157,6 +163,8 @@ export default {
         if (!err.response || err.response.status !== 401) throw err;
         this.wrong = true;
         window.setTimeout(() => (this.wrong = false), 1000);
+      } finally {
+        this.verifying = false;
       }
     },
   },
@@ -164,6 +172,7 @@ export default {
   components: {
     "custom-map": Map,
     "lock-icon": LockIcon,
+    "loading-icon": LoadingIcon,
   },
 };
 </script>
@@ -251,27 +260,32 @@ export default {
     }
 
     // prettier-ignore
-    .lock-icon::v-deep {
-      $offset: 5px;
+    .icons::v-deep {
       position: absolute;
-      top: $offset + 1px;
-      right: $offset; bottom: $offset;
+      top: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
 
-      svg path {
-        stroke: rgb(69, 69, 69);
-        transition: stroke 275ms ease-in-out;
-      }
-      &.unlocked svg path { stroke: rgb(16, 156, 98); }
+      > * { margin-right: 5px !important; }
+      .loading-icon svg path { stroke: rgb(100, 100, 100); }
 
-      @keyframes shake {
-        10%, 90% { transform: translate3d(-1px, 0, 0); }
-        20%, 80% { transform: translate3d(2px, 0, 0); }
-        30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
-        40%, 60% { transform: translate3d(3px, 0, 0); }
-      }
-      &.shake {
-        animation: shake 700ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-        svg path { stroke: rgb(248, 10, 89); }
+      .lock-icon {
+        svg path {
+          stroke: rgb(69, 69, 69);
+          transition: stroke 275ms ease-in-out;
+        }
+        &.unlocked svg path { stroke: rgb(16, 156, 98); }
+
+        @keyframes shake {
+          10%, 90% { transform: translate3d(-1px, 0, 0); }
+          20%, 80% { transform: translate3d(2px, 0, 0); }
+          30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+          40%, 60% { transform: translate3d(3px, 0, 0); }
+        }
+        &.shake {
+          animation: shake 700ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+          svg path { stroke: rgb(248, 10, 89); }
+        }
       }
     }
   }
