@@ -35,7 +35,7 @@
 import uuidHash from "uuid-by-string";
 import last from "lodash/last";
 import parse from "date-fns/parse";
-import differenceInHours from "date-fns/difference_in_hours";
+import differenceInMinutes from "date-fns/difference_in_minutes";
 import { mapState } from "vuex";
 
 import LocationService from "@/services/LocationService";
@@ -83,13 +83,11 @@ export default {
         setOpacity(0.1);
 
         segments.forEach(({ coordinates, timeSpan: { begin } }) => {
-          const id = uuidHash(begin);
-          const difference = differenceInHours(new Date(), parse(begin));
-          let opacity = (23 - difference) / 24;
-          if (opacity < 0.1) opacity = 0.1;
+          const difference = differenceInMinutes(new Date(), parse(begin)) / 60;
+          const opacity = 1.35 / (difference + 1.5) + 0.1;
           if (coordinates.length > 1)
             map.addLayer({
-              id,
+              id: uuidHash(begin),
               type: "line",
               source: {
                 type: "geojson",
