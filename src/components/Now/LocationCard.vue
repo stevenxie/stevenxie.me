@@ -14,7 +14,7 @@ import { prerendering } from "@/utils";
 import { FETCH_LOCATION } from "@/store/actions";
 
 import Card from "./Card";
-import Map from "@/components/Map";
+const Map = () => import(/* webpackChunkName: "map" */ "@/components/Map");
 
 const LOCATION_PAGE_URL = "/location";
 
@@ -34,9 +34,9 @@ export default {
     headers() {
       const headers = {
         title: "Unknown",
-        titleURL: LOCATION_PAGE_URL,
+        titleURL: this.error ? undefined : LOCATION_PAGE_URL,
         label: "Current Location",
-        labelURL: LOCATION_PAGE_URL,
+        labelURL: this.error ? undefined : LOCATION_PAGE_URL,
         error: this.error && "Failed to load location data.",
       };
       if (this.location) headers.title = this.location.address.label;

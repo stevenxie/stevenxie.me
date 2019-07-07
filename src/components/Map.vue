@@ -53,6 +53,9 @@ export default {
         })
       );
     }
+
+    // Update map with location, if it exists.
+    if (this.location) this.update(this.location);
   },
 
   beforeDestroy() {
@@ -65,7 +68,12 @@ export default {
   },
 
   watch: {
-    location({ id, position: { x, y }, shape }) {
+    // prettier-ignore
+    location(curr, prev) { if (curr && !prev) this.update(curr) }
+  },
+
+  methods: {
+    update({ id, position: { x, y }, shape }) {
       const add = () => {
         this.map.addLayer({
           id,
@@ -91,6 +99,14 @@ export default {
       // Add layer only after load.
       if (this.map.loaded()) add();
       else this.map.on("load", add);
+    },
+
+    // prettier-ignore
+    clear() { this.map.removeLayer(this.location.id); },
+
+    /** @param {number} opacity */
+    setOpacity(opacity) {
+      this.map.setPaintProperty(this.location.id, "fill-opacity", opacity);
     },
   },
 };

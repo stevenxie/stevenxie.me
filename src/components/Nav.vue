@@ -55,7 +55,7 @@ export default {
       this.open = opened;
       if (!opened) {
         this.closing = true;
-        setTimeout(() => (this.closing = false), 500);
+        window.setTimeout(() => (this.closing = false), 500);
       }
     },
   },

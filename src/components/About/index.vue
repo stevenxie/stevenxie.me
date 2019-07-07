@@ -27,7 +27,7 @@ export default {
     // you."
     const rand = Math.floor(Math.random() * Math.floor(5));
     if (!rand) this.spook = true;
-    setTimeout(() => (this.spook = false), 1500);
+    window.setTimeout(() => (this.spook = false), 1500);
   },
   computed: {
     ...mapState({ loading: "aboutLoading", error: "aboutError" }),

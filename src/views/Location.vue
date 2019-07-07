@@ -1,39 +1,51 @@
 <template>
   <div class="location flex">
-    <custom-map :show-controls="true" :zoom="12" />
+    <custom-map :show-controls="true" :zoom="12" ref="map" />
     <div class="panel flex">
-      <span v-if="location">
-        <div class="group">
-          <h1 class="label">Approx. Location</h1>
-          <p class="value">{{ location.address.label }}</p>
+      <div class="group">
+        <h1 class="label">Approx. Location</h1>
+        <p class="value">{{ location ? location.address.label : "Unknown" }}</p>
+      </div>
+      <div class="group">
+        <h1 class="label">Detailed Location</h1>
+        <div class="passcode">
+          <input
+            class="input mono"
+            type="text"
+            placeholder="access code"
+            v-model="code"
+            @keyup.enter="unlock"
+            :disabled="!location || !locked"
+          />
+          <lock-icon
+            :height="22"
+            :locked="locked"
+            :class="{ shake: wrong, unlocked: !locked }"
+          />
         </div>
-        <div class="group">
-          <h1 class="label">Detailed Location</h1>
-          <div class="passcode">
-            <input
-              class="input mono"
-              type="text"
-              placeholder="access code"
-              disabled
-            />
-            <lock-icon :height="22" :locked="locked" />
-          </div>
-        </div>
-      </span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import uuidHash from "uuid-by-string";
+import last from "lodash/last";
 import { mapState } from "vuex";
-import { prerendering } from "@/utils";
-import { FETCH_LOCATION } from "@/store/actions";
 
-import Map from "@/components/Map";
+import LocationService from "@/services/LocationService";
+import { FETCH_LOCATION } from "@/store/actions";
+import { prerendering } from "@/utils";
+
 import LockIcon from "@/components/icons/LockIcon";
+const Map = () => import(/* webpackChunkName: "map" */ "@/components/Map");
 
 export default {
-  data: () => ({ locked: true }),
+  data: () => ({
+    locked: true,
+    wrong: false,
+    code: "",
+  }),
 
   mounted() {
     if (prerendering) return;
@@ -46,6 +58,97 @@ export default {
       loading: "locationLoading",
       error: "locationError",
     }),
+  },
+
+  methods: {
+    async unlock({ target }) {
+      if (!this.locked) return; // no-op
+
+      try {
+        const {
+          coordinates,
+          timeSpan: { begin },
+        } = await LocationService.getRecentLocationHistory(this.code);
+        target.blur();
+        this.locked = false;
+
+        const { map, setOpacity } = this.$refs.map;
+        const id = uuidHash(begin);
+        setOpacity(0.12);
+
+        if (coordinates.length > 1)
+          map.addLayer({
+            id,
+            type: "line",
+            source: {
+              type: "geojson",
+              data: {
+                type: "Feature",
+                geometry: {
+                  type: "LineString",
+                  coordinates,
+                },
+              },
+            },
+            layout: {
+              "line-join": "round",
+              "line-cap": "round",
+            },
+            paint: {
+              "line-color": "#FF009B",
+              "line-opacity": 0.8,
+              "line-width": 6,
+            },
+          });
+
+        // Add 'current location' dot.
+        map.addLayer({
+          id: `${id}-current-dot`,
+          type: "circle",
+          source: {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: last(coordinates),
+              },
+            },
+          },
+          paint: {
+            "circle-radius": 6,
+            "circle-color": "#3d00d6",
+          },
+        });
+        map.addLayer({
+          id: `${id}-current-radial`,
+          type: "circle",
+          source: {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: last(coordinates),
+              },
+            },
+          },
+          paint: {
+            "circle-radius": 15,
+            "circle-color": "#3d00d6",
+            "circle-opacity": 0.3,
+          },
+        });
+        map.flyTo({
+          center: last(coordinates),
+          zoom: 15,
+        });
+      } catch (err) {
+        if (!err.response || err.response.status !== 401) throw err;
+        this.wrong = true;
+        window.setTimeout(() => (this.wrong = false), 1000);
+      }
+    },
   },
 
   components: {
@@ -69,25 +172,22 @@ export default {
 
 // prettier-ignore
 .panel {
-  $offset: 25px;
-
-  position: absolute;
+  position: relative;
   z-index: 1;
-  bottom: $offset; right: $offset;
-  width: 275px;
   min-height: 110px;
-  border-radius: 5px;
   padding: 15px 18px;
 
   background: white;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.50);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.5);
 
-  @include breakpoint(mobileonly) {
-    position: relative;
-    bottom: unset; right: unset;
-    width: unset;
-    border-radius: 0;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.5);
+  @include breakpoint(phablet) {
+    $offset: 25px;
+
+    position: absolute;
+    bottom: $offset; right: $offset;
+    width: 275px;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.50);
   }
 }
 
@@ -125,6 +225,7 @@ export default {
       border: none;
       border-radius: 6px;
       box-sizing: border-box;
+      outline: none;
 
       font-size: 12pt;
       font-weight: 500;
@@ -132,21 +233,36 @@ export default {
       transition: background 250ms ease-in-out;
 
       // prettier-ignore
+      &:disabled { cursor: not-allowed; }
       &:not(:disabled) {
+        // prettier-ignore
         &:hover, &:focus { background: lighten($background, 2%); }
-      }
-      &:disabled {
-        cursor: not-allowed;
       }
     }
 
     // prettier-ignore
     .lock-icon::v-deep {
-      $offset: 6px;
+      $offset: 5px;
       position: absolute;
-      top: $offset; right: $offset; bottom: $offset;
+      top: $offset + 1px;
+      right: $offset; bottom: $offset;
 
-      svg path { stroke: rgb(69, 69, 69); }
+      svg path {
+        stroke: rgb(69, 69, 69);
+        transition: stroke 275ms ease-in-out;
+      }
+      &.unlocked svg path { stroke: rgb(16, 156, 98); }
+
+      @keyframes shake {
+        10%, 90% { transform: translate3d(-1px, 0, 0); }
+        20%, 80% { transform: translate3d(2px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+        40%, 60% { transform: translate3d(3px, 0, 0); }
+      }
+      &.shake {
+        animation: shake 700ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        svg path { stroke: rgb(248, 10, 89); }
+      }
     }
   }
 }

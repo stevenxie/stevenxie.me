@@ -37,6 +37,9 @@ export const nowPlayingStreamPlugin = store => {
     store.commit(NOW_PLAYING_FAILURE, new Error(reason));
 
     console.error(`NowPlaying socket closed, retrying in ${RETRY_TIMEOUT} ms.`);
-    setTimeout(() => (MS.resetSocket(), nowPlayingStreamPlugin(store)), 1000);
+    window.setTimeout(
+      () => (MS.resetSocket(), nowPlayingStreamPlugin(store)),
+      1000
+    );
   });
 };
