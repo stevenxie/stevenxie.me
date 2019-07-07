@@ -31,6 +31,8 @@
 <script>
 import uuidHash from "uuid-by-string";
 import last from "lodash/last";
+import parse from "date-fns/parse";
+import differenceInHours from "date-fns/difference_in_hours";
 import { mapState } from "vuex";
 
 import LocationService from "@/services/LocationService";
@@ -65,45 +67,51 @@ export default {
       if (!this.locked) return; // no-op
 
       try {
-        const {
-          coordinates,
-          timeSpan: { begin },
-        } = await LocationService.getRecentLocationHistory(this.code);
+        const segments = await LocationService.getRecentLocationHistory(
+          this.code
+        );
         target.blur();
         this.locked = false;
 
         const { map, setOpacity } = this.$refs.map;
-        const id = uuidHash(begin);
-        setOpacity(0.12);
+        setOpacity(0.1);
 
-        if (coordinates.length > 1)
-          map.addLayer({
-            id,
-            type: "line",
-            source: {
-              type: "geojson",
-              data: {
-                type: "Feature",
-                geometry: {
-                  type: "LineString",
-                  coordinates,
+        segments.forEach(({ coordinates, timeSpan: { begin } }) => {
+          const id = uuidHash(begin);
+          const difference = differenceInHours(new Date(), parse(begin));
+          let opacity = (23 - difference) / 24;
+          if (opacity < 0.1) opacity = 0.1;
+          if (coordinates.length > 1)
+            map.addLayer({
+              id,
+              type: "line",
+              source: {
+                type: "geojson",
+                data: {
+                  type: "Feature",
+                  geometry: {
+                    type: "LineString",
+                    coordinates,
+                  },
                 },
               },
-            },
-            layout: {
-              "line-join": "round",
-              "line-cap": "round",
-            },
-            paint: {
-              "line-color": "#FF009B",
-              "line-opacity": 0.8,
-              "line-width": 6,
-            },
-          });
+              layout: {
+                "line-join": "round",
+                "line-cap": "round",
+              },
+              paint: {
+                "line-color": "#FF009B",
+                "line-opacity": opacity,
+                "line-width": 6,
+              },
+            });
+        });
+
+        const position = last(last(segments).coordinates);
 
         // Add 'current location' dot.
         map.addLayer({
-          id: `${id}-current-dot`,
+          id: "current",
           type: "circle",
           source: {
             type: "geojson",
@@ -111,7 +119,7 @@ export default {
               type: "Feature",
               geometry: {
                 type: "Point",
-                coordinates: last(coordinates),
+                coordinates: position,
               },
             },
           },
@@ -120,8 +128,9 @@ export default {
             "circle-color": "#3d00d6",
           },
         });
+
         map.addLayer({
-          id: `${id}-current-radial`,
+          id: "current-radial",
           type: "circle",
           source: {
             type: "geojson",
@@ -129,7 +138,7 @@ export default {
               type: "Feature",
               geometry: {
                 type: "Point",
-                coordinates: last(coordinates),
+                coordinates: position,
               },
             },
           },
@@ -139,8 +148,9 @@ export default {
             "circle-opacity": 0.3,
           },
         });
+
         map.flyTo({
-          center: last(coordinates),
+          center: position,
           zoom: 15,
         });
       } catch (err) {
@@ -217,6 +227,7 @@ export default {
   .passcode {
     position: relative;
 
+    // prettier-ignore
     .input {
       $background: #d6d6d6;
 
@@ -232,10 +243,9 @@ export default {
       background: $background;
       transition: background 250ms ease-in-out;
 
-      // prettier-ignore
+      &::placeholder { color: rgb(129, 129, 129); }
       &:disabled { cursor: not-allowed; }
       &:not(:disabled) {
-        // prettier-ignore
         &:hover, &:focus { background: lighten($background, 2%); }
       }
     }
