@@ -74,7 +74,7 @@ export default {
 
       try {
         const segments = await LocationService.getRecentLocationHistory(
-          this.code
+          this.code.trim()
         );
         target.blur();
         this.locked = false;
