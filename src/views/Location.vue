@@ -9,14 +9,19 @@
       <div class="group">
         <h1 class="label">Detailed Location</h1>
         <div class="passcode">
-          <input
-            class="input mono"
-            type="text"
-            placeholder="access code"
-            v-model="code"
-            @keyup.enter="unlock"
-            :disabled="!location || !locked"
-          />
+          <form @submit.prevent="handleUnlock" autocomplete="off">
+            <input
+              class="mono"
+              name="access"
+              type="text"
+              autocomplete="false"
+              placeholder="access code"
+              v-model="code"
+              :disabled="!location || !locked"
+              ref="input"
+            />
+            <input type="submit" hidden />
+          </form>
           <div class="icons">
             <loading-icon :height="18" :width="18" v-if="verifying" />
             <lock-icon
@@ -68,22 +73,22 @@ export default {
   },
 
   methods: {
-    async unlock({ target }) {
-      if (!this.locked) return; // no-op
+    async handleUnlock() {
+      if (!this.locked || this.verifying) return; // no-op
       this.verifying = true;
 
       try {
         const segments = await LocationService.getRecentLocationHistory(
           this.code.trim()
         );
-        target.blur();
+        this.$refs.input.blur();
         this.locked = false;
 
         const { map, setOpacity } = this.$refs.map;
         setOpacity(0.1);
 
-        segments.forEach(({ coordinates, timeSpan: { begin } }) => {
-          const difference = differenceInMinutes(new Date(), parse(begin)) / 60;
+        segments.forEach(({ coordinates, timeSpan: { begin, end } }) => {
+          const difference = differenceInMinutes(new Date(), parse(end)) / 60;
           const opacity = 1.35 / (difference + 1.5) + 0.1;
           if (coordinates.length > 1)
             map.addLayer({
@@ -235,7 +240,7 @@ export default {
     position: relative;
 
     // prettier-ignore
-    .input {
+    input[name="access"] {
       $background: #d6d6d6;
 
       width: 100%;

@@ -65,4 +65,7 @@ const configureWebpack = config => {
   }
 };
 
-module.exports = { configureWebpack };
+module.exports = {
+  configureWebpack,
+  devServer: { disableHostCheck: true },
+};

@@ -73,7 +73,7 @@ export default {
   },
 
   methods: {
-    update({ id, position: { x, y }, shape }) {
+    update({ id, position, shape }) {
       const add = () => {
         this.map.addLayer({
           id,
@@ -93,7 +93,7 @@ export default {
             "fill-opacity": 0.2,
           },
         });
-        this.map.setCenter([x, y]);
+        this.map.setCenter(position);
       };
 
       // Add layer only after load.

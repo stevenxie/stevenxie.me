@@ -1,8 +1,6 @@
 import * as yup from "yup";
 
-export const coordinates = yup
-  .object()
-  .shape({ x: yup.number(), y: yup.number(), z: yup.number(0) });
+export const coordinates = yup.array().of(yup.number().required());
 
 const address = yup.object().shape({
   label: yup.string().required(),
@@ -21,11 +19,6 @@ export const location = yup.object().shape({
   level: yup.string().required(),
   type: yup.string().required(),
   position: coordinates,
-  shape: yup.array().of(
-    yup
-      .array()
-      .of(yup.number().required())
-      .required()
-  ),
+  shape: yup.array().of(coordinates.required()),
   address,
 });
