@@ -5,7 +5,7 @@ import { createLoadableState, createLoadableMutations } from "@/store/utils";
 import * as actions from "@/store/actions";
 import * as mutations from "@/store/mutations";
 
-import CommitsService from "@/services/CommitsService";
+import commitsService from "@/services/commits";
 
 const module = {
   state: createLoadableState([]),
@@ -19,7 +19,7 @@ const module = {
       if (context.state.loading) return;
       context.commit(mutations.COMMITS_LOADING);
       try {
-        const commits = await CommitsService.getCommits();
+        const commits = await commitsService.getCommits();
         await yup
           .array()
           .of(commit)

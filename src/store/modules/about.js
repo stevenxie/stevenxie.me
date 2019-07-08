@@ -6,7 +6,7 @@ import * as actions from "@/store/actions";
 import * as getters from "@/store/getters";
 import * as mutations from "@/store/mutations";
 
-import AboutService from "@/services/AboutService";
+import aboutService from "@/services/about";
 
 const module = {
   state: createLoadableState(null),
@@ -25,7 +25,7 @@ const module = {
       if (state.loading) return;
       commit(mutations.ABOUT_LOADING);
       try {
-        commit(mutations.ABOUT_SUCCESS, await AboutService.getAbout());
+        commit(mutations.ABOUT_SUCCESS, await aboutService.getAbout());
       } catch (err) {
         commit(mutations.ABOUT_FAILURE, err);
       }

@@ -1,4 +1,4 @@
-import MS from "@/services/MusicService";
+import ms from "@/services/music";
 import {
   NOW_PLAYING_LOADING,
   NOW_PLAYING_SUCCESS,
@@ -9,9 +9,9 @@ import {
 const RETRY_TIMEOUT = 3000;
 
 export const nowPlayingStreamPlugin = store => {
-  MS.socket.addEventListener("open", () => store.commit(NOW_PLAYING_LOADING));
+  ms.socket.addEventListener("open", () => store.commit(NOW_PLAYING_LOADING));
 
-  MS.socket.addEventListener("message", ({ data }) => {
+  ms.socket.addEventListener("message", ({ data }) => {
     const { event, payload } = JSON.parse(data);
     switch (event) {
       case "error":
@@ -33,12 +33,12 @@ export const nowPlayingStreamPlugin = store => {
     }
   });
 
-  MS.socket.addEventListener("close", ({ reason }) => {
+  ms.socket.addEventListener("close", ({ reason }) => {
     store.commit(NOW_PLAYING_FAILURE, new Error(reason));
 
     console.error(`NowPlaying socket closed, retrying in ${RETRY_TIMEOUT} ms.`);
     window.setTimeout(
-      () => (MS.resetSocket(), nowPlayingStreamPlugin(store)),
+      () => (ms.resetSocket(), nowPlayingStreamPlugin(store)),
       1000
     );
   });

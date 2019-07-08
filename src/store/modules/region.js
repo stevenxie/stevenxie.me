@@ -2,7 +2,7 @@ import { createLoadableState, createLoadableMutations } from "@/store/utils";
 import * as actions from "@/store/actions";
 import * as mutations from "@/store/mutations";
 
-import LocationService from "@/services/LocationService";
+import locationService from "@/services/location";
 import { location } from "@/schemas/location";
 
 const module = {
@@ -17,7 +17,7 @@ const module = {
       if (state.loading) return;
       commit(mutations.REGION_LOADING);
       try {
-        const loc = await LocationService.getLocation();
+        const loc = await locationService.getLocation();
         await location.validate(loc);
         commit(mutations.REGION_SUCCESS, loc);
       } catch (err) {

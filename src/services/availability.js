@@ -3,7 +3,7 @@ import parse from "date-fns/parse";
 
 import { client } from "@/api";
 
-const AvailabilityService = {
+const service = {
   async getAvailability() {
     const { timeZone: tz } = Intl.DateTimeFormat().resolvedOptions();
     const { data } = await client.get("/availability", {
@@ -14,4 +14,4 @@ const AvailabilityService = {
   },
 };
 
-export default AvailabilityService;
+export default service;

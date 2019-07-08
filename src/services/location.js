@@ -1,6 +1,6 @@
 import { client } from "@/api";
 
-const LocationService = {
+const service = {
   async getLocation() {
     const { data } = await client.get("/location");
     return data;
@@ -15,4 +15,4 @@ const LocationService = {
   },
 };
 
-export default LocationService;
+export default service;

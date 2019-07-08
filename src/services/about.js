@@ -6,7 +6,7 @@ const cache = {
   timestamp: null,
 };
 
-const AboutService = {
+const service = {
   /**
    * Get about data from the server.
    *
@@ -32,4 +32,4 @@ const AboutService = {
   },
 };
 
-export default AboutService;
+export default service;
