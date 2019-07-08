@@ -1,11 +1,13 @@
 <template>
   <div class="location flex">
-    <custom-map
-      :show-controls="true"
-      :zoom="12"
-      :fill-opacity="fillOpacity"
-      ref="map"
-    />
+    <div class="map-wrapper">
+      <custom-map
+        :show-controls="true"
+        :zoom="12"
+        :fill-opacity="fillOpacity"
+        ref="map"
+      />
+    </div>
     <div class="panel flex">
       <div class="group">
         <h1 class="label">Approx. Location</h1>
@@ -197,7 +199,10 @@ export default {
 }
 
 // prettier-ignore
-.map { flex: 1; }
+.map-wrapper {
+  flex: 1;
+  .map { height: 100%; width: 100%; }
+}
 
 // prettier-ignore
 .panel {
