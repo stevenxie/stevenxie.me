@@ -47,7 +47,7 @@ import last from "lodash/last";
 import parse from "date-fns/parse";
 import differenceInMinutes from "date-fns/difference_in_minutes";
 
-import LocationService from "@/services/LocationService";
+import locationService from "@/services/location";
 import { mapState } from "vuex";
 import { FETCH_REGION } from "@/store/actions";
 
@@ -85,7 +85,7 @@ export default {
       this.verifying = true;
 
       try {
-        const segments = await LocationService.getRecentLocationHistory(
+        const segments = await locationService.getRecentLocationHistory(
           this.code.trim()
         );
         this.$refs.input.blur();

@@ -5,7 +5,7 @@ import { createLoadableState, createLoadableMutations } from "@/store/utils";
 import * as actions from "@/store/actions";
 import * as mutations from "@/store/mutations";
 
-import AvailabilityService from "@/services/AvailabilityService";
+import availabilityService from "@/services/availability";
 
 const module = {
   state: createLoadableState([]),
@@ -19,7 +19,7 @@ const module = {
       if (state.loading) return;
       commit(mutations.AVAILABILITY_LOADING);
       try {
-        const { busy } = await AvailabilityService.getAvailability();
+        const { busy } = await availabilityService.getAvailability();
         await yup
           .array()
           .of(period)

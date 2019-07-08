@@ -1,10 +1,10 @@
 import { client } from "@/api";
 
-const ProductivityService = {
+const service = {
   async getProductivity() {
     const { data } = await client.get("/productivity");
     return data;
   },
 };
 
-export default ProductivityService;
+export default service;

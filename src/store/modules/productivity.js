@@ -5,7 +5,7 @@ import { createLoadableState, createLoadableMutations } from "@/store/utils";
 import * as actions from "@/store/actions";
 import * as mutations from "@/store/mutations";
 
-import ProductivityService from "@/services/ProductivityService";
+import productivityService from "@/services/productivity";
 
 const module = {
   state: createLoadableState([]),
@@ -19,7 +19,7 @@ const module = {
       if (state.productivityLoading) return;
       commit(mutations.PRODUCTIVITY_LOADING);
       try {
-        const productivity = await ProductivityService.getProductivity();
+        const productivity = await productivityService.getProductivity();
         await yup
           .array()
           .of(segment)

@@ -6,7 +6,7 @@ import * as mutations from "@/store/mutations";
 import * as getters from "@/store/getters";
 import * as actions from "@/store/actions";
 
-import MusicService from "@/services/MusicService";
+import musicService from "@/services/music";
 import { track, progress, playing } from "@/schemas/music";
 
 const module = {
@@ -33,7 +33,7 @@ const module = {
       if (state.loading) return;
       commit(mutations.NOW_PLAYING_LOADING);
       try {
-        const nowplaying = await MusicService.getNowPlaying();
+        const nowplaying = await musicService.getNowPlaying();
         if (nowplaying)
           await yup
             .object()

@@ -309,6 +309,7 @@ $bradius: 8px;
 }
 
 .status {
+  margin-top: 6px;
   padding: 0 35px;
   align-items: center;
 
@@ -318,7 +319,7 @@ $bradius: 8px;
     color: #c3dff0;
 
     &.small {
-      margin-top: 14px;
+      margin-top: 20px;
       font-size: 13pt;
       font-weight: 600;
     }

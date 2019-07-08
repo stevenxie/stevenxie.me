@@ -1,7 +1,7 @@
 import { client, wsBaseURL } from "@/api";
 export const wsURL = `${wsBaseURL}/nowplaying/ws`;
 
-const MusicService = {
+const service = {
   async getNowPlaying() {
     const { data } = await client.get("/nowplaying");
     return data;
@@ -13,4 +13,4 @@ const MusicService = {
   },
 };
 
-export default MusicService;
+export default service;
