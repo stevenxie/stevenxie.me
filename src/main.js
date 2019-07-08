@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VTooltip from "v-tooltip";
-import VAnalytics from "vue-analytics";
 import VProgressiveImage from "vue-progressive-image";
 
 import App from "./App.vue";
@@ -18,7 +17,9 @@ Vue.use(VProgressiveImage);
 
 const { VUE_APP_ANALYTICS_ID } = process.env;
 if (VUE_APP_ANALYTICS_ID)
-  Vue.use(VAnalytics, { id: VUE_APP_ANALYTICS_ID, router });
+  import(/* webpackChunkName:"analytics" */ "vue-analytics").then(VAnalytics =>
+    Vue.use(VAnalytics, { id: VUE_APP_ANALYTICS_ID, router })
+  );
 
 // If prerendering, inject prerendered tag so that future loads will know that
 // the page has been prerendered.
