@@ -6,7 +6,7 @@
 import mapbox from "mapbox-gl/dist/mapbox-gl";
 import { mapState } from "vuex";
 import { prerendering } from "@/utils";
-import { FETCH_LOCATION } from "@/store/actions";
+import { FETCH_REGION } from "@/store/actions";
 
 const { VUE_APP_MAPBOX_TOKEN } = process.env;
 mapbox.accessToken = VUE_APP_MAPBOX_TOKEN;
@@ -33,7 +33,7 @@ export default {
 
   mounted() {
     if (prerendering) return;
-    if (!this.location && !this.loading) this.$store.dispatch(FETCH_LOCATION);
+    if (!this.region && !this.loading) this.$store.dispatch(FETCH_REGION);
 
     // Initialize map.
     this.map = new mapbox.Map({
@@ -54,8 +54,8 @@ export default {
       );
     }
 
-    // Update map with location, if it exists.
-    if (this.location) this.update(this.location);
+    // Update map with region, if it exists.
+    if (this.region) this.update(this.region);
   },
 
   beforeDestroy() {
@@ -64,12 +64,15 @@ export default {
   },
 
   computed: {
-    ...mapState({ location: "location", loading: "locationLoading" }),
+    ...mapState({
+      region: ({ region }) => region.data,
+      loading: ({ region }) => region.loading,
+    }),
   },
 
   watch: {
     // prettier-ignore
-    location(curr, prev) { if (curr && !prev) this.update(curr) }
+    region(curr, prev) { if (curr && !prev) this.update(curr) }
   },
 
   methods: {
@@ -102,11 +105,11 @@ export default {
     },
 
     // prettier-ignore
-    clear() { this.map.removeLayer(this.location.id); },
+    clear() { this.map.removeLayer(this.region.id); },
 
     /** @param {number} opacity */
     setOpacity(opacity) {
-      this.map.setPaintProperty(this.location.id, "fill-opacity", opacity);
+      this.map.setPaintProperty(this.region.id, "fill-opacity", opacity);
     },
   },
 };

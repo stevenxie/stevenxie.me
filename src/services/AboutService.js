@@ -1,4 +1,4 @@
-import APIClient from "./APIClient";
+import { client } from "@/api";
 
 const cache = {
   data: null,
@@ -16,7 +16,7 @@ const AboutService = {
   async getAbout(force = false) {
     if (cache.promise) await cache.promise;
     if (!cache.data || force) {
-      cache.promise = APIClient.get("/about");
+      cache.promise = client.get("/about");
       const { data } = await cache.promise;
       cache.data = data;
       cache.timestamp = new Date();
@@ -24,6 +24,7 @@ const AboutService = {
     }
     return cache.data;
   },
+
   async getEmail() {
     if (cache.promise) await cache.promise;
     const { email } = await this.getAbout();

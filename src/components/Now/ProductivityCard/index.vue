@@ -10,7 +10,13 @@
     <div class="container fullsize">
       <div class="ring outer fullsize">
         <div class="ring inner background flex">
-          <h1 class="score mono" v-if="score !== null">{{ score }}</h1>
+          <h1
+            class="score mono"
+            :class="{ full: score === 100 }"
+            v-if="score !== null"
+          >
+            {{ score }}
+          </h1>
           <p class="no-data mono" v-else>(no data)</p>
         </div>
         <chart class="chart" :chartData="chartData" />
@@ -49,9 +55,9 @@ export default {
   },
   computed: {
     ...mapState({
-      segments: "productivity",
-      loading: "productivityLoading",
-      error: "productivityError",
+      segments: ({ productivity }) => productivity.data,
+      loading: ({ productivity }) => productivity.loading,
+      error: ({ productivity }) => productivity.error,
     }),
 
     score() {
@@ -143,6 +149,8 @@ export default {
         font-size: 52pt;
         font-weight: 700;
         color: #4d4d4d;
+
+        &.full { font-size: 42pt; }
       }
 
       .no-data {

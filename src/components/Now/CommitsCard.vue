@@ -54,9 +54,9 @@ export default {
   },
   computed: {
     ...mapState({
-      commits: "commits",
-      loading: "commitsLoading",
-      error: "commitsError",
+      commits: ({ commits }) => commits.data,
+      loading: ({ commits }) => commits.loading,
+      error: ({ commits }) => commits.error,
     }),
     firstThreeCommits() {
       return take(this.commits, 3);

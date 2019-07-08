@@ -88,7 +88,10 @@ export default {
     window.removeEventListener("resize", this.updateTimelineOffset);
   },
   computed: {
-    ...mapState({ busy: "availability", error: "availabilityError" }),
+    ...mapState({
+      busy: ({ availability }) => availability.data,
+      error: ({ availability }) => availability.error,
+    }),
 
     busyRelative() {
       return this.busy.map(({ start, end }) => {

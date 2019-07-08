@@ -30,7 +30,10 @@ export default {
     window.setTimeout(() => (this.spook = false), 3000);
   },
   computed: {
-    ...mapState({ loading: "aboutLoading", error: "aboutError" }),
+    ...mapState({
+      loading: ({ about }) => about.loading,
+      error: ({ about }) => about.error,
+    }),
     ...mapGetters({ about: ABOUT_EXCLUDING_CONTACT }),
     aboutText() {
       if (this.error) return this.error;

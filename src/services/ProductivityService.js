@@ -1,8 +1,8 @@
-import APIClient from "./APIClient";
+import { client } from "@/api";
 
 const ProductivityService = {
   async getProductivity() {
-    const { data } = await APIClient.get("/productivity");
+    const { data } = await client.get("/productivity");
     return data;
   },
 };

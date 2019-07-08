@@ -4,7 +4,7 @@
     <div class="panel flex">
       <div class="group">
         <h1 class="label">Approx. Location</h1>
-        <p class="value">{{ location ? location.address.label : "Unknown" }}</p>
+        <p class="value">{{ region ? region.address.label : "Unknown" }}</p>
       </div>
       <div class="group">
         <h1 class="label">Detailed Location</h1>
@@ -16,9 +16,9 @@
               type="text"
               autocomplete="false"
               placeholder="access code"
-              v-model="code"
-              :disabled="!location || !locked"
               ref="input"
+              v-model="code"
+              :disabled="!region || !locked"
             />
             <input type="submit" hidden />
           </form>
@@ -41,10 +41,11 @@ import uuidHash from "uuid-by-string";
 import last from "lodash/last";
 import parse from "date-fns/parse";
 import differenceInMinutes from "date-fns/difference_in_minutes";
-import { mapState } from "vuex";
 
 import LocationService from "@/services/LocationService";
-import { FETCH_LOCATION } from "@/store/actions";
+import { mapState } from "vuex";
+import { FETCH_REGION } from "@/store/actions";
+
 import { prerendering } from "@/utils";
 
 import LockIcon from "@/components/icons/LockIcon";
@@ -61,14 +62,14 @@ export default {
 
   mounted() {
     if (prerendering) return;
-    if (!this.location && !this.loading) this.$store.dispatch(FETCH_LOCATION);
+    if (!this.region && !this.loading) this.$store.dispatch(FETCH_REGION);
   },
 
   computed: {
     ...mapState({
-      location: "location",
-      loading: "locationLoading",
-      error: "locationError",
+      region: ({ region }) => region.data,
+      loading: ({ region }) => region.loading,
+      error: ({ region }) => region.error,
     }),
   },
 

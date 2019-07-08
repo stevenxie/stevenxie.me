@@ -34,7 +34,10 @@ export default {
     this.$store.dispatch(FETCH_ABOUT);
   },
   computed: {
-    ...mapState({ loading: "aboutLoading", error: "aboutError" }),
+    ...mapState({
+      loading: ({ about }) => about.loading,
+      error: ({ about }) => about.error,
+    }),
     ...mapGetters({ email: ABOUT_EMAIL }),
     mailtoURL() {
       return this.email && `mailto:${this.email}?subject=Hello!`;

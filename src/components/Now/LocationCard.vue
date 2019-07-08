@@ -10,8 +10,8 @@
 
 <script>
 import { mapState } from "vuex";
+import { FETCH_REGION } from "@/store/actions";
 import { prerendering } from "@/utils";
-import { FETCH_LOCATION } from "@/store/actions";
 
 import Card from "./Card";
 const Map = () => import(/* webpackChunkName: "map" */ "@/components/Map");
@@ -21,13 +21,13 @@ const LOCATION_PAGE_URL = "/location";
 export default {
   mounted() {
     if (prerendering) return;
-    if (!this.location && !this.loading) this.$store.dispatch(FETCH_LOCATION);
+    if (!this.region && !this.loading) this.$store.dispatch(FETCH_REGION);
   },
 
   computed: {
     ...mapState({
-      location: "location",
-      error: "locationError",
+      region: ({ region }) => region.data,
+      error: ({ region }) => region.error,
     }),
 
     /** @returns {{ title: string, label: string }} */
@@ -39,7 +39,7 @@ export default {
         labelURL: this.error ? undefined : LOCATION_PAGE_URL,
         error: this.error && "Failed to load location data.",
       };
-      if (this.location) headers.title = this.location.address.label;
+      if (this.region) headers.title = this.region.address.label;
       return headers;
     },
   },

@@ -42,7 +42,7 @@ import Card from "./Card";
 
 export default {
   computed: {
-    ...mapState({ error: "nowPlayingError" }),
+    ...mapState({ error: ({ nowplaying }) => nowplaying.error }),
     ...mapGetters({
       track: NOW_PLAYING_TRACK,
       playing: NOW_PLAYING,

@@ -1,11 +1,12 @@
 import mapValues from "lodash/mapValues";
 import parse from "date-fns/parse";
-import APIClient from "./APIClient";
+
+import { client } from "@/api";
 
 const AvailabilityService = {
   async getAvailability() {
     const { timeZone: tz } = Intl.DateTimeFormat().resolvedOptions();
-    const { data } = await APIClient.get("/availability", {
+    const { data } = await client.get("/availability", {
       params: { timezone: tz },
     });
     const { busy, timezone } = data;

@@ -1,13 +1,14 @@
-import APIClient from "./APIClient";
+import { client } from "@/api";
 
 const LocationService = {
   async getLocation() {
-    const { data } = await APIClient.get("/location");
+    const { data } = await client.get("/location");
     return data;
   },
+
   /** @param {string} code */
   async getRecentLocationHistory(code) {
-    const { data } = await APIClient.get("location/history", {
+    const { data } = await client.get("location/history", {
       headers: { Authorization: `Bearer ${code}` },
     });
     return data;
