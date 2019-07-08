@@ -23,7 +23,11 @@ export default {
     },
     zoom: {
       type: Number,
-      default: 11,
+      default: 9.5,
+    },
+    fillOpacity: {
+      type: Number,
+      default: 0.15,
     },
     showControls: {
       type: Boolean,
@@ -72,12 +76,18 @@ export default {
 
   watch: {
     // prettier-ignore
-    region(curr, prev) { if (curr && !prev) this.update(curr) }
+    region(curr, prev) { if (curr && !prev) this.update(curr); },
+
+    fillOpacity(value) {
+      this.whenMapLoads(() =>
+        this.map.setPaintProperty(this.region.id, "fill-opacity", value)
+      );
+    },
   },
 
   methods: {
     update({ id, position, shape }) {
-      const add = () => {
+      this.whenMapLoads(() => {
         this.map.addLayer({
           id,
           type: "fill",
@@ -93,24 +103,24 @@ export default {
           },
           paint: {
             "fill-color": "#FF009B",
-            "fill-opacity": 0.2,
+            "fill-opacity": this.fillOpacity,
           },
         });
         this.map.setCenter(position);
-      };
+      });
+    },
 
-      // Add layer only after load.
-      if (this.map.loaded()) add();
-      else this.map.on("load", add);
+    whenMapLoads(f, ...args) {
+      // TODO: Find a better way of determining map loads.
+      //
+      // This currently uses an internal variable as described here:
+      // https://github.com/mapbox/mapbox-gl-js/issues/6707#issuecomment-495481411
+      if (this.map._loaded) f(...args);
+      else this.map.on("load", () => f(...args));
     },
 
     // prettier-ignore
-    clear() { this.map.removeLayer(this.region.id); },
-
-    /** @param {number} opacity */
-    setOpacity(opacity) {
-      this.map.setPaintProperty(this.region.id, "fill-opacity", opacity);
-    },
+    clear() { this.whenMapLoads(this.map.removeLayer, this.region.id); }
   },
 };
 </script>

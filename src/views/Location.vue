@@ -1,6 +1,11 @@
 <template>
   <div class="location flex">
-    <custom-map :show-controls="true" :zoom="12" ref="map" />
+    <custom-map
+      :show-controls="true"
+      :zoom="12"
+      :fill-opacity="fillOpacity"
+      ref="map"
+    />
     <div class="panel flex">
       <div class="group">
         <h1 class="label">Approx. Location</h1>
@@ -57,6 +62,7 @@ export default {
     locked: true,
     wrong: false,
     verifying: false,
+    fillOpacity: 0.2,
     code: "",
   }),
 
@@ -85,8 +91,8 @@ export default {
         this.$refs.input.blur();
         this.locked = false;
 
-        const { map, setOpacity } = this.$refs.map;
-        setOpacity(0.1);
+        const { map } = this.$refs.map;
+        this.fillOpacity = 0.1;
 
         segments.forEach(({ coordinates, timeSpan: { begin, end } }) => {
           const difference = differenceInMinutes(new Date(), parse(end)) / 60;
@@ -161,7 +167,7 @@ export default {
 
         map.flyTo({
           center: position,
-          zoom: 15,
+          zoom: 14,
         });
       } catch (err) {
         if (!err.response || err.response.status !== 401) throw err;
