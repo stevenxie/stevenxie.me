@@ -83,9 +83,9 @@ export default {
 
 <style lang="scss" scoped>
 .commit-card {
-  margin: 2px 2px 8px 2px;
+  margin: 4px 2px 8px 2px;
   border-radius: 4px;
-  padding: 8px 12px 16px 12px;
+  padding: 9px 12px 16px 12px;
   position: relative;
 
   color: white;
@@ -138,7 +138,7 @@ export default {
 }
 
 .skeleton {
-  margin: 2px 2px 4px 2px;
+  margin: 4px 2px 4px 2px;
   border-radius: 4px;
 }
 </style>
