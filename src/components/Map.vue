@@ -15,7 +15,7 @@ export default {
   props: {
     mapstyle: {
       type: String,
-      default: "mapbox://styles/mapbox/streets-v9",
+      default: "mapbox://styles/mapbox/streets-v11",
     },
     interactive: {
       type: Boolean,

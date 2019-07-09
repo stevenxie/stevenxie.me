@@ -44,8 +44,10 @@
 </template>
 
 <script>
+import mapbox from "mapbox-gl/dist/mapbox-gl";
 import uuidHash from "uuid-by-string";
 import last from "lodash/last";
+
 import parse from "date-fns/parse";
 import differenceInMinutes from "date-fns/difference_in_minutes";
 
@@ -96,10 +98,16 @@ export default {
         const { map } = this.$refs.map;
         this.fillOpacity = 0.1;
 
-        segments.forEach(({ coordinates, timeSpan: { begin, end } }) => {
+        const places = [];
+        segments.forEach(segment => {
+          const {
+            coordinates,
+            distance,
+            timeSpan: { begin, end },
+          } = segment;
           const difference = differenceInMinutes(new Date(), parse(end)) / 60;
           const opacity = 1.35 / (difference + 1.5) + 0.1;
-          if (coordinates.length > 1)
+          if (coordinates.length > 1) {
             map.addLayer({
               id: uuidHash(begin),
               type: "line",
@@ -107,10 +115,7 @@ export default {
                 type: "geojson",
                 data: {
                   type: "Feature",
-                  geometry: {
-                    type: "LineString",
-                    coordinates,
-                  },
+                  geometry: { type: "LineString", coordinates },
                 },
               },
               layout: {
@@ -118,16 +123,83 @@ export default {
                 "line-cap": "round",
               },
               paint: {
-                "line-color": "#FF009B",
+                "line-color": "#FF00C3",
                 "line-opacity": opacity,
-                "line-width": 6,
+                "line-width": 5.5,
               },
             });
+          } else if (!distance) {
+            const {
+              coordinates: [coordinates],
+              ...others
+            } = segment;
+            places.push({ coordinates, ...others });
+          }
         });
 
-        const position = last(last(segments).coordinates);
+        // Add places.
+        const features = places.map(({ place, address, coordinates }) => ({
+          type: "Feature",
+          properties: { description: `<h3>${place}</h3><p>${address}</p>` },
+          geometry: { type: "Point", coordinates },
+        }));
+        map.addLayer({
+          id: "places",
+          type: "circle",
+          source: {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features,
+            },
+          },
+          paint: {
+            "circle-radius": 6,
+            "circle-opacity": 0.6,
+            "circle-color": "#8929FF",
+            "circle-stroke-width": 8,
+            "circle-stroke-color": "transparent",
+          },
+        });
+
+        // Add places popups.
+        const popup = new mapbox.Popup({
+          closeButton: false,
+          closeOnClick: false,
+        });
+        map.on(
+          "mouseenter",
+          "places",
+          ({ features: [feature], lngLat: { lng } }) => {
+            // Channge cursor style.
+            map.getCanvas().style.cursor = "pointer";
+
+            const { geometry, properties } = feature;
+            const { description } = properties;
+            const coordinates = geometry.coordinates.slice();
+
+            // Ensure that if the map is zoomed out such that multiple copies of
+            // the feature are visible, the popup appears over the copy being
+            // pointed to.
+            while (Math.abs(lng - coordinates[0]) > 180) {
+              coordinates[0] += lng > coordinates[0] ? 360 : -360;
+            }
+
+            // Populate the popup and set its coordinates based on the feature
+            // found.
+            popup
+              .setLngLat(coordinates)
+              .setHTML(description)
+              .addTo(map);
+          }
+        );
+        map.on("mouseleave", "places", () => {
+          map.getCanvas().style.cursor = "";
+          popup.remove();
+        });
 
         // Add 'current location' dot.
+        const position = last(last(segments).coordinates);
         map.addLayer({
           id: "current",
           type: "circle",
@@ -135,35 +207,15 @@ export default {
             type: "geojson",
             data: {
               type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: position,
-              },
+              geometry: { type: "Point", coordinates: position },
             },
           },
           paint: {
-            "circle-radius": 6,
-            "circle-color": "#3d00d6",
-          },
-        });
-
-        map.addLayer({
-          id: "current-radial",
-          type: "circle",
-          source: {
-            type: "geojson",
-            data: {
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: position,
-              },
-            },
-          },
-          paint: {
-            "circle-radius": 15,
-            "circle-color": "#3d00d6",
-            "circle-opacity": 0.3,
+            "circle-radius": 7,
+            "circle-color": "#0537FC",
+            "circle-stroke-width": 11,
+            "circle-stroke-color": "#365EFF",
+            "circle-stroke-opacity": 0.3,
           },
         });
 
@@ -199,9 +251,26 @@ export default {
 }
 
 // prettier-ignore
-.map-wrapper {
+.map-wrapper::v-deep {
   flex: 1;
-  .map { height: 100%; width: 100%; }
+
+  .map {
+    height: 100%;
+    width: 100%;
+  }
+
+  .mapboxgl-popup {
+    font-family: "Inter var", "Avenir", Helvetica, Arial, sans-serif;
+
+    h3 { margin-bottom: 3px; }
+    p { line-height: 18px; }
+
+    .mapboxgl-popup-content {
+      border-radius: 4px;
+      padding-bottom: 10px;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+    }
+  }
 }
 
 // prettier-ignore
