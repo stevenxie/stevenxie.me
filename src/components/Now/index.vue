@@ -1,5 +1,5 @@
 <template>
-  <div class="now">
+  <section class="now">
     <no-prerender>
       <carousel
         class="carousel"
@@ -14,7 +14,7 @@
         </slide>
       </carousel>
     </no-prerender>
-  </div>
+  </section>
 </template>
 
 <script>

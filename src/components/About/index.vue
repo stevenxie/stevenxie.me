@@ -1,11 +1,11 @@
 <template>
-  <div class="about mono">
+  <section class="about mono">
     <div class="loading" v-if="loading">
       <loading-icon :height="50" :width="50" />
     </div>
     <pre class="data" v-else>{{ aboutText }}</pre>
     <api-status :active="!!about" />
-  </div>
+  </section>
 </template>
 
 <script>

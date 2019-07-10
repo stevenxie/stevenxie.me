@@ -1,5 +1,5 @@
 <template>
-  <div class="hero flex">
+  <section class="hero flex">
     <div class="bundle flex">
       <div class="text flex">
         <h1 class="hi">Hi.</h1>
@@ -7,7 +7,7 @@
       </div>
       <div v-if="$slots.default" class="embed flex"><slot /></div>
     </div>
-  </div>
+  </section>
 </template>
 
 <style lang="scss" scoped>

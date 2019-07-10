@@ -1,5 +1,9 @@
 <template>
-  <div class="availability flex" :class="{ busy: currentlyBusy }" ref="frame">
+  <section
+    class="availability flex"
+    :class="{ busy: currentlyBusy }"
+    ref="frame"
+  >
     <div
       class="timeline flex"
       :class="{ error }"
@@ -42,7 +46,7 @@
         </h3>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
