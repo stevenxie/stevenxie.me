@@ -6,7 +6,7 @@
 
 <script>
 import ClientOnly from "vue-client-only";
-import { prerendering } from "@/utils";
+import { prerendering } from "@/utils/prerender";
 
 // prettier-ignore
 export default {

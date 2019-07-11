@@ -44,21 +44,20 @@
 </template>
 
 <script>
-import mapbox from "mapbox-gl/dist/mapbox-gl";
 import uuidHash from "uuid-by-string";
 import last from "lodash/last";
-
 import parse from "date-fns/parse";
 import differenceInMinutes from "date-fns/difference_in_minutes";
 
 import locationService from "@/services/location";
 import { mapState } from "vuex";
 import { FETCH_REGION } from "@/store/actions";
-
-import { prerendering } from "@/utils";
+import { prerendering } from "@/utils/prerender";
 
 import LockIcon from "@/components/icons/LockIcon";
 import LoadingIcon from "@/components/icons/LoadingIcon";
+
+const mapbox = () => import(/*webpackChunkName: "mapbox" */ "@/utils/mapbox");
 const Map = () => import(/* webpackChunkName: "map" */ "@/components/Map");
 
 export default {
@@ -163,7 +162,8 @@ export default {
         });
 
         // Add places popups.
-        const popup = new mapbox.Popup({
+        const { default: mb } = await mapbox();
+        const popup = new mb.Popup({
           closeButton: false,
           closeOnClick: false,
         });

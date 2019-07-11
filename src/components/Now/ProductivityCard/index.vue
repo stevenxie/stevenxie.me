@@ -32,7 +32,7 @@ import kebabCase from "lodash/kebabCase";
 import isEmpty from "lodash/isEmpty";
 import Card from "../Card";
 
-import { prerendering } from "@/utils";
+import { prerendering } from "@/utils/prerender";
 import { mapState } from "vuex";
 import { FETCH_PRODUCTIVITY } from "@/store/actions";
 

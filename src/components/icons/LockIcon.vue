@@ -12,7 +12,7 @@
 
 <script>
 import lock from "@/assets/lottie/lock.json";
-import { prerendered } from "@/utils";
+import { prerendered } from "@/utils/prerender";
 
 const Lottie = () => import(/* webpackChunkName: "lottie" */ "vue-lottie");
 const sizeProp = { type: Number, default: 24 };

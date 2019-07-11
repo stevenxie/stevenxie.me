@@ -18,7 +18,7 @@
 <script>
 import { mapState } from "vuex";
 import { FETCH_REGION } from "@/store/actions";
-import { prerendering } from "@/utils";
+import { prerendering } from "@/utils/prerender";
 
 import Card from "./Card";
 const Map = () => import(/* webpackChunkName: "map" */ "@/components/Map");

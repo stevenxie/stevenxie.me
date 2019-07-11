@@ -3,13 +3,10 @@
 </template>
 
 <script>
-import mapbox from "mapbox-gl/dist/mapbox-gl";
+import mapbox from "@/utils/mapbox";
 import { mapState } from "vuex";
-import { prerendering } from "@/utils";
+import { prerendering } from "@/utils/prerender";
 import { FETCH_REGION } from "@/store/actions";
-
-const { VUE_APP_MAPBOX_TOKEN } = process.env;
-mapbox.accessToken = VUE_APP_MAPBOX_TOKEN;
 
 export default {
   props: {

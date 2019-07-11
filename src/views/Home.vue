@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { prerendering } from "@/utils";
+import { prerendering } from "@/utils/prerender";
 
 // @ is an alias to /src
 import Nav from "@/components/Nav";

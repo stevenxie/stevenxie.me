@@ -20,7 +20,7 @@
 <script>
 import take from "lodash/take";
 import reduceRight from "lodash/reduceRight";
-import { prerendering } from "@/utils";
+import { prerendering } from "@/utils/prerender";
 
 import CommitsCard from "./CommitsCard";
 import LocationCard from "./LocationCard";
