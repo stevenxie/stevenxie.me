@@ -41,7 +41,7 @@ import parse from "date-fns/parse";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 import { ContentLoader } from "vue-content-loader";
 
-import { prerendering } from "@/utils";
+import { prerendering } from "@/utils/prerender";
 import { mapState } from "vuex";
 import { FETCH_COMMITS } from "@/store/actions";
 

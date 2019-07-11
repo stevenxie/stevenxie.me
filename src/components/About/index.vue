@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { prerendering } from "@/utils";
+import { prerendering } from "@/utils/prerender";
 import { mapGetters, mapState } from "vuex";
 import { FETCH_ABOUT } from "@/store/actions";
 import { ABOUT_EXCLUDING_CONTACT } from "@/store/getters";

@@ -57,7 +57,7 @@ import format from "date-fns/format";
 import getHours from "date-fns/get_hours";
 import getMinutes from "date-fns/get_minutes";
 
-import { prerendering } from "@/utils";
+import { prerendering } from "@/utils/prerender";
 import { mapState } from "vuex";
 import { FETCH_AVAILABILITY } from "@/store/actions";
 

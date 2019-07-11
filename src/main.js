@@ -6,7 +6,11 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
-import { prerendering, prerendered, injectPrerenderedTag } from "./utils";
+import {
+  prerendering,
+  prerendered,
+  injectPrerenderedTag,
+} from "./utils/prerender";
 
 // Configure Vue instance.
 Vue.config.productionTip = false;
