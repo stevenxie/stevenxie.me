@@ -57,8 +57,7 @@ import { prerendering } from "@/utils/prerender";
 import LockIcon from "@/components/icons/LockIcon";
 import LoadingIcon from "@/components/icons/LoadingIcon";
 
-const mapbox = () => import(/*webpackChunkName: "mapbox" */ "@/utils/mapbox");
-const Map = () => import(/* webpackChunkName: "map" */ "@/components/Map");
+import { mapbox, Map } from "@/utils/async-modules";
 
 export default {
   data: () => ({

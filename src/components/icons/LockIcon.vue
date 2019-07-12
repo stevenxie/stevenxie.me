@@ -12,9 +12,9 @@
 
 <script>
 import lock from "@/assets/lottie/lock.json";
+import { Lottie } from "@/utils/async-modules";
 import { prerendered } from "@/utils/prerender";
 
-const Lottie = () => import(/* webpackChunkName: "lottie" */ "vue-lottie");
 const sizeProp = { type: Number, default: 24 };
 
 export default {

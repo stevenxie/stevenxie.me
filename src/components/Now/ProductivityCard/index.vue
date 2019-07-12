@@ -100,7 +100,10 @@ export default {
     },
   },
   methods: { kebabCase },
-  components: { card: Card, chart: Chart },
+  components: {
+    card: Card,
+    chart: Chart,
+  },
 };
 </script>
 

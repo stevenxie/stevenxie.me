@@ -12,6 +12,8 @@ import {
   injectPrerenderedTag,
 } from "./utils/prerender";
 
+import { analytics } from "@/utils/async-modules";
+
 // Configure Vue instance.
 Vue.config.productionTip = false;
 
@@ -21,7 +23,7 @@ Vue.use(VProgressiveImage);
 
 const { VUE_APP_ANALYTICS_ID } = process.env;
 if (VUE_APP_ANALYTICS_ID)
-  import(/* webpackChunkName:"analytics" */ "vue-analytics").then(VAnalytics =>
+  analytics().then(VAnalytics =>
     Vue.use(VAnalytics, { id: VUE_APP_ANALYTICS_ID, router })
   );
 

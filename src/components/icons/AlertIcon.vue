@@ -8,8 +8,8 @@
 </template>
 
 <script>
+import { Lottie } from "@/utils/async-modules";
 import alert from "@/assets/lottie/alert-triangle.json";
-const Lottie = () => import(/* webpackChunkName: "lottie" */ "vue-lottie");
 
 export default {
   data: () => ({ options: { animationData: alert } }),

@@ -21,7 +21,7 @@ import { FETCH_REGION } from "@/store/actions";
 import { prerendering } from "@/utils/prerender";
 
 import Card from "./Card";
-const Map = () => import(/* webpackChunkName: "map" */ "@/components/Map");
+import { Map } from "@/utils/async-modules";
 
 const LOCATION_PAGE_URL = "/location";
 
@@ -53,7 +53,10 @@ export default {
     },
   },
 
-  components: { card: Card, "custom-map": Map },
+  components: {
+    card: Card,
+    "custom-map": Map,
+  },
 };
 </script>
 
