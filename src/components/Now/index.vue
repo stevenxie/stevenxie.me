@@ -1,16 +1,24 @@
 <template>
-  <section class="now">
+  <section class="now" ref="container">
     <no-prerender>
       <carousel
         class="carousel"
-        :pagination-padding="4"
-        :pagination-size="15"
         :per-page-custom="paging"
         :space-padding="padding"
+        :pagination-padding="4"
+        :pagination-size="15"
         pagination-active-color="white"
       >
-        <slide v-for="slide in slides" :key="slide">
-          <div class="container"><component :is="slide" ref="slides" /></div>
+        <slide v-for="(slide, i) in slides" :key="slide">
+          <div class="container">
+            <component
+              class="component"
+              :class="{ visible }"
+              ref="slides"
+              :is="slide"
+              :style="{ transitionDelay: `${i * 60 + 50}ms` }"
+            />
+          </div>
         </slide>
       </carousel>
     </no-prerender>
@@ -20,6 +28,7 @@
 <script>
 import take from "lodash/take";
 import reduceRight from "lodash/reduceRight";
+import { carousel } from "@/utils/async-modules";
 import { prerendering } from "@/utils/prerender";
 
 import CommitsCard from "./CommitsCard";
@@ -29,13 +38,8 @@ import ProductivityCard from "./ProductivityCard";
 
 import NoPrerender from "@/components/NoPrerender";
 
-// Async imports.
-// prettier-ignore
-const carouselPromise = import(
-  /* webpackChunkName: "vue-carousel" */ "vue-carousel"
-);
-const Carousel = () => carouselPromise.then(({ Carousel }) => Carousel);
-const Slide = () => carouselPromise.then(({ Slide }) => Slide);
+const Carousel = () => carousel().then(({ Carousel }) => Carousel);
+const Slide = () => carousel().then(({ Slide }) => Slide);
 
 export default {
   data: () => ({
@@ -55,15 +59,35 @@ export default {
       [0, 40],
     ],
     padding: 0,
+    visible: false,
   }),
+
   mounted() {
-    if (prerendering) return;
+    if (prerendering) {
+      this.visible = true;
+      return;
+    }
+
+    // Update padding.
     window.addEventListener("resize", this.updatePadding);
     this.updatePaddingNextTick();
+
+    // Observe when component is visible.
+    if (IntersectionObserver) {
+      this.observer = new IntersectionObserver(
+        ([entry]) =>
+          entry.isIntersecting &&
+          window.setTimeout(() => (this.visible = true)),
+        { threshold: [0] }
+      );
+      this.observer.observe(this.$refs.container);
+    } else this.visible = true;
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.updatePadding);
+    if (this.observer) this.observer.disconnect();
   },
+
   methods: {
     updatePadding() {
       // Only run after cards mount.
@@ -91,6 +115,7 @@ export default {
       this.$nextTick(() => window.setTimeout(this.updatePadding, 0));
     },
   },
+
   components: {
     slide: Slide,
     carousel: Carousel,
@@ -112,33 +137,34 @@ export default {
   display: flex;
 }
 
-.carousel::v-deep .VueCarousel-dot-container {
-  margin: 0 !important;
-  padding: 2px;
-  border-radius: 15px;
+.carousel::v-deep {
+  width: 100%;
 
-  background: #9baab5;
-  box-shadow: inset 0 1px 3px 0 rgba(black, 0.5);
+  // prettier-ignore
+  @include breakpoint(tablet) { align-self: center; }
 
-  button {
-    $color: #ced9e0;
-
+  .VueCarousel-dot-container {
     margin: 0 !important;
-    outline: none;
-    transition: background 200ms ease-in-out;
+    padding: 2px;
+    border-radius: 15px;
 
-    // prettier-ignore
-    &:not(.VueCarousel-dot--active) {
-      background-color: $color !important;
-      &:hover { background-color: lighten($color, 5%) !important; }
+    background: #9baab5;
+    box-shadow: inset 0 1px 3px 0 rgba(black, 0.5);
+
+    button {
+      $color: #ced9e0;
+
+      margin: 0 !important;
+      outline: none;
+      transition: background 200ms ease-in-out;
+
+      // prettier-ignore
+      &:not(.VueCarousel-dot--active) {
+        background-color: $color !important;
+        &:hover { background-color: lighten($color, 5%) !important; }
+      }
     }
   }
-}
-
-// prettier-ignore
-.carousel {
-  width: 100%;
-  @include breakpoint(tablet) { align-self: center; }
 }
 
 .container {
@@ -148,5 +174,15 @@ export default {
   display: flex;
   align-items: flex-end;
   justify-content: center;
+
+  @include breakpoint(phablet) {
+    .component {
+      transition: transform 333ms cubic-bezier(0.215, 0.61, 0.355, 1);
+      transform: translateY(400px);
+
+      // prettier-ignore
+      &.visible { transform: translateY(0); }
+    }
+  }
 }
 </style>

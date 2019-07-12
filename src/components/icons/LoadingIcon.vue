@@ -9,7 +9,7 @@
 
 <script>
 import loading from "@/assets/lottie/loading.json";
-const Lottie = () => import(/* webpackChunkName: "lottie" */ "vue-lottie");
+import { Lottie } from "@/utils/async-modules";
 
 export default {
   data: () => ({ options: { animationData: loading } }),

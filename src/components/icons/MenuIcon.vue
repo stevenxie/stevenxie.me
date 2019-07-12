@@ -12,9 +12,9 @@
 
 <script>
 import menu from "@/assets/lottie/menu.json";
+import { Lottie } from "@/utils/async-modules";
 import { prerendered } from "@/utils/prerender";
 
-const Lottie = () => import(/* webpackChunkName: "lottie" */ "vue-lottie");
 const sizeProp = { type: Number, default: 30 };
 
 export default {

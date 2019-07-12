@@ -37,7 +37,6 @@ export default {
     ...mapGetters({ about: ABOUT_EXCLUDING_CONTACT }),
     aboutText() {
       if (this.error) return this.error;
-
       let { about, spook } = this;
       if (spook) about = { ...about, whereabouts: "Right behind you." };
       return JSON.stringify(about, undefined, 2);
