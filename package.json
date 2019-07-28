@@ -1,6 +1,17 @@
 {
   "name": "stevenxie.me",
-  "version": "0.1.0",
+  "description": "My personal website.",
+  "homepage": "https://github.com/stevenxie/stevenxie.me#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stevenxie/stevenxie.me"
+  },
+  "author": {
+    "name": "Steven Xie",
+    "email": "hello@stevenxie.me",
+    "url": "https://stevenxie.me"
+  },
+  "license": "UNLICENSED",
   "private": true,
   "scripts": {
     "dev": "npm run serve",
@@ -26,22 +37,22 @@
   "dependencies": {
     "axios": "^0.19.0",
     "chart.js": "^2.8.0",
-    "core-js": "^2.6.5",
+    "core-js": "^3.1.4",
     "date-fns": "^1.30.1",
-    "lodash": "^4.17.11",
-    "mapbox-gl": "^1.1.0",
-    "moveto": "^1.8.1",
-    "uuid-by-string": "^2.1.3",
+    "lodash": "^4.17.15",
+    "mapbox-gl": "^1.1.1",
+    "moveto": "^1.8.2",
+    "uuid-by-string": "^2.1.5",
     "v-tooltip": "^2.0.2",
     "vue": "^2.6.10",
     "vue-analytics": "^5.17.0",
     "vue-carousel": "^0.18.0",
     "vue-chartjs": "^3.4.2",
     "vue-client-only": "^2.0.0",
-    "vue-content-loader": "^0.2.1",
+    "vue-content-loader": "^0.2.2",
     "vue-lottie": "^0.2.1",
     "vue-progressive-image": "^3.2.0",
-    "vue-router": "^3.0.6",
+    "vue-router": "^3.0.7",
     "vuex": "^3.1.1",
     "yup": "^0.27.0"
   },
