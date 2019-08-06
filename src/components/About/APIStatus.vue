@@ -1,6 +1,9 @@
 <template>
   <a class="api-status" :href="apiURL" target="_blank">
-    <div class="container mono" v-tooltip="tooltip">
+    <div
+      class="container mono tooltipped tooltipped-w tooltipped-no-delay"
+      :aria-label="tooltip"
+    >
       api
       <div class="circle" :class="{ active }" />
     </div>

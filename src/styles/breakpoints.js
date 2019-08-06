@@ -1,5 +1,12 @@
-export const DESKTOP_SCREEN_WIDTH = 1500;
-export const LAPTOP_SCREEN_WIDTH = 1200;
-export const TABLET_SCREEN_WIDTH = 900;
-export const PHABLET_SCREEN_WIDTH = 700;
-export const PHONE_SCREEN_WIDTH = 480;
+export const screenSizes = {
+  DESKTOP: 1500,
+  LAPTOP: 1200,
+  TABLET: 900,
+  PHABLET: 700,
+  MOBILE: 480,
+};
+
+export const getScreenSize = () =>
+  window.innerWidth ||
+  document.documentElement.clientWidth ||
+  document.body.clientWidth;

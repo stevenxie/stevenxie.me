@@ -47,9 +47,10 @@ const configureWebpack = config => {
   // Plugins for all modes:
   config.plugins.push(new IgnorePlugin(/^\.\/locale$/, /moment$/));
 
+  const { PRERENDER, VUE_CLI_MODERN_BUILD } = process.env;
   switch (config.mode) {
     case "development":
-      if (process.env.PRERENDER) config.plugins.push(buildPrerenderSPAPlugin());
+      if (PRERENDER) config.plugins.push(buildPrerenderSPAPlugin());
       break;
 
     default:
@@ -59,7 +60,9 @@ const configureWebpack = config => {
       config.plugins.push(
         new BundleAnalyzerPlugin({
           analyzerMode: "static",
-          reportFilename: "webpack-bundle-analyzer-report.html",
+          reportFilename: `webpack-bundle-analyzer-${
+            VUE_CLI_MODERN_BUILD ? "modern-report" : "report"
+          }.html`,
         })
       );
   }

@@ -166,7 +166,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/mixins.scss";
+@import "@/styles/breakpoints.scss";
 $bradius: 8px;
 
 .availability {

@@ -4,18 +4,29 @@
   </div>
 </template>
 
+<script>
+export default {
+  metaInfo: {
+    titleTemplate: chunk => {
+      const base = "Steven Xie";
+      return chunk ? `${chunk} – ${base}` : base;
+    },
+  },
+};
+</script>
+
 <style lang="scss">
-@import "@/styles/tooltip.scss"; // tooltip styling
+@import "@/styles/fonts.scss";
 
 body {
-  font-family: "Inter", "Avenir", Helvetica, Arial, sans-serif;
+  font-family: $sans;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 // prettier-ignore
 @supports (font-variation-settings: normal) {
-  body { font-family: "Inter var", "Avenir", Helvetica, Arial, sans-serif; }
+  body { font-family: $sans-var }
 }
 
 // prettier-ignore
@@ -27,5 +38,9 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 }
 
 // prettier-ignore
-.mono { font-family: "Roboto Mono", "Courier New", Courier, monospace; }
+.mono { font-family: $mono }
+
+// Custom Primer tooltip fonts.
+// prettier-ignore
+.tooltipped::after { font-family: $sans; }
 </style>

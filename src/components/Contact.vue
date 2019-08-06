@@ -48,7 +48,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/mixins.scss";
+@import "@/styles/breakpoints.scss";
 
 .contact {
   padding: 28px 0 34px 0;

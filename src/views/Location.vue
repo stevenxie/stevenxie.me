@@ -60,6 +60,16 @@ import LoadingIcon from "@/components/icons/LoadingIcon";
 import { mapbox, Map } from "@/utils/async-modules";
 
 export default {
+  metaInfo: {
+    title: "Location",
+    meta: [
+      {
+        name: "description",
+        content: "Request current location data and recent location history.",
+      },
+    ],
+  },
+
   data: () => ({
     locked: true,
     wrong: false,
@@ -241,7 +251,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/mixins.scss";
+@import "@/styles/breakpoints.scss";
 
 // prettier-ignore
 .location {

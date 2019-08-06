@@ -11,7 +11,7 @@
 </template>
 
 <style lang="scss" scoped>
-@import "@/styles/mixins.scss";
+@import "@/styles/breakpoints.scss";
 
 .hero {
   height: 290px;

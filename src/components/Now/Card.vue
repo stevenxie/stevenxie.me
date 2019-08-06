@@ -5,7 +5,12 @@
         <slot />
       </div>
       <div class="error overlay flex" v-if="error">
-        <alert-icon :width="30" :height="30" v-tooltip="error" />
+        <alert-icon
+          class="tooltipped tooltipped-n tooltipped-no-delay"
+          :width="30"
+          :height="30"
+          :aria-label="error"
+        />
       </div>
     </div>
     <div class="headers flex">

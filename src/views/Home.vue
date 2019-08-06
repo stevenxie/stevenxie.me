@@ -22,7 +22,7 @@ import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Availability from "@/components/Availability";
 
-import { TABLET_SCREEN_WIDTH } from "@/styles/breakpoints";
+import { screenSizes, getScreenSize } from "@/styles/breakpoints";
 
 export default {
   data: () => ({
@@ -43,7 +43,7 @@ export default {
 
   methods: {
     updateAboutPosition() {
-      if (window.innerWidth >= TABLET_SCREEN_WIDTH) this.embedAbout = true;
+      if (getScreenSize() >= screenSizes.TABLET) this.embedAbout = true;
       else this.embedAbout = false;
     },
     handleMoveFocus(id) {

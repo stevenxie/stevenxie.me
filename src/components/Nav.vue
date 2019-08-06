@@ -65,7 +65,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/mixins.scss";
+@import "@/styles/breakpoints.scss";
 
 // prettier-ignore
 .nav { position: relative; }
