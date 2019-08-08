@@ -6,10 +6,9 @@ import Location from "./views/Location.vue";
 
 Vue.use(Router);
 
-const { BASE_URL } = process.env;
 const router = new Router({
   mode: "history",
-  base: BASE_URL,
+  base: process.env.BASE_URL,
   routes: [
     {
       path: "/",

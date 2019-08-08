@@ -8,7 +8,7 @@ const { PuppeteerRenderer } = PrerenderSPAPlugin;
 // Select routes to prerender.
 const prerenderRoutes = ["/", "/location"];
 
-// Configure constants and envvars.
+// Configure constants, envvars.
 const distDir = path.join(__dirname, "dist");
 const { SHOW_PRERENDERING } = process.env;
 

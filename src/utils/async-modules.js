@@ -1,5 +1,3 @@
-export const analytics = () =>
-  import(/* webpackChunkName:"analytics" */ "vue-analytics");
 export const carousel = () =>
   import(/* webpackChunkName: "carousel" */ "vue-carousel");
 export const mapbox = () =>

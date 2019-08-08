@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Meta from "vue-meta";
+import Analytics from "vue-analytics";
 import ProgressiveImage from "vue-progressive-image";
 
 import App from "./App.vue";
@@ -12,8 +13,6 @@ import {
   injectPrerenderedTag,
 } from "./utils/prerender";
 
-import { analytics } from "@/utils/async-modules";
-
 // Configure Vue instance.
 Vue.config.productionTip = false;
 
@@ -23,9 +22,7 @@ Vue.use(Meta);
 
 const { VUE_APP_ANALYTICS_ID } = process.env;
 if (VUE_APP_ANALYTICS_ID)
-  analytics().then(VAnalytics =>
-    Vue.use(VAnalytics, { id: VUE_APP_ANALYTICS_ID, router })
-  );
+  Vue.use(Analytics, { id: VUE_APP_ANALYTICS_ID, router });
 
 // If prerendering, inject prerendered tag so that future loads will know that
 // the page has been prerendered.
