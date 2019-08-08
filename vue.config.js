@@ -8,9 +8,8 @@ const { PuppeteerRenderer } = PrerenderSPAPlugin;
 // Select routes to prerender.
 const prerenderRoutes = ["/", "/location"];
 
-// Configure constants and envvars.
+// Configure constants.
 const distDir = path.join(__dirname, "dist");
-const { SHOW_PRERENDERING } = process.env;
 
 const buildPrerenderSPAPlugin = () =>
   new PrerenderSPAPlugin({
@@ -18,7 +17,7 @@ const buildPrerenderSPAPlugin = () =>
     routes: prerenderRoutes,
     renderer: new PuppeteerRenderer({
       renderAfterDocumentEvent: "render-event",
-      headless: !SHOW_PRERENDERING,
+      headless: !process.env.SHOW_PRERENDERING,
 
       // Inject window properties during prerendering.
       injectProperty: "__PRERENDER_INJECTED",

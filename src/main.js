@@ -21,10 +21,10 @@ Vue.config.productionTip = false;
 Vue.use(ProgressiveImage);
 Vue.use(Meta);
 
-const { VUE_APP_ANALYTICS_ID } = process.env;
-if (VUE_APP_ANALYTICS_ID)
+const analyticsID = process.env.VUE_APP_ANALYTICS_ID;
+if (analyticsID)
   analytics().then(VAnalytics =>
-    Vue.use(VAnalytics, { id: VUE_APP_ANALYTICS_ID, router })
+    Vue.use(VAnalytics, { id: analyticsID, router })
   );
 
 // If prerendering, inject prerendered tag so that future loads will know that
