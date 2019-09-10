@@ -1,6 +1,4 @@
-##
-## Node
-##
+# == Node ==
 node_modules/
 .next/
 /dist/
@@ -19,9 +17,7 @@ yarn-debug.log*
 yarn-error.log*
 
 
-##
-## IDEs
-##
+# == IDE ==
 # VSCode (keeping workspace configurations):
 .vscode/*
 !.vscode/tasks.json
@@ -32,9 +28,8 @@ yarn-error.log*
 # IntelliJ:
 .idea/
 
-##
-## OS
-##
+
+# == System ==
 # macOS:
 .DS_Store
 .DS_Store?

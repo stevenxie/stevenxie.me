@@ -1,6 +1,4 @@
-##
-## VARIABLES
-##
+# == Variables ==
 # Program version.
 __TAG = $(shell git describe --tags 2> /dev/null)
 ifneq ($(__TAG),)
@@ -10,9 +8,7 @@ else
 endif
 
 
-##
-## TARGETS
-##
+# == Targets ==
 # Generic:
 .PHONY: default version setup install build clean run lint test review help
 __ARGS = $(filter-out $@,$(MAKECMDGOALS))
