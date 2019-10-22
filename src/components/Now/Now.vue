@@ -31,9 +31,9 @@ import reduceRight from "lodash/reduceRight";
 import { carousel } from "@/utils/async-modules";
 import { prerendering } from "@/utils/prerender";
 
+import MusicCard from "./MusicCard";
 import CommitsCard from "./CommitsCard";
 import LocationCard from "./LocationCard";
-import NowPlayingCard from "./NowPlayingCard";
 import ProductivityCard from "./ProductivityCard";
 
 import NoPrerender from "@/components/NoPrerender";
@@ -44,7 +44,7 @@ const Slide = () => carousel().then(({ Slide }) => Slide);
 export default {
   data: () => ({
     slides: [
-      "now-playing-card",
+      "music-card",
       "location-card",
       "productivity-card",
       "commits-card",
@@ -120,9 +120,9 @@ export default {
     slide: Slide,
     carousel: Carousel,
     "no-prerender": NoPrerender,
-    "location-card": LocationCard,
+    "music-card": MusicCard,
     "commits-card": CommitsCard,
-    "now-playing-card": NowPlayingCard,
+    "location-card": LocationCard,
     "productivity-card": ProductivityCard,
   },
 };

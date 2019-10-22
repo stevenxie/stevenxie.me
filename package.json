@@ -1,41 +1,21 @@
 {
   "name": "stevenxie.me",
+  "private": true,
   "description": "My personal website.",
-  "homepage": "https://github.com/stevenxie/stevenxie.me#readme",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/stevenxie/stevenxie.me"
-  },
   "author": {
     "name": "Steven Xie",
     "email": "hello@stevenxie.me",
     "url": "https://stevenxie.me"
   },
-  "license": "UNLICENSED",
-  "private": true,
   "scripts": {
-    "dev": "npm run serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
+    "lint": "vue-cli-service lint",
     "build:prerender": "cross-env PRERENDER=true npm run build",
     "build:prod": "cross-env NODE_ENV=production npm run build",
-    "lint": "vue-cli-service lint"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ],
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,vue}": [
-      "vue-cli-service lint",
-      "git add"
-    ]
+    "dev": "npm run serve"
   },
   "dependencies": {
-    "axios": "^0.19.0",
     "chart.js": "^2.8.0",
     "core-js": "^2",
     "date-fns": "^1.30.1",
@@ -45,6 +25,7 @@
     "uuid-by-string": "^2.1.5",
     "vue": "^2.6.10",
     "vue-analytics": "^5.17.0",
+    "vue-apollo": "^3.0.0-beta.11",
     "vue-carousel": "^0.18.0",
     "vue-chartjs": "^3.4.2",
     "vue-client-only": "^2.0.0",
@@ -53,8 +34,7 @@
     "vue-meta": "^2.2.1",
     "vue-progressive-image": "^3.2.0",
     "vue-router": "^3.0.7",
-    "vuex": "^3.1.1",
-    "yup": "^0.27.0"
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.9.2",
@@ -66,14 +46,35 @@
     "eslint": "^5.16.0",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-vue": "^5.0.0",
+    "graphql-tag": "^2.9.0",
     "lint-staged": "^9.2.1",
     "prerender-spa-plugin": "^3.4.0",
     "prettier": "^1.18.2",
     "require-from-string": "^2.0.2",
     "sass": "^1.22.7",
     "sass-loader": "^7.1.0",
+    "vue-cli-plugin-apollo": "^0.21.3",
     "vue-template-compiler": "^2.6.10",
     "webpack": "^4.38.0",
     "webpack-bundle-analyzer": "^3.3.2"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "homepage": "https://github.com/stevenxie/stevenxie.me#readme",
+  "license": "UNLICENSED",
+  "lint-staged": {
+    "*.{js,vue}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stevenxie/stevenxie.me"
   }
 }

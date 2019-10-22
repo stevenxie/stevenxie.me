@@ -71,4 +71,7 @@ const configureWebpack = config => {
 module.exports = {
   configureWebpack,
   devServer: { disableHostCheck: true },
+  pluginOptions: {
+    apollo: { lintGQL: true },
+  },
 };

@@ -50,16 +50,14 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import isEmpty from "lodash/isEmpty";
 import first from "lodash/first";
 import last from "lodash/last";
 import format from "date-fns/format";
 import getHours from "date-fns/get_hours";
 import getMinutes from "date-fns/get_minutes";
-
 import { prerendering } from "@/utils/prerender";
-import { mapState } from "vuex";
-import { FETCH_AVAILABILITY } from "@/store/actions";
 
 import AlertIcon from "@/components/icons/AlertIcon";
 
@@ -72,14 +70,30 @@ const percentOfDay = time =>
 
 export default {
   data: () => ({
+    busy: [],
+    error: null,
     time: new Date(),
     offset: 0,
   }),
+  apollo: {
+    // prettier-ignore
+    busy: {
+      query: gql`
+        query($date: Time) {
+          scheduling {
+            busyTimes(date: $date) { start, end }
+          }
+        }
+      `,
+      skip: prerendering,
+      update: ({ scheduling }) => scheduling.busyTimes,
+      variables: () => ({ date: format(new Date(), "YYYY-MM-DD[T]hh:mm:ssZ") }),
+      error(err) { this.error = err; },
+    }
+  },
+
   mounted() {
     if (prerendering) return;
-
-    // Fetch availability from API.
-    this.$store.dispatch(FETCH_AVAILABILITY);
 
     // Init timeline offset interval.
     this.updateTimelineOffset();
@@ -91,12 +105,8 @@ export default {
     window.clearInterval(this.timeUpdateInterval);
     window.removeEventListener("resize", this.updateTimelineOffset);
   },
-  computed: {
-    ...mapState({
-      busy: ({ availability }) => availability.data,
-      error: ({ availability }) => availability.error,
-    }),
 
+  computed: {
     busyRelative() {
       return this.busy.map(({ start, end }) => {
         [start, end] = [start, end].map(percentOfDay);

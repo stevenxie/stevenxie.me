@@ -5,7 +5,7 @@
     titleURL="https://help.rescuetime.com/article/73-how-is-my-productivity-pulse-calculated"
     label="RescueTime"
     labelURL="https://www.rescuetime.com/"
-    :error="errorMessage"
+    :error="errorMsg"
   >
     <div class="container fullsize">
       <div class="ring outer fullsize">
@@ -28,74 +28,75 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import kebabCase from "lodash/kebabCase";
 import isEmpty from "lodash/isEmpty";
-import Card from "../Card";
-
 import { prerendering } from "@/utils/prerender";
-import { mapState } from "vuex";
-import { FETCH_PRODUCTIVITY } from "@/store/actions";
 
+import Card from "../Card";
 const Chart = () =>
   import(/* webpackChunkName: "productivity-chart" */ "./Chart");
 
 export default {
   data: () => ({
-    colormap: {
-      "2": "#4a66c3",
-      "1": "#738ee6",
-      "0": "#bdbdbd",
-      "-1": "#fc819b",
-      "-2": "#e84366",
+    records: null,
+    score: null,
+    error: null,
+    colors: {
+      "1": "#e84366",
+      "2": "#fc819b",
+      "3": "#bdbdbd",
+      "4": "#738ee6",
+      "5": "#4a66c3",
     },
   }),
-  mounted() {
-    if (prerendering) return;
-    this.$store.dispatch(FETCH_PRODUCTIVITY);
+
+  apollo: {
+    // prettier-ignore
+    productivity: {
+      query: gql`
+        {
+          productivity {
+            records {
+              category { id, name }
+              duration
+            }
+            score
+          }
+        }
+      `,
+      skip: prerendering,
+      manual: true,
+      result({ data }) {
+        if (!data) return;
+        const { records, score } = data.productivity;
+        this.records = records;
+        this.score = score;
+        this.error = null;
+      },
+      error(err) { this.error = err; },
+    }
   },
+
   computed: {
-    ...mapState({
-      segments: ({ productivity }) => productivity.data,
-      loading: ({ productivity }) => productivity.loading,
-      error: ({ productivity }) => productivity.error,
-    }),
-
-    score() {
-      if (isEmpty(this.segments)) return null;
-
-      // Noramlize segments into values keyed by name initials.
-      const segs = {};
-      this.segments.forEach(({ name, duration }) => {
-        const initials = name
-          .split(" ")
-          .map(substr => substr[0].toLowerCase())
-          .join("");
-        segs[initials] = duration;
-      });
-
-      // Calculation derived from:
-      // https://help.rescuetime.com/article/73-how-is-my-productivity-pulse-calculated
-      const { d = 0, n = 0, p = 0, vp = 0 } = segs;
-      const total = this.segments.reduce(
-        (sum, { duration }) => sum + duration,
-        0
-      );
-      return Math.round(((d + n * 2 + p * 3 + vp * 4) / (total * 4)) * 100);
-    },
-
     chartData() {
-      if (isEmpty(this.segments)) return { datasets: [] };
-      const labels = this.segments.map(({ name }) => name);
-      const mapColors = ({ id }) => this.colormap[id.toString()];
+      // Return early if no records.
+      const { records } = this;
+      if (isEmpty(records)) return { datasets: [] };
+
+      // Construct dataset.
+      const mapColors = ({ category }) => this.colors[category.id.toString()];
       const dataset = {
-        data: this.segments.map(({ duration }) => duration),
-        backgroundColor: this.segments.map(mapColors),
+        data: records.map(({ duration }) => duration),
+        backgroundColor: records.map(mapColors),
         borderWidth: 0,
       };
-      return { labels, datasets: [dataset] };
+      return {
+        labels: records.map(({ category }) => category.name),
+        datasets: [dataset],
+      };
     },
-
-    errorMessage() {
+    errorMsg() {
       return this.error && "Failed to load productivity data.";
     },
   },

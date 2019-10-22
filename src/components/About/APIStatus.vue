@@ -1,5 +1,5 @@
 <template>
-  <a class="api-status" :href="apiURL" target="_blank">
+  <a class="api-status" :href="url" target="_blank">
     <div
       class="container mono tooltipped tooltipped-w tooltipped-no-delay"
       :aria-label="tooltip"
@@ -11,12 +11,25 @@
 </template>
 
 <script>
+import { prerendering } from "@/utils/prerender";
+
+const URL = "https://api.stevenxie.me";
+const API_URL = process.env.VUE_APP_API_URL + "/";
+
 export default {
-  props: { active: { type: Boolean, default: false } },
-  data: () => ({ apiURL: "https://github.com/stevenxie/api" }),
+  data: () => ({
+    active: false,
+    url: URL,
+  }),
+  async mounted() {
+    if (prerendering) return;
+    const res = await fetch(API_URL, { method: "HEAD" });
+    this.active = res.ok;
+  },
   computed: {
     tooltip() {
-      return `API is currently ${this.active ? "online" : "offline"}.`;
+      const status = this.active ? "online" : "offline";
+      return `API is currently ${status}.`;
     },
   },
 };

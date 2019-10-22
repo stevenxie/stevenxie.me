@@ -6,49 +6,59 @@
         mapstyle="mapbox://styles/stevenxie/cjxqme8sn3uwz1cnz6m83b0mi"
         :interactive="false"
       />
-      <a :href="locationPageURL" target="_blank">
+      <router-link to="location" target="_blank">
         <div class="overlay flex">
           <p>Click to open full map.</p>
         </div>
-      </a>
+      </router-link>
     </div>
   </card>
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { FETCH_REGION } from "@/store/actions";
+import gql from "graphql-tag";
 import { prerendering } from "@/utils/prerender";
 
 import Card from "./Card";
 import { Map } from "@/utils/async-modules";
 
-const LOCATION_PAGE_URL = "/location";
-
 export default {
-  data: () => ({ locationPageURL: LOCATION_PAGE_URL }),
+  data() {
+    const locationRoute = this.$router.options.routes.find(
+      ({ name }) => name === "location"
+    );
+    return {
+      region: null,
+      error: null,
+      locationURL: locationRoute.path,
+    };
+  },
 
-  mounted() {
-    if (prerendering) return;
-    if (!this.region && !this.loading) this.$store.dispatch(FETCH_REGION);
+  apollo: {
+    // prettier-ignore
+    region: {
+      query: gql`
+        { location { region { address { label } } } }
+      `,
+      skip: prerendering,
+      update: ({ location }) => location.region,
+      error(err) { this.error = err; }
+    }
   },
 
   computed: {
-    ...mapState({
-      region: ({ region }) => region.data,
-      error: ({ region }) => region.error,
-    }),
-
     /** @returns {{ title: string, label: string }} */
     headers() {
       const headers = {
         title: "Unknown",
-        titleURL: this.error ? undefined : LOCATION_PAGE_URL,
         label: "Current Location",
-        labelURL: this.error ? undefined : LOCATION_PAGE_URL,
-        error: this.error && "Failed to load location data.",
       };
       if (this.region) headers.title = this.region.address.label;
+      if (this.error) headers.error = "Failed to load location data.";
+      else {
+        headers.titleURL = this.locationURL;
+        headers.labelURL = this.locationURL;
+      }
       return headers;
     },
   },

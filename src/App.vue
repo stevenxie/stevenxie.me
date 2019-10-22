@@ -11,6 +11,13 @@ export default {
       const base = "Steven Xie";
       return chunk ? `${chunk} – ${base}` : base;
     },
+    meta: [
+      {
+        key: "description",
+        name: "description",
+        content: "My name is Steven, and I build things.",
+      },
+    ],
   },
 };
 </script>

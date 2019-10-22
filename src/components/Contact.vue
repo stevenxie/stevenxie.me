@@ -6,7 +6,7 @@
     <span class="email-wrapper" :class="{ error }">
       <a class="mailtoui" :href="mailtoURL">
         <div class="email mono flex" :class="{ error, focus }">
-          <loading-icon :width="20" v-if="loading" />
+          <loading-icon :width="20" v-if="$apollo.loading" />
           <span v-else-if="email">{{ email }}</span>
           <div class="error" v-else>
             <alert-icon :width="30" :height="33" />
@@ -19,29 +19,33 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import { prerendering } from "@/utils/prerender";
-import { mapGetters, mapState } from "vuex";
-import { FETCH_ABOUT } from "@/store/actions";
-import { ABOUT_EMAIL } from "@/store/getters";
 
 import AlertIcon from "@/components/icons/AlertIcon";
 import LoadingIcon from "@/components/icons/LoadingIcon";
 
 export default {
   props: { focus: Boolean },
-  mounted() {
-    if (prerendering) return; // do not fetch during prerender
-    this.$store.dispatch(FETCH_ABOUT);
+  data: () => ({
+    email: null,
+    error: null,
+  }),
+  apollo: {
+    // prettier-ignore
+    email: {
+      query: gql`
+        { about { email } }
+      `,
+      skip: prerendering,
+      update: ({ about }) => about.email,
+      error(err) { this.error = err; },
+    }
   },
+
+  // prettier-ignore
   computed: {
-    ...mapState({
-      loading: ({ about }) => about.loading,
-      error: ({ about }) => about.error,
-    }),
-    ...mapGetters({ email: ABOUT_EMAIL }),
-    mailtoURL() {
-      return this.email && `mailto:${this.email}?subject=Hello!`;
-    },
+    mailtoURL() { return this.email && `mailto:${this.email}?subject=Hello!`; },
   },
   components: { "alert-icon": AlertIcon, "loading-icon": LoadingIcon },
 };

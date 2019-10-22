@@ -1,6 +1,6 @@
 <template>
   <section class="about mono">
-    <div class="loading" v-if="loading">
+    <div class="loading" v-if="$apollo.loading">
       <loading-icon :height="50" :width="50" />
     </div>
     <pre class="data" v-else>{{ aboutText }}</pre>
@@ -9,19 +9,42 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
+import { omitMeta } from "@/utils/graphql";
 import { prerendering } from "@/utils/prerender";
-import { mapGetters, mapState } from "vuex";
-import { FETCH_ABOUT } from "@/store/actions";
-import { ABOUT_EXCLUDING_CONTACT } from "@/store/getters";
 
 import APIStatus from "./APIStatus";
 import LoadingIcon from "@/components/icons/LoadingIcon";
 
 export default {
-  data: () => ({ spook: false }),
+  data: () => ({
+    about: null,
+    error: null,
+    spook: false,
+  }),
+
+  apollo: {
+    // prettier-ignore
+    about: {
+      query: gql`
+        {
+          about {
+            name
+            type
+            ... on MaskedAbout { age: approxAge }
+            iq
+            skills
+            ... on MaskedAbout { whereabouts }
+          }
+        }
+      `,
+      skip: prerendering,
+      error(err) { this.error = err; },
+    }
+  },
+
   mounted() {
-    if (prerendering) return; // do not fetch during prerender
-    this.$store.dispatch(FETCH_ABOUT);
+    if (prerendering) return;
 
     // Random 1-in-5 chance of 'whereabouts' being set to "Right behind
     // you."
@@ -29,20 +52,20 @@ export default {
     if (!rand) this.spook = true;
     window.setTimeout(() => (this.spook = false), 3000);
   },
+
   computed: {
-    ...mapState({
-      loading: ({ about }) => about.loading,
-      error: ({ about }) => about.error,
-    }),
-    ...mapGetters({ about: ABOUT_EXCLUDING_CONTACT }),
     aboutText() {
       if (this.error) return this.error;
       let { about, spook } = this;
       if (spook) about = { ...about, whereabouts: "Right behind you." };
-      return JSON.stringify(about, undefined, 2);
+      return JSON.stringify(omitMeta(about), undefined, 2);
     },
   },
-  components: { "api-status": APIStatus, "loading-icon": LoadingIcon },
+
+  components: {
+    "api-status": APIStatus,
+    "loading-icon": LoadingIcon,
+  },
 };
 </script>
 

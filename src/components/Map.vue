@@ -3,10 +3,10 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import mapbox from "@/utils/mapbox";
-import { mapState } from "vuex";
 import { prerendering } from "@/utils/prerender";
-import { FETCH_REGION } from "@/store/actions";
+import { coordsToArray } from "@/utils/location";
 
 export default {
   props: {
@@ -32,9 +32,35 @@ export default {
     },
   },
 
+  data: () => ({
+    region: null,
+    error: null,
+    loading: 0,
+  }),
+
+  apollo: {
+    // prettier-ignore
+    region: {
+      query: gql`
+        {
+          location {
+            region {
+              id
+              position { x, y}
+              shape { x, y }
+            }
+          }
+        }
+      `,
+      skip: prerendering,
+      loadingKey: "loading",
+      update: ({ location }) => location.region,
+      error(err) { this.error = err; }
+    }
+  },
+
   mounted() {
     if (prerendering) return;
-    if (!this.region && !this.loading) this.$store.dispatch(FETCH_REGION);
 
     // Initialize map.
     this.map = new mapbox.Map({
@@ -45,9 +71,10 @@ export default {
     });
 
     // Add position controls.
-    if (this.showControls) {
+    const { showControls, map, region, error } = this;
+    if (showControls) {
       // Add geolocate control to the map.
-      this.map.addControl(
+      map.addControl(
         new mapbox.GeolocateControl({
           positionOptions: { enableHighAccuracy: true },
           trackUserLocation: true,
@@ -55,8 +82,7 @@ export default {
       );
     }
 
-    // Update map with region, if it exists.
-    if (this.region) this.update(this.region);
+    if (region && !error) this.update(region);
   },
 
   beforeDestroy() {
@@ -64,16 +90,11 @@ export default {
     this.map.remove();
   },
 
-  computed: {
-    ...mapState({
-      region: ({ region }) => region.data,
-      loading: ({ region }) => region.loading,
-    }),
-  },
-
   watch: {
-    // prettier-ignore
-    region(curr, prev) { if (curr && !prev) this.update(curr); },
+    region(curr, prev) {
+      if (this.error) return;
+      if (curr && !prev) this.update(curr);
+    },
 
     fillOpacity(value) {
       this.whenMapLoads(() =>
@@ -83,7 +104,10 @@ export default {
   },
 
   methods: {
-    update({ id, position, shape }) {
+    update({ id, position: pos, shape }) {
+      pos = coordsToArray(pos);
+      shape = shape.map(coordsToArray);
+
       this.whenMapLoads(() => {
         this.map.addLayer({
           id,
@@ -103,7 +127,7 @@ export default {
             "fill-opacity": this.fillOpacity,
           },
         });
-        this.map.setCenter(position);
+        this.map.setCenter(pos);
       });
     },
 

@@ -5,13 +5,14 @@ import ProgressiveImage from "vue-progressive-image";
 
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
 
 import {
   prerendering,
   prerendered,
   injectPrerenderedTag,
 } from "./utils/prerender";
+
+import { createProvider } from "./apollo";
 
 // Configure Vue instance.
 Vue.config.productionTip = false;
@@ -30,7 +31,7 @@ if (prerendering) injectPrerenderedTag();
 
 new Vue({
   router,
-  store,
+  apolloProvider: createProvider(),
   render: h => h(App),
   mounted() {
     // Notify prerenderer that Vue has finished rendering.

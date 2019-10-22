@@ -21,7 +21,7 @@
               class="mono"
               name="access"
               type="text"
-              autocomplete="false"
+              autocomplete="off"
               placeholder="access code"
               ref="input"
               v-model="code"
@@ -30,7 +30,7 @@
             <input type="submit" hidden />
           </form>
           <div class="icons">
-            <loading-icon :height="18" :width="18" v-if="verifying" />
+            <loading-icon :height="18" :width="18" v-if="historyLoading" />
             <lock-icon
               :class="{ shake: wrong, unlocked: !locked }"
               :height="22"
@@ -44,14 +44,13 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import uuidHash from "uuid-by-string";
 import last from "lodash/last";
 import parse from "date-fns/parse";
 import differenceInMinutes from "date-fns/difference_in_minutes";
 
-import locationService from "@/services/location";
-import { mapState } from "vuex";
-import { FETCH_REGION } from "@/store/actions";
+import { coordsToArray } from "@/utils/location";
 import { prerendering } from "@/utils/prerender";
 
 import LockIcon from "@/components/icons/LockIcon";
@@ -64,6 +63,7 @@ export default {
     title: "Location",
     meta: [
       {
+        key: "description",
         name: "description",
         content: "Request current location data and recent location history.",
       },
@@ -71,174 +71,206 @@ export default {
   },
 
   data: () => ({
+    region: null,
+    regionError: null,
+    regionLoading: 0,
+    history: null,
+    historyError: null,
+    historyLoading: 0,
     locked: true,
     wrong: false,
-    verifying: false,
     fillOpacity: 0.2,
     code: "",
   }),
 
-  mounted() {
-    if (prerendering) return;
-    if (!this.region && !this.loading) this.$store.dispatch(FETCH_REGION);
-  },
+  apollo: {
+    // prettier-ignore
+    region: {
+      query: gql`
+        { location { region { address { label } } } }
+      `,
+      skip: prerendering,
+      loadingKey: "regionLoading",
+      update: ({ location }) => location.region,
+      error(err) { this.regionnError = err; },
+    },
 
-  computed: {
-    ...mapState({
-      region: ({ region }) => region.data,
-      loading: ({ region }) => region.loading,
-      error: ({ region }) => region.error,
-    }),
+    // prettier-ignore
+    history: {
+      query: gql`
+        query($code: String!, $date: Time) {
+          location {
+            history(code: $code, date: $date) {
+              place
+              address
+              description
+              timeSpan { start, end }
+              coordinates { x, y }
+            }
+          }
+        }
+      `,
+      variables() {
+        const code = this.code.trim();
+        return { code, time: "2019-10-20T05:29:31.146Z" };
+      },
+      skip: true,
+      loadingKey: "historyLoading",
+      update: ({ location }) => location.history,
+      error(err) { this.historyError = err; },
+    }
   },
 
   methods: {
     async handleUnlock() {
-      if (!this.locked || this.verifying) return; // no-op
-      this.verifying = true;
+      if (!this.locked || this.regionLoading) return;
+      this.$apollo.queries.history.start();
+    },
+  },
 
-      try {
-        const segments = await locationService.getRecentLocationHistory(
-          this.code.trim()
-        );
-        this.$refs.input.blur();
-        this.locked = false;
+  watch: {
+    async history(value, prev) {
+      if (!value || prev) return;
 
-        const { map } = this.$refs.map;
-        this.fillOpacity = 0.1;
+      // Unlock and disable input.
+      this.$refs.input.blur();
+      this.locked = false;
 
-        const places = [];
-        segments.forEach(segment => {
-          const {
-            coordinates,
-            distance,
-            timeSpan: { begin, end },
-          } = segment;
-          const difference = differenceInMinutes(new Date(), parse(end)) / 60;
-          const opacity = 1.35 / (difference + 1.5) + 0.1;
-          if (coordinates.length > 1) {
-            map.addLayer({
-              id: uuidHash(begin),
-              type: "line",
-              source: {
-                type: "geojson",
-                data: {
-                  type: "Feature",
-                  geometry: { type: "LineString", coordinates },
-                },
+      // Update map layers.
+      const { map } = this.$refs.map;
+      this.fillOpacity = 0.1;
+
+      const places = [];
+      value.forEach(segment => {
+        const {
+          coordinates: coords,
+          timeSpan: { start, end },
+        } = segment;
+        const coordinates = coords.map(coordsToArray);
+        const difference = differenceInMinutes(new Date(), parse(end)) / 60;
+        const opacity = 1.35 / (difference + 1.5) + 0.1;
+
+        if (coordinates.length > 1) {
+          map.addLayer({
+            id: uuidHash(start),
+            type: "line",
+            source: {
+              type: "geojson",
+              data: {
+                type: "Feature",
+                geometry: { type: "LineString", coordinates },
               },
-              layout: {
-                "line-join": "round",
-                "line-cap": "round",
-              },
-              paint: {
-                "line-color": "#FF00C3",
-                "line-opacity": opacity,
-                "line-width": 5.5,
-              },
-            });
-          } else if (!distance) {
-            const {
-              coordinates: [coordinates],
-              ...others
-            } = segment;
-            places.push({ coordinates, ...others });
-          }
-        });
-
-        // Add places.
-        const features = places.map(({ place, address, coordinates }) => ({
-          type: "Feature",
-          properties: { description: `<h3>${place}</h3><p>${address}</p>` },
-          geometry: { type: "Point", coordinates },
-        }));
-        map.addLayer({
-          id: "places",
-          type: "circle",
-          source: {
-            type: "geojson",
-            data: {
-              type: "FeatureCollection",
-              features,
             },
-          },
-          paint: {
-            "circle-radius": 6,
-            "circle-opacity": 0.6,
-            "circle-color": "#8929FF",
-            "circle-stroke-width": 8,
-            "circle-stroke-color": "transparent",
-          },
-        });
-
-        // Add places popups.
-        const { default: mb } = await mapbox();
-        const popup = new mb.Popup({
-          closeButton: false,
-          closeOnClick: false,
-        });
-        map.on(
-          "mouseenter",
-          "places",
-          ({ features: [feature], lngLat: { lng } }) => {
-            // Channge cursor style.
-            map.getCanvas().style.cursor = "pointer";
-
-            const { geometry, properties } = feature;
-            const { description } = properties;
-            const coordinates = geometry.coordinates.slice();
-
-            // Ensure that if the map is zoomed out such that multiple copies of
-            // the feature are visible, the popup appears over the copy being
-            // pointed to.
-            while (Math.abs(lng - coordinates[0]) > 180) {
-              coordinates[0] += lng > coordinates[0] ? 360 : -360;
-            }
-
-            // Populate the popup and set its coordinates based on the feature
-            // found.
-            popup
-              .setLngLat(coordinates)
-              .setHTML(description)
-              .addTo(map);
-          }
-        );
-        map.on("mouseleave", "places", () => {
-          map.getCanvas().style.cursor = "";
-          popup.remove();
-        });
-
-        // Add 'current location' dot.
-        const position = last(last(segments).coordinates);
-        map.addLayer({
-          id: "current",
-          type: "circle",
-          source: {
-            type: "geojson",
-            data: {
-              type: "Feature",
-              geometry: { type: "Point", coordinates: position },
+            layout: {
+              "line-join": "round",
+              "line-cap": "round",
             },
-          },
-          paint: {
-            "circle-radius": 7,
-            "circle-color": "#0537FC",
-            "circle-stroke-width": 11,
-            "circle-stroke-color": "#365EFF",
-            "circle-stroke-opacity": 0.3,
-          },
-        });
+            paint: {
+              "line-color": "#FF00C3",
+              "line-opacity": opacity,
+              "line-width": 5.5,
+            },
+          });
+        } else {
+          const { coordinates: coords, ...others } = segment;
+          places.push({ coordinates: coordsToArray(coords[0]), ...others });
+        }
+      });
 
-        map.flyTo({
-          center: position,
-          zoom: 14,
-        });
-      } catch (err) {
-        if (!err.response || err.response.status !== 401) throw err;
-        this.wrong = true;
-        window.setTimeout(() => (this.wrong = false), 1000);
-      } finally {
-        this.verifying = false;
-      }
+      // Add places.
+      const features = places.map(({ place, address, coordinates }) => ({
+        type: "Feature",
+        properties: { description: `<h3>${place}</h3><p>${address}</p>` },
+        geometry: { type: "Point", coordinates },
+      }));
+      map.addLayer({
+        id: "places",
+        type: "circle",
+        source: {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features,
+          },
+        },
+        paint: {
+          "circle-radius": 6,
+          "circle-opacity": 0.6,
+          "circle-color": "#8929FF",
+          "circle-stroke-width": 8,
+          "circle-stroke-color": "transparent",
+        },
+      });
+
+      // Add places popups.
+      const { default: mb } = await mapbox();
+      const popup = new mb.Popup({
+        closeButton: false,
+        closeOnClick: false,
+      });
+      map.on(
+        "mouseenter",
+        "places",
+        ({ features: [feature], lngLat: { lng } }) => {
+          // Channge cursor style.
+          map.getCanvas().style.cursor = "pointer";
+
+          const { geometry, properties } = feature;
+          const { description } = properties;
+          const coordinates = geometry.coordinates.slice();
+
+          // Ensure that if the map is zoomed out such that multiple copies of
+          // the feature are visible, the popup appears over the copy being
+          // pointed to.
+          while (Math.abs(lng - coordinates[0]) > 180) {
+            coordinates[0] += lng > coordinates[0] ? 360 : -360;
+          }
+
+          // Populate the popup and set its coordinates based on the feature
+          // found.
+          popup
+            .setLngLat(coordinates)
+            .setHTML(description)
+            .addTo(map);
+        }
+      );
+      map.on("mouseleave", "places", () => {
+        map.getCanvas().style.cursor = "";
+        popup.remove();
+      });
+
+      // Add 'current location' dot.
+      const position = coordsToArray(last(last(value).coordinates));
+      map.addLayer({
+        id: "current",
+        type: "circle",
+        source: {
+          type: "geojson",
+          data: {
+            type: "Feature",
+            geometry: { type: "Point", coordinates: position },
+          },
+        },
+        paint: {
+          "circle-radius": 7,
+          "circle-color": "#0537FC",
+          "circle-stroke-width": 11,
+          "circle-stroke-color": "#365EFF",
+          "circle-stroke-opacity": 0.3,
+        },
+      });
+
+      map.flyTo({
+        center: position,
+        zoom: 14,
+      });
+    },
+
+    historyError(val) {
+      const { response } = val;
+      if (!response || response.status !== 401) throw val;
+      this.wrong = true;
+      window.setTimeout(() => (this.wrong = false), 1000);
     },
   },
 

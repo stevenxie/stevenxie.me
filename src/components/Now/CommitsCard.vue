@@ -21,7 +21,7 @@
         </p>
         <h5 class="timestamp">{{ parseAndFormat(timestamp) }}</h5>
       </div>
-      <span class="skeletons" v-if="loading">
+      <span class="skeletons" v-if="$apollo.loading">
         <content-loader
           class="skeleton"
           primary-color="#edeaea"
@@ -36,35 +36,47 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import take from "lodash/take";
 import parse from "date-fns/parse";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
-import { ContentLoader } from "vue-content-loader";
-
 import { prerendering } from "@/utils/prerender";
-import { mapState } from "vuex";
-import { FETCH_COMMITS } from "@/store/actions";
 
+import { ContentLoader } from "vue-content-loader";
 import Card from "./Card";
 
 export default {
-  mounted() {
-    if (prerendering) return; // do not fetch during prerender
-    this.$store.dispatch(FETCH_COMMITS);
+  data: () => ({
+    commits: null,
+    error: null,
+  }),
+
+  apollo: {
+    // prettier-ignore
+    commits: {
+      query: gql`
+        query($limit: Int) {
+          git {
+            recentCommits(limit: $limit) {
+              sha, timestamp, url
+              repo { name, url }
+            }
+          }
+        }
+      `,
+      variables: { limit: 3 },
+      skip: prerendering,
+      update: ({ git }) => git.recentCommits,
+      error(err) { this.error = err; }
+    }
   },
+
+  // prettier-ignore
   computed: {
-    ...mapState({
-      commits: ({ commits }) => commits.data,
-      loading: ({ commits }) => commits.loading,
-      error: ({ commits }) => commits.error,
-    }),
-    firstThreeCommits() {
-      return take(this.commits, 3);
-    },
-    errorMessage() {
-      return this.error && "Failed to load recent commits.";
-    },
+    firstThreeCommits() { return take(this.commits, 3); },
+    errorMessage() { return this.error && "Failed to load recent commits."; },
   },
+
   methods: {
     /**
      * @param {string} datestr

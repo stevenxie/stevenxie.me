@@ -1,5 +1,5 @@
 <template>
-  <card class="now-playing" v-bind="headers">
+  <card class="music" v-bind="headers">
     <div class="content fullsize">
       <progressive-img
         class="artwork fullsize"
@@ -29,38 +29,71 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import blankrecord from "@/assets/blankrecord.png";
 
-import { mapState, mapGetters } from "vuex";
-import {
-  NOW_PLAYING,
-  NOW_PLAYING_TRACK,
-  NOW_PLAYING_PROGRESS,
-} from "@/store/getters";
-
 import Card from "./Card";
+import { prerendering } from "../../utils/prerender";
 
 export default {
-  computed: {
-    ...mapState({ error: ({ nowplaying }) => nowplaying.error }),
-    ...mapGetters({
-      track: NOW_PLAYING_TRACK,
-      playing: NOW_PLAYING,
-      progress: NOW_PLAYING_PROGRESS,
-    }),
+  data: () => ({
+    track: null,
+    playing: false,
+    progress: 0,
+    error: null,
+  }),
 
+  apollo: {
+    $subscribe: {
+      music: {
+        // prettier-ignore
+        query: gql`
+          subscription {
+            music {
+              playing
+              progress
+              track {
+                name,
+                externalURL,
+                duration
+                artists { name, externalURL }
+                album { images { url } }
+              }
+            }
+          }
+        `,
+        skip: prerendering,
+        result({ data }) {
+          if (!data.music) {
+            this.track = null;
+            return;
+          }
+
+          const { track, playing, progress } = data.music;
+          this.track = track;
+          this.playing = playing;
+          this.progress = progress;
+        },
+        error(err) {
+          this.error = err;
+        },
+      },
+    },
+  },
+
+  computed: {
     /** @returns {{ title: string, label: string }} */
     headers() {
       const headers = {
         error: this.error && "Failed to load currently playing track.",
       };
       if (this.track) {
-        const { name, url, artists } = this.track;
+        const { name, externalURL, artists } = this.track;
         const [artist] = artists;
         headers.title = name;
-        headers.titleURL = url;
+        headers.titleURL = externalURL;
         headers.label = artist.name;
-        headers.labelURL = artist.url;
+        headers.labelURL = artist.externalURL;
       } else {
         headers.title = "Silence";
         headers.label = "Now Playing";
@@ -87,8 +120,9 @@ export default {
 
     /** @returns {number} */
     progressPercent() {
-      if (!this.track) return 0;
-      return Math.round((this.progress / this.track.duration) * 100);
+      const { progress, track } = this;
+      if (!track) return 0;
+      return Math.round((progress / track.duration) * 100);
     },
 
     /** @returns {string} */
