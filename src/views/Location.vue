@@ -73,7 +73,6 @@ export default {
   data: () => ({
     region: null,
     regionError: null,
-    regionLoading: 0,
     history: null,
     historyError: null,
     historyLoading: 0,
@@ -90,13 +89,12 @@ export default {
         { location { region { address { label } } } }
       `,
       skip: prerendering,
-      loadingKey: "regionLoading",
       update: ({ location }) => location.region,
-      error(err) { this.regionnError = err; },
+      error(err) { this.regionError = err; },
     },
 
-    // prettier-ignore
     history: {
+      // prettier-ignore
       query: gql`
         query($code: String!, $date: Time) {
           location {
@@ -110,21 +108,24 @@ export default {
           }
         }
       `,
-      variables() {
-        const code = this.code.trim();
-        return { code, time: "2019-10-20T05:29:31.146Z" };
-      },
       skip: true,
       loadingKey: "historyLoading",
       update: ({ location }) => location.history,
-      error(err) { this.historyError = err; },
-    }
+      error(err) {
+        if (err.networkError) throw err;
+        this.wrong = true;
+        window.setTimeout(() => (this.wrong = false), 1000);
+      },
+    },
   },
 
   methods: {
     async handleUnlock() {
       if (!this.locked || this.regionLoading) return;
-      this.$apollo.queries.history.start();
+
+      const { history: historyQuery } = this.$apollo.queries;
+      historyQuery.setVariables({ code: this.code.trim() });
+      historyQuery.start();
     },
   },
 
@@ -264,13 +265,6 @@ export default {
         center: position,
         zoom: 14,
       });
-    },
-
-    historyError(val) {
-      const { response } = val;
-      if (!response || response.status !== 401) throw val;
-      this.wrong = true;
-      window.setTimeout(() => (this.wrong = false), 1000);
     },
   },
 
