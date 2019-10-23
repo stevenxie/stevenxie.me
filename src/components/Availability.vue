@@ -8,6 +8,7 @@
       class="timeline flex"
       :class="{ error }"
       :style="{ right: `${offset}px` }"
+      ref="timeline"
     >
       <div class="segments" :class="segmentClasses">
         <div
@@ -57,7 +58,9 @@ import last from "lodash/last";
 import format from "date-fns/format";
 import getHours from "date-fns/get_hours";
 import getMinutes from "date-fns/get_minutes";
+
 import { prerendering } from "@/utils/prerender";
+import { screenSizes, getScreenSize } from "@/styles/breakpoints";
 
 import AlertIcon from "@/components/icons/AlertIcon";
 
@@ -152,14 +155,20 @@ export default {
     // Updates the x-offset of the timeline in order to centre the current-time
     // bar in the viewport.
     updateTimelineOffset() {
+      if (getScreenSize() >= screenSizes.TABLET) {
+        this.offset = 0;
+        return;
+      }
+
       // Calculate frame center position.
       const { offsetWidth: frameWidth } = this.$refs.frame;
       const frameCenterX = frameWidth / 2;
 
-      // Calculate timebar center position.
-      const { timebar } = this.$refs;
-      const { offsetWidth: width } = timebar;
-      const posX = timebar.getBoundingClientRect().left;
+      // Calculate center position.
+      const { timebar, timeline } = this.$refs;
+      const el = this.error ? timeline : timebar;
+      const { offsetWidth: width } = el;
+      const posX = el.getBoundingClientRect().left;
       const centerX = posX + width / 2;
 
       // Set offset.
@@ -177,7 +186,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/styles/breakpoints.scss";
-$bradius: 8px;
+$b-radius: 8px;
 
 .availability {
   position: relative;
@@ -199,7 +208,7 @@ $bradius: 8px;
   height: 60px;
   min-width: $min-width;
   margin: 45px $x-margin 110px $x-margin;
-  border-radius: $bradius;
+  border-radius: $b-radius;
   position: relative;
 
   background-image: linear-gradient(135deg, #4e8cf1 0%, #29d39b 100%);
@@ -211,7 +220,7 @@ $bradius: 8px;
 
   @include breakpoint(laptop) {
     align-self: center;
-    width: 1200px;
+    width: 1100px;
   }
 
   &.error {
@@ -274,13 +283,13 @@ $bradius: 8px;
 
   // prettier-ignore
   &.cap-start .busy:first-child {
-    border-radius: $bradius 0 0 $bradius;
+    border-radius: $b-radius 0 0 $b-radius;
     .start { display: none; }
   }
 
   // prettier-ignore
   &.cap-end .busy:last-child {
-    border-radius: 0 $bradius $bradius 0;
+    border-radius: 0 $b-radius $b-radius 0;
     .end { display: none; }
   }
 }
