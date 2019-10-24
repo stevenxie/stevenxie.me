@@ -89,9 +89,11 @@ export default {
         }
       `,
       skip: prerendering,
-      update: ({ scheduling }) => scheduling.busyTimes,
+      update: data => (data ? data.scheduling.busyTimes : null),
       variables: () => ({ date: format(new Date(), "YYYY-MM-DD[T]hh:mm:ssZ") }),
-      error(err) { this.error = err; },
+      error(err) {
+        this.error = err;
+      },
     }
   },
 

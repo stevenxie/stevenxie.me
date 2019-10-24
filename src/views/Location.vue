@@ -50,6 +50,7 @@ import last from "lodash/last";
 import parse from "date-fns/parse";
 import differenceInMinutes from "date-fns/difference_in_minutes";
 
+import { fragments } from "@/graphql/location";
 import { coordsToArray } from "@/utils/location";
 import { prerendering } from "@/utils/prerender";
 
@@ -86,11 +87,16 @@ export default {
     // prettier-ignore
     region: {
       query: gql`
-        { location { region { address { label } } } }
+        {
+          location { ...RegionLabel }
+        }
+        ${fragments.regionLabel}
       `,
       skip: prerendering,
-      update: ({ location }) => location.region,
-      error(err) { this.regionError = err; },
+      update: data => (data ? data.location.region : null),
+      error(err) {
+        this.regionError = err;
+      },
     },
 
     history: {
@@ -110,7 +116,7 @@ export default {
       `,
       skip: true,
       loadingKey: "historyLoading",
-      update: ({ location }) => location.history,
+      update: data => (data ? data.location.history : null),
       error(err) {
         if (err.networkError) throw err;
         this.wrong = true;

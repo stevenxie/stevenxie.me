@@ -58,7 +58,9 @@ export default {
         query($limit: Int) {
           git {
             recentCommits(limit: $limit) {
-              sha, timestamp, url
+              sha
+              timestamp
+              url
               repo { name, url }
             }
           }
@@ -66,8 +68,10 @@ export default {
       `,
       variables: { limit: 3 },
       skip: prerendering,
-      update: ({ git }) => git.recentCommits,
-      error(err) { this.error = err; }
+      update: data => (data ? data.git.recentCommits : null),
+      error(err) {
+        this.error = err;
+      },
     }
   },
 

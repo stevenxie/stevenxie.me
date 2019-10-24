@@ -35,11 +35,15 @@ export default {
     // prettier-ignore
     email: {
       query: gql`
-        { about { email } }
+        {
+          about { email }
+        }
       `,
       skip: prerendering,
-      update: ({ about }) => about.email,
-      error(err) { this.error = err; },
+      update: data => (data ? data.about.email : null),
+      error(err) {
+        this.error = err;
+      },
     }
   },
 

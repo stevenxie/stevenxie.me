@@ -46,7 +46,7 @@ export default {
           location {
             region {
               id
-              position { x, y}
+              position { x, y }
               shape { x, y }
             }
           }
@@ -54,8 +54,10 @@ export default {
       `,
       skip: prerendering,
       loadingKey: "loading",
-      update: ({ location }) => location.region,
-      error(err) { this.error = err; }
+      update: data => (data ? data.location.region : null),
+      error(err) {
+        this.error = err;
+      },
     }
   },
 

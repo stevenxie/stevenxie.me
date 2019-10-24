@@ -21,6 +21,7 @@ import { prerendering } from "@/utils/prerender";
 
 import Card from "./Card";
 import { Map } from "@/utils/async-modules";
+import { fragments } from "../../graphql/location";
 
 export default {
   data() {
@@ -36,13 +37,15 @@ export default {
 
   apollo: {
     // prettier-ignore
-    region: {
-      query: gql`
-        { location { region { address { label } } } }
+    region: { query: gql`
+        {
+          location { ...RegionLabel }
+        }
+        ${fragments.regionLabel}
       `,
       skip: prerendering,
-      update: ({ location }) => location.region,
-      error(err) { this.error = err; }
+      update: data => (data ? data.location.region : null),
+      error(err) { this.error = err; },
     }
   },
 
