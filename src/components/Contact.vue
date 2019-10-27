@@ -20,6 +20,7 @@
 
 <script>
 import gql from "graphql-tag";
+import get from "lodash/get";
 import { prerendering } from "@/utils/prerender";
 
 import AlertIcon from "@/components/icons/AlertIcon";
@@ -35,15 +36,11 @@ export default {
     // prettier-ignore
     email: {
       query: gql`
-        {
-          about { email }
-        }
+        { about { email } }
       `,
       skip: prerendering,
-      update: data => (data ? data.about.email : null),
-      error(err) {
-        this.error = err;
-      },
+      update: data => get(data, "about.email", null),
+      error(err) { this.error = err; },
     }
   },
 

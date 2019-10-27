@@ -37,10 +37,13 @@
 
 <script>
 import gql from "graphql-tag";
+import { prerendering } from "@/utils/prerender";
+
+import get from "lodash/get";
 import take from "lodash/take";
+
 import parse from "date-fns/parse";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
-import { prerendering } from "@/utils/prerender";
 
 import { ContentLoader } from "vue-content-loader";
 import Card from "./Card";
@@ -68,10 +71,8 @@ export default {
       `,
       variables: { limit: 3 },
       skip: prerendering,
-      update: data => (data ? data.git.recentCommits : null),
-      error(err) {
-        this.error = err;
-      },
+      update: data => get(data, "git.recentCommits", null),
+      error(err) { this.error = err; },
     }
   },
 

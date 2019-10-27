@@ -4,9 +4,11 @@
 
 <script>
 import gql from "graphql-tag";
-import mapbox from "@/utils/mapbox";
+import get from "lodash/get";
 import { prerendering } from "@/utils/prerender";
 import { coordsToArray } from "@/utils/location";
+
+import mapbox from "@/utils/mapbox";
 
 export default {
   props: {
@@ -35,7 +37,6 @@ export default {
   data: () => ({
     region: null,
     error: null,
-    loading: 0,
   }),
 
   apollo: {
@@ -53,11 +54,8 @@ export default {
         }
       `,
       skip: prerendering,
-      loadingKey: "loading",
-      update: data => (data ? data.location.region : null),
-      error(err) {
-        this.error = err;
-      },
+      update: data => get(data, "location.region", null),
+      error(err) { this.error = err; },
     }
   },
 

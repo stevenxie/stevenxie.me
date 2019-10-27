@@ -43,6 +43,16 @@ export default {
     error: null,
   }),
 
+  created() {
+    this.closeErrorListener = this.$apollo.provider.defaultClient.wsClient.on(
+      "error",
+      err => (this.error = err)
+    );
+  },
+
+  // prettier-ignore
+  beforeDestroy() { this.closeErrorListener() },
+
   apollo: {
     $subscribe: {
       music: {
@@ -84,11 +94,12 @@ export default {
   computed: {
     /** @returns {{ title: string, label: string }} */
     headers() {
+      const { error, track } = this;
       const headers = {
-        error: this.error && "Failed to load currently playing track.",
+        error: error && "Failed to load currently playing track.",
       };
       if (this.track) {
-        const { name, externalURL, artists } = this.track;
+        const { name, externalURL, artists } = track;
         const [artist] = artists;
         headers.title = name;
         headers.titleURL = externalURL;

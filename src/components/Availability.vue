@@ -6,7 +6,7 @@
   >
     <div
       class="timeline flex"
-      :class="{ error }"
+      :class="{ error, loading: $apollo.loading }"
       :style="{ right: `${offset}px` }"
       ref="timeline"
     >
@@ -34,6 +34,9 @@
         <alert-icon :width="40" :height="40" />
         <p>Failed to load availability data.</p>
       </div>
+      <div class="loading" v-else-if="$apollo.loading">
+        <p>Loading availability data...</p>
+      </div>
       <div :class="{ busy: currentlyBusy }" v-else>
         <h2 class="text">
           I'm probably
@@ -52,9 +55,12 @@
 
 <script>
 import gql from "graphql-tag";
+
 import isEmpty from "lodash/isEmpty";
 import first from "lodash/first";
 import last from "lodash/last";
+import get from "lodash/get";
+
 import format from "date-fns/format";
 import getHours from "date-fns/get_hours";
 import getMinutes from "date-fns/get_minutes";
@@ -89,7 +95,7 @@ export default {
         }
       `,
       skip: prerendering,
-      update: data => (data ? data.scheduling.busyTimes : null),
+      update: data => get(data, "scheduling.busyTimes", null),
       variables: () => ({ date: format(new Date(), "YYYY-MM-DD[T]hh:mm:ssZ") }),
       error(err) {
         this.error = err;
@@ -225,7 +231,8 @@ $b-radius: 8px;
     width: 1100px;
   }
 
-  &.error {
+  // prettier-ignore
+  &.error, &.loading {
     margin-bottom: 45px;
 
     $primary: #4e4e4e;
@@ -359,20 +366,25 @@ $b-radius: 8px;
     .highlight { color: #c3dff0; }
   }
 
-  .error::v-deep {
+  & {
     $color: rgb(160, 160, 160);
 
-    display: flex;
-    align-items: center;
+    .error::v-deep {
+      display: flex;
+      align-items: center;
 
-    font-size: 13pt;
-    font-weight: 500;
-    color: $color;
+      // prettier-ignore
+      .alert-icon {
+        margin-right: 5px !important;
+        path { stroke: $color; }
+      }
+    }
 
     // prettier-ignore
-    .alert-icon {
-      margin-right: 5px !important;
-      path { stroke: $color; }
+    .error, .loading {
+      color: $color;
+      font-size: 14pt;
+      font-weight: 500;
     }
   }
 }

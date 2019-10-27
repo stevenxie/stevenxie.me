@@ -46,17 +46,19 @@
 <script>
 import gql from "graphql-tag";
 import uuidHash from "uuid-by-string";
+
+import get from "lodash/get";
 import last from "lodash/last";
+
 import parse from "date-fns/parse";
 import differenceInMinutes from "date-fns/difference_in_minutes";
 
 import { fragments } from "@/graphql/location";
-import { coordsToArray } from "@/utils/location";
 import { prerendering } from "@/utils/prerender";
+import { coordsToArray } from "@/utils/location";
 
 import LockIcon from "@/components/icons/LockIcon";
 import LoadingIcon from "@/components/icons/LoadingIcon";
-
 import { mapbox, Map } from "@/utils/async-modules";
 
 export default {
@@ -93,10 +95,8 @@ export default {
         ${fragments.regionLabel}
       `,
       skip: prerendering,
-      update: data => (data ? data.location.region : null),
-      error(err) {
-        this.regionError = err;
-      },
+      update: data => get(data, "location.region", null),
+      error(err) { this.regionError = err; },
     },
 
     history: {
@@ -116,11 +116,20 @@ export default {
       `,
       skip: true,
       loadingKey: "historyLoading",
-      update: data => (data ? data.location.history : null),
+      update: data => get(data, "location.history", null),
       error(err) {
-        if (err.networkError) throw err;
-        this.wrong = true;
-        window.setTimeout(() => (this.wrong = false), 1000);
+        const { networkError, graphQLErrors } = err;
+        if (networkError) throw err;
+
+        // Check to see if error has an unauthorized status.
+        const unauthorized = graphQLErrors.reduce(
+          (ua, err) => ua || get(err, "extensions.status.code") === 401,
+          false
+        );
+        if (unauthorized) {
+          this.wrong = true;
+          window.setTimeout(() => (this.wrong = false), 1000);
+        }
       },
     },
   },

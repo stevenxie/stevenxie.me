@@ -17,11 +17,12 @@
 
 <script>
 import gql from "graphql-tag";
+import get from "lodash/get";
+import { fragments } from "@/graphql/location";
 import { prerendering } from "@/utils/prerender";
 
 import Card from "./Card";
 import { Map } from "@/utils/async-modules";
-import { fragments } from "../../graphql/location";
 
 export default {
   data() {
@@ -44,7 +45,7 @@ export default {
         ${fragments.regionLabel}
       `,
       skip: prerendering,
-      update: data => (data ? data.location.region : null),
+      update: data => get(data, "location.region", null),
       error(err) { this.error = err; },
     }
   },
