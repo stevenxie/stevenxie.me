@@ -31,6 +31,7 @@
 <script>
 import gql from "graphql-tag";
 import blankrecord from "@/assets/blankrecord.png";
+import forEach from "lodash/forEach";
 
 import Card from "./Card";
 import { prerendering } from "../../utils/prerender";
@@ -44,14 +45,19 @@ export default {
   }),
 
   created() {
-    this.closeErrorListener = this.$apollo.provider.defaultClient.wsClient.on(
-      "error",
-      err => (this.error = err)
-    );
+    const { wsClient } = this.$apollo.provider.defaultClient;
+    this.closers = {
+      error: wsClient.on("error", err => (this.error = err)),
+      connected: wsClient.on("connected", () => (this.error = null)),
+      reconnected: wsClient.on("reconnected", () => {
+        this.error = null;
+        this.$apollo.subscriptions.music.refresh();
+      }),
+    };
   },
-
-  // prettier-ignore
-  beforeDestroy() { this.closeErrorListener() },
+  beforeDestroy() {
+    forEach(this.closers, close => close());
+  },
 
   apollo: {
     $subscribe: {
