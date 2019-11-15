@@ -45,17 +45,15 @@
 
 <script>
 import gql from "graphql-tag";
+import parse from "date-fns/parse";
 import uuidHash from "uuid-by-string";
+import differenceInMinutes from "date-fns/difference_in_minutes";
 
 import get from "lodash/get";
 import last from "lodash/last";
 
-import parse from "date-fns/parse";
-import differenceInMinutes from "date-fns/difference_in_minutes";
-
 import { fragments } from "@/graphql/location";
 import { prerendering } from "@/utils/prerender";
-import { coordsToArray } from "@/utils/location";
 
 import LockIcon from "@/components/icons/LockIcon";
 import LoadingIcon from "@/components/icons/LoadingIcon";
@@ -109,7 +107,7 @@ export default {
               address
               description
               timeSpan { start, end }
-              coordinates { x, y }
+              coordinates
             }
           }
         }
@@ -162,7 +160,7 @@ export default {
           coordinates: coords,
           timeSpan: { start, end },
         } = segment;
-        const coordinates = coords.map(coordsToArray);
+        const coordinates = coords;
         const difference = differenceInMinutes(new Date(), parse(end)) / 60;
         const opacity = 1.35 / (difference + 1.5) + 0.1;
 
@@ -189,7 +187,7 @@ export default {
           });
         } else {
           const { coordinates: coords, ...others } = segment;
-          places.push({ coordinates: coordsToArray(coords[0]), ...others });
+          places.push({ coordinates: coords[0], ...others });
         }
       });
 
@@ -256,7 +254,7 @@ export default {
       });
 
       // Add 'current location' dot.
-      const position = coordsToArray(last(last(value).coordinates));
+      const position = last(last(value).coordinates);
       map.addLayer({
         id: "current",
         type: "circle",

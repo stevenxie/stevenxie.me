@@ -6,7 +6,6 @@
 import gql from "graphql-tag";
 import get from "lodash/get";
 import { prerendering } from "@/utils/prerender";
-import { coordsToArray } from "@/utils/location";
 
 import mapbox from "@/utils/mapbox";
 
@@ -47,8 +46,8 @@ export default {
           location {
             region {
               id
-              position { x, y }
-              shape { x, y }
+              position
+              shape
             }
           }
         }
@@ -105,9 +104,6 @@ export default {
 
   methods: {
     update({ id, position: pos, shape }) {
-      pos = coordsToArray(pos);
-      shape = shape.map(coordsToArray);
-
       this.whenMapLoads(() => {
         this.map.addLayer({
           id,
