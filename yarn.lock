@@ -6915,6 +6915,11 @@ lru-cache@^5.0.0, lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
+mailtoui@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/mailtoui/-/mailtoui-1.0.3.tgz#198792b569d7cfcaa6ccb008cc2359ac89db7ee9"
+  integrity sha512-Rse/OFWqSMuc/7D/Pw+dnkWwWLIhSx9hsZMb+9RaIOYJcQgd8SNV5YtM5b5GdBIwM2Di59oRk1Wz929X9UeUeg==
+
 make-dir@^1.0.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-1.3.0.tgz#79c1033b80515bd6d24ec9933e860ca75ee27f0c"
