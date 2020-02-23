@@ -4,7 +4,7 @@
     <h2 class="chat">Wanna chat?</h2>
     <p class="message">Shoot me a message at</p>
     <span class="email-wrapper" :class="{ error }">
-      <a class="mailtoui" :href="mailtoURL">
+      <a class="mailtoui" :href="mailtoUrl">
         <div class="email mono flex" :class="{ error, focus }">
           <loading-icon :width="20" v-if="$apollo.loading" />
           <span v-else-if="email">{{ email }}</span>
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import MailtoUI from "mailtoui/dist/mailtoui-min.js";
+
 import gql from "graphql-tag";
 import get from "lodash/get";
 import { prerendering } from "@/utils/prerender";
@@ -40,13 +42,14 @@ export default {
       `,
       skip: prerendering,
       update: data => get(data, "about.email", null),
+      result: () => MailtoUI.run(),
       error(err) { this.error = err; },
     }
   },
 
   // prettier-ignore
   computed: {
-    mailtoURL() { return this.email && `mailto:${this.email}?subject=Hello!`; },
+    mailtoUrl() { return this.email && `mailto:${this.email}?subject=Hello!`; },
   },
   components: { "alert-icon": AlertIcon, "loading-icon": LoadingIcon },
 };
