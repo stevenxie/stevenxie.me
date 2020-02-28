@@ -74,8 +74,8 @@ export default {
 }
 
 .avatar {
-  height: 56px;
-  margin: 0 0 6px 0;
+  height: 50px;
+  margin: 5px 7.5px 5px 0;
 }
 
 .chat {
