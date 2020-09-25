@@ -124,6 +124,15 @@ export default {
           },
         });
         this.map.setCenter(pos);
+
+        // Add a pin (for the UW Coffee N' Code Team Website Event).
+        const popup = new mapbox.Popup().setHTML(
+          '<a href="https://melodious-trite-euphonium.glitch.me">;)</a>'
+        );
+        new mapbox.Marker()
+          .setLngLat([-80.539587, 43.472889])
+          .setPopup(popup)
+          .addTo(this.map);
       });
     },
 
